@@ -45,11 +45,11 @@
             min-height: 100vh;
         }
 
-        /* HEADER AZUL MARINO + AMARILLO */
+        /* HEADER AZUL MARINO + AMARILLO - MÁS ESPACIOSO */
         .header {
             background: var(--azul-marino);
             color: white;
-            padding: 1rem 2rem;
+            padding: 2rem 2rem;   /* Aumentado verticalmente para más espacio */
             box-shadow: var(--shadow-md);
             border-bottom: 5px solid var(--amarillo);
             position: relative;
@@ -73,21 +73,21 @@
 
         .logo-icon {
             background: var(--gradient-primary);
-            width: 58px;
-            height: 58px;
-            border-radius: 18px;
+            width: 70px;          /* Icono ligeramente más grande */
+            height: 70px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: var(--azul-marino);
             box-shadow: 0 6px 12px rgba(0,0,0,0.2);
         }
 
         .logo-text h1 {
-            font-size: 1.9rem;
+            font-size: 2.8rem;    /* TÍTULO MÁS GRANDE */
             font-weight: 800;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.5px;
             color: white;
         }
 
@@ -96,9 +96,10 @@
         }
 
         .logo-text p {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #bdd4ff;
             font-weight: 500;
+            margin-top: 4px;
         }
 
         /* Botones acción */
@@ -142,7 +143,7 @@
         /* HERO */
         .hero {
             flex: 1;
-            padding: 3rem 2rem;
+            padding: 2.5rem 2rem;
             max-width: 1400px;
             margin: 0 auto;
             width: 100%;
@@ -228,40 +229,41 @@
             color: #556b82;
         }
 
-        /* Preview productos */
+        /* Preview productos - MÁS PEQUEÑO (catálogo compacto) */
         .products-preview {
             background: white;
             border-radius: 28px;
-            padding: 1.8rem;
+            padding: 1.5rem;
             box-shadow: var(--shadow-md);
             border-top: 7px solid var(--amarillo);
         }
 
         .preview-title {
-            font-size: 1.6rem;
+            font-size: 1.4rem;   /* Ligeramente reducido */
             font-weight: 700;
             color: var(--azul-marino);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             border-bottom: 3px solid var(--amarillo);
-            padding-bottom: 0.6rem;
-            margin-bottom: 1.6rem;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.2rem;
             display: inline-block;
         }
 
         .preview-title i {
             background: #fef1d6;
-            padding: 10px;
-            border-radius: 14px;
+            padding: 8px;
+            border-radius: 12px;
             color: var(--amarillo-oscuro);
+            font-size: 1.2rem;
         }
 
         .product-container {
-            height: 360px;
+            height: 300px;       /* Altura reducida (antes 360px) */
             overflow: hidden;
             border-radius: 20px;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
 
         .product-slider {
@@ -273,72 +275,72 @@
         .product-group {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.8rem;
             width: 100%;
             flex-shrink: 0;
         }
 
         .product-item {
             background: #fbfeff;
-            border-radius: 16px;
-            padding: 1rem;
+            border-radius: 14px;
+            padding: 0.7rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 5px solid var(--amarillo);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border-left: 4px solid var(--amarillo);
+            box-shadow: 0 1px 6px rgba(0,0,0,0.03);
             transition: 0.2s;
-            height: calc(33.33% - 0.7rem);
+            height: calc(33.33% - 0.5rem);
         }
 
         .product-item:hover {
             background: #fff9ef;
-            transform: translateX(5px);
+            transform: translateX(4px);
         }
 
         .product-info h4 {
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 0.9rem;   /* Texto un poco más pequeño */
             color: #0b2b4b;
         }
 
         .product-info p {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #5d6f83;
         }
 
         .product-category {
             background: #ffecb3;
-            padding: 2px 12px;
+            padding: 2px 10px;
             border-radius: 30px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             color: #b46600;
             display: inline-block;
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
         .product-price {
             background: var(--gradient-primary);
-            padding: 6px 14px;
+            padding: 4px 12px;
             border-radius: 40px;
             font-weight: 800;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: #1e2a3a;
-            min-width: 75px;
+            min-width: 68px;
             text-align: center;
         }
 
         .auto-indicators {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin: 0.8rem 0;
+            gap: 8px;
+            margin: 0.6rem 0;
         }
 
         .auto-indicator {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 20px;
             background: #cbdae9;
             cursor: pointer;
@@ -347,62 +349,62 @@
 
         .auto-indicator.active {
             background: var(--amarillo);
-            width: 22px;
+            width: 20px;
             border-radius: 12px;
         }
 
-        /* Zona de talleres mejorada */
+        /* Zona de talleres */
         .taller-promo {
             background: linear-gradient(115deg, #eef5ff, #ffffff);
-            border-radius: 24px;
-            padding: 1.6rem;
-            margin-top: 2rem;
+            border-radius: 20px;
+            padding: 1.2rem;
+            margin-top: 1.4rem;
             border: 1px solid #ffe1a0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
 
         .taller-promo h4 {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: var(--azul-profundo);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            font-weight: 800;
+            gap: 10px;
+            font-weight: 700;
         }
 
         .tips-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 0.9rem;
-            margin: 1.2rem 0;
+            gap: 0.7rem;
+            margin: 1rem 0;
         }
 
         .tip-item {
             background: white;
-            padding: 0.7rem 0.9rem;
-            border-radius: 18px;
+            padding: 0.5rem 0.7rem;
+            border-radius: 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            gap: 10px;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #1e2e44;
         }
 
         .tip-item i {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: #f9b81b;
-            width: 32px;
+            width: 28px;
         }
 
         .btn-taller {
             background: var(--azul-marino);
             color: white;
             display: inline-flex;
-            margin-top: 0.5rem;
+            margin-top: 0.3rem;
             border: none;
+            padding: 6px 18px;
+            font-size: 0.8rem;
         }
 
         .btn-taller:hover {
@@ -477,7 +479,7 @@
             margin-top: 2rem;
         }
 
-        /* elementos gráficos nuevos: martillo animado, badge */
+        /* elementos gráficos */
         .floating-badge {
             display: inline-block;
             background: var(--amarillo);
@@ -495,10 +497,6 @@
             100% { transform: translateY(0); }
         }
 
-        .hero-icon-big {
-            animation: floatIcon 5s ease infinite;
-        }
-
         /* Responsive */
         @media (max-width: 1000px) {
             .hero-content {
@@ -508,7 +506,7 @@
                 font-size: 2.4rem;
             }
             .product-container {
-                height: 390px;
+                height: 320px;
             }
         }
 
@@ -527,11 +525,17 @@
             .product-item {
                 flex-direction: column;
                 align-items: start;
-                gap: 8px;
+                gap: 6px;
                 height: auto;
             }
             .product-price {
                 align-self: flex-end;
+            }
+            .logo-text h1 {
+                font-size: 2.2rem;
+            }
+            .header {
+                padding: 1.5rem 1rem;
             }
         }
     </style>
@@ -604,8 +608,8 @@
                     <div class="product-slider" id="productSlider"></div>
                 </div>
                 <div class="auto-indicators" id="autoIndicators"></div>
-                <div class="auto-info" style="text-align:center; font-size:0.75rem; color:#6c7a8e;">
-                    <i class="fas fa-rotate-right"></i> Cambio automático cada 5s
+                <div class="auto-info" style="text-align:center; font-size:0.7rem; color:#6c7a8e; margin-top: 0.2rem;">
+                    <i class="fas fa-rotate-right"></i> Rotación automática cada 5s
                 </div>
 
                 <div class="taller-promo">
@@ -616,11 +620,11 @@
                         <div class="tip-item"><i class="fas fa-oil-can"></i> <span>Lubrica herramientas eléctricas</span></div>
                         <div class="tip-item"><i class="fas fa-drafting-compass"></i> <span>Planifica antes de comprar</span></div>
                     </div>
-                    <a href="#" class="action-button btn-taller" style="display:inline-flex; margin-top:10px;">
+                    <a href="#" class="action-button btn-taller" style="display:inline-flex; margin-top:8px;">
                         <i class="fas fa-play-circle"></i> Ver tutoriales
                     </a>
                 </div>
-                <div style="margin-top: 1.4rem; background: #eef1f9; border-radius: 18px; padding: 0.8rem; text-align:center; border-left: 5px solid #f9b81b;">
+                <div style="margin-top: 1rem; background: #eef1f9; border-radius: 16px; padding: 0.6rem; text-align:center; border-left: 4px solid #f9b81b; font-size: 0.75rem;">
                     <i class="fas fa-truck-fast"></i> Envíos a domicilio | Garantía de 1 año en herramientas eléctricas
                 </div>
             </div>
@@ -655,7 +659,7 @@
 </div>
 
 <script>
-    // Catalogo de productos (12 ejemplos)
+    // Catálogo de productos (12 ejemplos)
     const productos = [
         { nombre: "Martillo Demoledor 2kg", descripcion: "Acero forjado, mango antideslizante", precio: "$12.90", categoria: "Golpe" },
         { nombre: "Taladro Percutor 750W", descripcion: "Velocidad variable + maletín", precio: "$59.90", categoria: "Eléctricas" },
@@ -771,7 +775,7 @@
         });
     });
 
-    // teclado arrows
+    // navegación con teclado
     document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
             const prev = (currentGroup - 1 + totalGroups) % totalGroups;
