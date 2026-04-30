@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmanet · Agenda tu Cita</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #005f73;
+            --primary-dark: #004755;
+            --secondary: #0a9396;
+            --accent: #ee9b00;
+            --light: #e9d8a6;
+            --dark: #001219;
+            --danger: #ae2012;
+            --pharmacy: #2a9d8f;
+            --bg-light: #f4f9fc;
+            --card-white: #ffffff;
+            --border-soft: #d0e1e3;
+            --text-dark: #212529;
+            --text-light: #6c757d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 
+            
+            'Montserrat', sans-serif;
+             line-height: 1.6; color:
+             var(--dark); background:
+             var(--bg-light); min-height:100vh; position: relative; }
+       
+        .animated-bg 
+        { 
+            display: none; 
+        }
+
+        .container
+         {
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+         }
+
+        header
+        { 
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+             color: white;
+             padding: 2.5rem 2rem;
+             text-align: center; 
+             border-radius: 30px;
+             margin-bottom: 2.5rem;
+             box-shadow: 0 12px 24px rgba(0, 95, 115, 0.2);
+             position: relative;
+             overflow: hidden;
+             }
+
+        header::before {
+        content: "";
+        position: absolute; 
+        top: -50%; left: -50%; width: 200%; 
+        height: 200%; 
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(30deg);
+     }
+        h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 0.5rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.2); font-weight: 900; letter-spacing: 2px; position: relative; color: white; }
+        h1::after { content: ""; position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 200px; height: 4px; background: var(--accent); border-radius: 2px; box-shadow: 0 0 10px var(--accent); }
+        header p { font-size: 1.2rem; opacity: 0.95; font-weight: 500; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); margin-top: 1rem; }
+        .process-steps { display: flex; justify-content: center; align-items: center; gap: 2rem; margin: 2rem 0 3rem; flex-wrap: wrap; }
+        .step { display: flex; flex-direction: column; align-items: center; text-align: center; background: white; padding: 1.2rem 2rem; border-radius: 20px; border-top: 6px solid var(--accent); box-shadow: 0 8px 20px rgba(0, 95, 115, 0.08); min-width: 200px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .step:hover { transform: translateY(-4px); box-shadow: 0 16px 28px rgba(0, 95, 115, 0.2); }
+        .step.active { border-top-color: var(--secondary); background: rgba(10, 147, 150, 0.05); }
+        .step-number { width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.3rem; margin-bottom: 0.8rem; border: 2px solid white; color: var(--dark); }
+        .step.active .step-number { background: var(--secondary); color: white; }
+        .step-text { font-weight: 600; color: var(--primary); }
+        .step-desc { font-size: 0.85rem; color: var(--text-light); }
+        h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--primary); margin: 2.5rem 0 1.8rem; padding-bottom: 0.5rem; border-bottom: 3px solid var(--accent); display: flex; align-items: center; gap: 0.8rem; }
+        h2 i { color: var(--accent); font-size: 2.2rem; }
+        h3 { font-size: 1.6rem; color: var(--primary); font-weight: 700; font-family: 'Playfair Display', serif; }
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 2rem; }
+        .form-container { background: var(--card-white); padding: 2rem; border-radius: 24px; box-shadow: 0 8px 20px rgba(0, 95, 115, 0.08); transition: all 0.3s ease; border-top: 6px solid var(--accent); border-left: 1px solid rgba(0, 95, 115, 0.1); border-right: 1px solid rgba(0, 95, 115, 0.1); border-bottom: 1px solid rgba(0, 95, 115, 0.1); display: flex; flex-direction: column; height: 100%; }
+        .form-container:hover { transform: translateY(-6px); box-shadow: 0 20px 30px -8px rgba(0, 95, 115, 0.25); }
+        .form-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .form-icon { width: 60px; height: 60px; background: var(--light); color: var(--primary); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 6px 12px rgba(238, 155, 0, 0.25); transition: 0.2s; }
+        .form-container:hover .form-icon { background: var(--accent); color: white; transform: scale(1.05); }
+        .form-description { background: rgba(10, 147, 150, 0.05); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; border-left: 4px solid var(--secondary); font-size: 0.95rem; color: var(--text-dark); }
+        .form-description i { color: var(--secondary); margin-right: 0.5rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--primary); font-size: 0.95rem; }
+        .required::after { content: " *"; color: var(--danger); font-weight: 800; }
+        input, select, textarea { width: 100%; padding: 0.9rem 1.2rem; border: 2px solid var(--border-soft); border-radius: 16px; font-size: 0.95rem; font-family: 'Montserrat', sans-serif; transition: all 0.2s; background: white; }
+        input:focus, select:focus, textarea:focus { border-color: var(--secondary); outline: none; box-shadow: 0 0 0 4px rgba(10, 147, 150, 0.2); }
+        input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+        textarea { min-height: 80px; resize: vertical; }
+        fieldset { border: 2px dashed var(--secondary); border-radius: 20px; padding: 1.2rem; margin-bottom: 1.5rem; background: rgba(233, 216, 166, 0.05); }
+        legend { font-weight: 600; padding: 0.2rem 1rem; color: var(--secondary); font-size: 0.9rem; background: white; border-radius: 40px; border: 1px solid var(--secondary); }
+        .checkbox-group { margin: 0.8rem 0; display: flex; align-items: center; gap: 0.8rem; }
+        input[type="checkbox"] { width: 1.3rem; height: 1.3rem; accent-color: var(--secondary); margin: 0; }
+        .action-buttons { display: flex; justify-content: center; gap: 2rem; margin: 3rem 0 2rem; flex-wrap: wrap; }
+        .primary-btn { background: linear-gradient(to right, var(--secondary), var(--primary)); color: white; border: none; padding: 1.5rem 4rem; font-size: 1.5rem; border-radius: 60px; cursor: pointer; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 1rem; box-shadow: 0 6px 14px rgba(0, 95, 115, 0.25); transition: all 0.3s; text-transform: uppercase; letter-spacing: 2px; border: 1px solid rgba(255,255,255,0.2); }
+        .primary-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 18px 30px rgba(0, 95, 115, 0.4); background: linear-gradient(to right, var(--primary), var(--secondary)); }
+        .primary-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .primary-btn i { font-size: 1.8rem; }
+        .secondary-btn { background: white; color: var(--primary); border: 2px solid var(--secondary); padding: 1rem 2rem; border-radius: 50px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s; font-size: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .secondary-btn:hover { background: var(--secondary); color: white; transform: translateX(-5px); border-color: var(--secondary); }
+        .emergency-btn { background: linear-gradient(to right, var(--danger), #9b2226); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 50px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s; font-size: 0.9rem; box-shadow: 0 6px 12px rgba(174, 32, 18, 0.2); }
+        .emergency-btn:hover { background: linear-gradient(to right, #9b2226, var(--danger)); transform: translateY(-3px); box-shadow: 0 15px 25px rgba(174, 32, 18, 0.3); }
+        .emergency { background: rgba(174, 32, 18, 0.08); border-left: 6px solid var(--danger); padding: 1rem; margin-bottom: 1.5rem; border-radius: 0 12px 12px 0; font-weight: 600; border: 1px solid rgba(174, 32, 18, 0.2); border-left-width: 6px; }
+        .emergency strong { color: var(--danger); }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: white; padding: 1rem 2rem; border-radius: 50px; box-shadow: 0 8px 16px rgba(0, 95, 115, 0.1); border: 1px solid var(--border-soft); }
+        .nav-left, .nav-right { display: flex; gap: 1rem; }
+        .notification { position: fixed; top: 30px; right: 30px; background: white; padding: 1rem 2rem; border-radius: 12px; box-shadow: 0 15px 30px rgba(0,0,0,0.15); border-left: 6px solid var(--secondary); transform: translateX(450px); transition: transform 0.4s ease; z-index: 1000; max-width: 350px; font-weight: 500; border: 2px solid rgba(255,255,255,0.8); }
+        .notification.show { transform: translateX(0); }
+        .notification.error { border-left-color: var(--danger); }
+        .notification.success { border-left-color: #2a9d8f; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 9999; display: none; justify-content: center; align-items: center; padding: 2rem; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-container { background: white; border-radius: 30px; width: 100%; max-width: 900px; max-height: 85vh; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.3); border-top: 8px solid var(--accent); }
+        .modal-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 1.8rem 2.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--accent); }
+        .modal-header h2 { color: white; margin: 0; font-size: 2rem; border: none; text-shadow: none; display: flex; align-items: center; gap: 1rem; }
+        .modal-header h2 i { color: var(--accent); font-size: 2rem; }
+        .modal-close { background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3); color: white; font-size: 2.5rem; cursor: pointer; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .modal-close:hover { background: var(--danger); transform: rotate(90deg) scale(1.1); }
+        .modal-content { padding: 2.5rem; overflow-y: auto; max-height: calc(85vh - 100px); background: white; }
+        .modal-footer { background: #f1f3f5; padding: 1.5rem 2.5rem; display: flex; justify-content: flex-end; gap: 1rem; border-top: 2px solid var(--accent); }
+        .modal-btn { background: var(--primary); color: white; border: none; padding: 0.8rem 2rem; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .modal-btn:hover { background: var(--secondary); transform: translateY(-2px); }
+        .modal-btn.secondary { background: var(--accent); color: var(--dark); }
+        .modal-btn.secondary:hover { background: #ffb347; }
+
+        /* Supabase status badge */
+        .db-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(42, 157, 143, 0.1); border: 1px solid var(--pharmacy); color: var(--pharmacy); padding: 0.3rem 0.9rem; border-radius: 30px; font-size: 0.8rem; font-weight: 600; }
+        .db-badge .dot { width: 8px; height: 8px; background: var(--pharmacy); border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        footer { text-align: center; margin-top: 4rem; padding: 2.5rem; background: linear-gradient(135deg, var(--dark), var(--primary)); color: white; border-radius: 30px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); }
+        footer a { color: var(--light); text-decoration: none; transition: color 0.3s; border-bottom: 1px dotted var(--accent); cursor: pointer; }
+        footer a:hover { color: var(--accent); }
+        @media (max-width: 1100px) { .form-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 1.8rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .process-steps { flex-direction: column; gap: 1rem; }
+            .step { width: 100%; }
+            .top-nav { flex-direction: column; gap: 1rem; padding: 1rem; }
+            .nav-left, .nav-right { width: 100%; justify-content: center; }
+            .action-buttons { flex-direction: column; gap: 1rem; }
+            .primary-btn { padding: 1.2rem 2rem; font-size: 1.2rem; width: 100%; }
+            .secondary-btn, .emergency-btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="container">
+        <div class="top-nav">
+            <div class="nav-left">
+                <button class="secondary-btn" onclick="window.location.href='index.html'">
+                    <i class="fas fa-arrow-left"></i> Volver a Farmacia
+                </button>
+                <button class="secondary-btn" onclick="window.location.href='Medicamentos.html'">
+                    <i class="fas fa-pills"></i> Medicamentos
+                </button>
+            </div>
+            <div class="nav-right">
+                <span class="db-badge"><span class="dot"></span> Supabase conectado</span>
+                <button class="emergency-btn" onclick="showNotification('🚑 Emergencia: Llama al 911 inmediatamente', 'error')">
+                    <i class="fas fa-ambulance"></i> Emergencias 911
+                </button>
+            </div>
+        </div>
+                           
+        <header>
+            <h1>Pharmanet</h1>
+            <p>Gestiona tu salud de manera fácil y rápida</p>
+        </header>
+
+        <div class="process-steps">
+            <div class="step active">
+                <div class="step-number">1</div>
+                <div class="step-text">Registro</div>
+                <div class="step-desc">Tus datos personales</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-text">Cita</div>
+                <div class="step-desc">Selecciona fecha y hora</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-text">Confirmación</div>
+                <div class="step-desc">Recibe tu confirmación</div>
+            </div>
+        </div>
+        
+        <section>
+            <h2><i class="fas fa-calendar-check"></i> Agenda tu Consulta Médica</h2>
+            <div class="form-grid">
+                <!-- Datos del Paciente -->
+                <div class="form-container">
+                    <div class="form-header">
+                        <div class="form-icon"><i class="fas fa-user"></i></div>
+                        <h3>Tus Datos</h3>
+                    </div>
+                    <div class="form-description">
+                        <i class="fas fa-info-circle"></i>
+                        Información personal para tu expediente
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="required">Nombre completo</label>
+                        <input type="text" id="name" class="appointment-field" placeholder="Ej: María González López" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthdate" class="required">Fecha de nacimiento</label>
+                        <input type="date" id="birthdate" class="appointment-field" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="required">Correo electrónico</label>
+                        <input type="email" id="email" class="appointment-field" placeholder="maria@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="required">Teléfono</label>
+                        <input type="tel" id="phone" class="appointment-field" placeholder="555-123-4567" required>
+                    </div>
+                </div>
+                
+                <!-- Detalles de la Cita -->
+                <div class="form-container">
+                    <div class="form-header">
+                        <div class="form-icon"><i class="fas fa-clock"></i></div>
+                        <h3>Detalles de la Cita</h3>
+                    </div>
+                    <div class="form-description">
+                        <i class="fas fa-info-circle"></i>
+                        Selecciona especialidad, fecha y horario
+                    </div>
+                    <div class="form-group">
+                        <label for="specialty" class="required">Especialidad</label>
+                        <select id="specialty" class="appointment-field" required>
+                            <option value="">Seleccione una especialidad</option>
+                            <option>Medicina General (Chequeo rutinario)</option>
+                            <option>Cardiología (Corazón)</option>
+                            <option>Pediatría (Niños)</option>
+                            <option>Dermatología (Piel)</option>
+                            <option>Ginecología (Salud femenina)</option>
+                            <option>Traumatología (Huesos y articulaciones)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="doctor" class="required">Médico preferente</label>
+                        <select id="doctor" class="appointment-field" required>
+                            <option value="">Seleccione...</option>
+                            <option>Dr. Carlos Ramírez (Disponible Lunes/Miércoles)</option>
+                            <option>Dra. Laura Méndez (Disponible Martes/Jueves)</option>
+                            <option>Dr. Roberto Sánchez (Disponible Viernes)</option>
+                            <option>Sin preferencia</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointment-date" class="required">Fecha</label>
+                        <input type="date" id="appointment-date" class="appointment-field" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointment-time" class="required">Horario</label>
+                        <select id="appointment-time" class="appointment-field" required>
+                            <option value="">Seleccione...</option>
+                            <option>09:00 AM</option>
+                            <option>10:00 AM</option>
+                            <option>11:00 AM</option>
+                            <option>12:00 PM</option>
+                            <option>04:00 PM</option>
+                            <option>05:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="form-container">
+                    <div class="form-header">
+                        <div class="form-icon"><i class="fas fa-notes-medical"></i></div>
+                        <h3>Información Adicional</h3>
+                    </div>
+                    <div class="form-description">
+                        <i class="fas fa-info-circle"></i>
+                        Opcional - Ayuda a tu médico
+                    </div>
+                    <div class="form-group">
+                        <label for="blood-type">Tipo de sangre</label>
+                        <select id="blood-type">
+                            <option value="">Desconocido</option>
+                            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                            <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="allergies">Alergias</label>
+                        <textarea id="allergies" placeholder="Ej: Penicilina, polen, mariscos..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="conditions">Enfermedades crónicas</label>
+                        <textarea id="conditions" placeholder="Ej: Diabetes, hipertensión, asma..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="action-buttons">
+            <button id="confirmAppointmentBtn" class="primary-btn" onclick="procesarCita()">
+                <i class="fas fa-calendar-check"></i> Agendar Cita
+            </button>
+            <button class="secondary-btn" onclick="limpiarFormulario()">
+                <i class="fas fa-eraser"></i> Limpiar Formulario
+            </button>
+        </div>
+        
+        <footer>
+            <p>© 2026 Pharmanet - Sistema de Gestión Médica</p>
+            <p>📍 Av. Salud 123, Ciudad Médica | 📞 (555) 123-4567</p>
+            <p>
+                <a href="#" onclick="openModal('terminos')">Términos y condiciones</a> | 
+                <a href="#" onclick="openModal('privacidad')">Política de privacidad</a>
+            </p>
+        </footer>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalTitle"><i class="fas fa-file-contract"></i> <span id="modalTitleText">Términos y Condiciones</span></h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-content" id="modalContent"></div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="window.print()"><i class="fas fa-print"></i> Imprimir</button>
+                <button class="modal-btn secondary" onclick="closeModal()"><i class="fas fa-check"></i> Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== SUPABASE CONFIG =====
+        const SUPABASE_URL = 'https://suwkfmizletxfbmlclco.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1d2tmbWl6bGV0eGZibWxjbGNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzNzU4NzQsImV4cCI6MjA4NTk1MTg3NH0.gZrI-Jkz2CRzb6RZPV7eonIGe1G4UDleegyAop8h5IU';
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('✅ Supabase inicializado:', SUPABASE_URL);
+
+        // ===== EMAILJS CONFIG =====
+        const PUBLIC_KEY = 'M92wKKtYMTj1mB944';
+        const SERVICE_ID = 'service_8n52x1y';
+        const TEMPLATE_ID = 'template_9gy5yl4';
+        (function() { emailjs.init(PUBLIC_KEY); })();
+
+        // ===== GUARDAR CITA EN SUPABASE =====
+        async function guardarCitaEnSupabase(datos) {
+            // Construir el motivo combinando especialidad, médico y datos médicos relevantes
+            let motivo = `${datos.especialidad} | Médico: ${datos.medico}`;
+            if (datos.alergias) motivo += ` | Alergias: ${datos.alergias}`;
+            if (datos.enfermedades) motivo += ` | Enfermedades: ${datos.enfermedades}`;
+            if (datos.tipoSangre) motivo += ` | Tipo sangre: ${datos.tipoSangre}`;
+
+            const registro = {
+                nombre_paciente: datos.nombre,
+                fecha_cita: datos.fecha,           // formato YYYY-MM-DD del input type="date"
+                hora_cita: datos.hora,              // e.g. "09:00 AM"
+                motivo: motivo,
+                estado: 'pendiente'
+            };
+
+            console.log('📤 Insertando en Supabase:', registro);
+
+            const { data, error } = await supabaseClient
+                .from('citas')
+                .insert([registro])
+                .select();
+
+            if (error) {
+                console.error('❌ Error Supabase:', error);
+                throw error;
+            }
+
+            console.log('✅ Cita guardada en Supabase:', data);
+            return data;
+        }
+
+        // ===== FUNCIÓN PRINCIPAL =====
+        async function procesarCita() {
+            if (!validarCampos()) {
+                showNotification('⚠️ Por favor completa todos los campos marcados con *', 'error');
+                return;
+            }
+
+            const datosCita = {
+                nombre: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                telefono: document.getElementById('phone').value,
+                fechaNacimiento: document.getElementById('birthdate').value,
+                especialidad: document.getElementById('specialty').value,
+                medico: document.getElementById('doctor').value,
+                fecha: document.getElementById('appointment-date').value,
+                hora: document.getElementById('appointment-time').value,
+                tipoSangre: document.getElementById('blood-type').value,
+                alergias: document.getElementById('allergies').value,
+                enfermedades: document.getElementById('conditions').value
+            };
+
+            // Deshabilitar botón mientras procesa
+            const btn = document.getElementById('confirmAppointmentBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+            showNotification('⏳ Guardando tu cita...');
+
+            try {
+                // 1. Guardar en Supabase
+                await guardarCitaEnSupabase(datosCita);
+                showNotification('✅ Cita guardada en la base de datos', 'success');
+
+                // 2. Generar y descargar PDF
+                descargarPDF(datosCita);
+
+                // 3. Enviar correo
+                enviarCorreo(datosCita);
+
+                // 4. Limpiar formulario tras éxito
+                setTimeout(() => limpiarFormulario(), 1500);
+
+            } catch (error) {
+                console.error('Error al procesar cita:', error);
+                showNotification('❌ Error al guardar: ' + (error.message || 'intenta de nuevo'), 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-calendar-check"></i> Agendar Cita';
+            }
+        }
+
+        // ===== VALIDACIÓN =====
+        function validarCampos() {
+            const campos = document.querySelectorAll('.appointment-field');
+            for (let campo of campos) {
+                if (!campo.value || campo.value.trim() === '') {
+                    campo.style.borderColor = 'var(--danger)';
+                    campo.focus();
+                    setTimeout(() => campo.style.borderColor = '', 2500);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // ===== GENERAR PDF =====
+        function generarPDF(datos) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const codigoCita = 'CIT-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            const fechaGeneracion = new Date().toLocaleString('es-ES');
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.setTextColor(0, 95, 115);
+            doc.text("Pharmanet", 105, 20, { align: "center" });
+            doc.setFontSize(16);
+            doc.setTextColor(238, 155, 0);
+            doc.text("Confirmación de Cita Médica", 105, 35, { align: "center" });
+            doc.setDrawColor(10, 147, 150);
+            doc.setLineWidth(0.5);
+            doc.line(20, 45, 190, 45);
+
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.setFont("helvetica", "bold");
+            doc.text("DATOS DEL PACIENTE:", 20, 60);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Nombre: ${datos.nombre}`, 20, 70);
+            doc.text(`Email: ${datos.email}`, 20, 80);
+            doc.text(`Teléfono: ${datos.telefono}`, 20, 90);
+            doc.text(`Fecha Nacimiento: ${datos.fechaNacimiento}`, 20, 100);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("DETALLES DE LA CITA:", 20, 120);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Especialidad: ${datos.especialidad}`, 20, 130);
+            doc.text(`Médico: ${datos.medico}`, 20, 140);
+            doc.text(`Fecha: ${datos.fecha}`, 20, 150);
+            doc.text(`Hora: ${datos.hora}`, 20, 160);
+
+            if (datos.tipoSangre) doc.text(`Tipo de sangre: ${datos.tipoSangre}`, 20, 175);
+            if (datos.alergias) doc.text(`Alergias: ${datos.alergias}`, 20, 185);
+            if (datos.enfermedades) doc.text(`Enfermedades: ${datos.enfermedades}`, 20, 195);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("CÓDIGO DE CONFIRMACIÓN:", 20, 215);
+            doc.setFont("helvetica", "normal");
+            doc.text(codigoCita, 20, 225);
+
+            doc.setFont("helvetica", "bold");
+            doc.text("INSTRUCCIONES IMPORTANTES:", 20, 245);
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.text("• Llegue 15 minutos antes de su cita", 25, 255);
+            doc.text("• Traiga identificación oficial y comprobante", 25, 263);
+            doc.text("• Si no puede asistir, cancele con 24h de anticipación", 25, 271);
+
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text("www.pharmanet.com", 105, 285, { align: "center" });
+            doc.text(`Generado: ${fechaGeneracion}`, 105, 290, { align: "center" });
+
+            return doc;
+        }
+
+        function descargarPDF(datos) {
+            try {
+                const doc = generarPDF(datos);
+                doc.save(`Cita_${datos.nombre.replace(/\s+/g, '_')}_${datos.fecha}.pdf`);
+                console.log('✅ PDF descargado');
+            } catch (e) {
+                console.error('❌ Error PDF:', e);
+            }
+        }
+
+        // ===== EMAILJS =====
+        function enviarCorreo(datos) {
+            const codigoCita = 'CIT-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            const templateParams = {
+                to_email: datos.email,
+                to_name: datos.nombre.split(' ')[0],
+                from_name: "Pharmanet",
+                appointment_date: datos.fecha,
+                appointment_time: datos.hora,
+                specialty: datos.especialidad,
+                doctor: datos.medico,
+                appointment_code: codigoCita,
+                message: "Tu cita ha sido confirmada. El comprobante PDF se ha descargado automáticamente."
+            };
+            emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams)
+                .then(() => showNotification('📧 Confirmación enviada a tu correo', 'success'))
+                .catch(err => {
+                    console.error('Error email:', err);
+                    showNotification('⚠️ Cita guardada, pero el correo no pudo enviarse');
+                });
+        }
+
+        // ===== LIMPIAR =====
+        function limpiarFormulario() {
+            const campos = document.querySelectorAll('.appointment-field, #blood-type, #allergies, #conditions');
+            campos.forEach(campo => {
+                if (campo.tagName === 'SELECT') campo.selectedIndex = 0;
+                else campo.value = '';
+            });
+            showNotification('🧹 Formulario limpiado');
+        }
+
+        // ===== NOTIFICACIONES =====
+        function showNotification(mensaje, tipo = '') {
+            const notification = document.getElementById('notification');
+            notification.textContent = mensaje;
+            notification.className = 'notification show' + (tipo ? ' ' + tipo : '');
+            clearTimeout(notification._timeout);
+            notification._timeout = setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // ===== MODAL =====
+        function openModal(type) {
+            const modal = document.getElementById('modalOverlay');
+            document.getElementById('modalTitleText').textContent = type === 'terminos' ? 'Términos y Condiciones' : 'Política de Privacidad';
+            document.getElementById('modalContent').innerHTML = type === 'terminos' ? getTerminosContent() : getPrivacidadContent();
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+        function getTerminosContent() {
+            return `<h3>1. Aceptación de los Términos</h3><p>Al acceder y utilizar los servicios de <strong>Pharmanet</strong>, usted acepta estar sujeto a estos Términos y Condiciones de Uso.</p><h3>2. Servicios Médicos</h3><p>Pharmanet ofrece servicios de agendamiento de citas médicas a través de su plataforma en línea.</p><h3>3. Cancelaciones y Reagendamiento</h3><p>Las citas pueden ser canceladas o reagendadas sin cargo hasta 24 horas antes de la hora programada.</p><h3>4. Limitación de Responsabilidad</h3><p>Pharmanet actúa únicamente como facilitador del agendamiento de citas y no se hace responsable por la calidad de los servicios médicos prestados.</p><p><strong>Última actualización:</strong> 23 de febrero, 2026</p>`;
+        }
+        function getPrivacidadContent() {
+            return `<h3>1. Información que Recopilamos</h3><p>Datos personales, de contacto, médicos (tipo de sangre, alergias, enfermedades cuando los proporciona voluntariamente) y datos de cita.</p><h3>2. Cómo Usamos su Información</h3><p>Para gestionar su registro, procesar citas, enviar confirmaciones y mejorar nuestros servicios.</p><h3>3. Compartir Información</h3><p>No vendemos su información. Solo la compartimos con los médicos de su cita y proveedores de servicio como EmailJS.</p><h3>4. Contacto</h3><p>📧 privacidad@pharmanet.com | 📞 (555) 123-4567</p><p><strong>Última actualización:</strong> 23 de febrero, 2026</p>`;
+        }
+
+        // Bienvenida
+        setTimeout(() => showNotification('👋 Completa tus datos para agendar una cita'), 1000);
+    </script>
+</body>
+</html>
