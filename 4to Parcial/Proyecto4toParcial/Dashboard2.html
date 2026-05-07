@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Farmacia Salud Total</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root{--primary:#2a9d8f;--primary-dark:#1e7268;--primary-light:#3dbfaf;--secondary:#264653;--accent:#e9c46a;--danger:#e76f51;--success:#4caf50;--warning:#f4a261;--bg:#0d1117;--bg-card:#161b22;--bg-hover:#1c2230;--border:#21262d;--text:#e6edf3;--muted:#7d8590;--subtle:#484f58;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;overflow-x:hidden;}
+        .sidebar{width:255px;min-height:100vh;background:var(--bg-card);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;transition:transform .3s;}
+        .logo-area{padding:1.3rem 1.2rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.7rem;}
+        .logo-pill{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;box-shadow:0 0 18px rgba(42,157,143,.4);flex-shrink:0;}
+        .logo-name{font-size:.92rem;font-weight:700;}.logo-sub{font-size:.62rem;color:var(--primary);font-weight:600;letter-spacing:.06em;text-transform:uppercase;}
+        .nav{padding:.7rem .55rem;flex:1;overflow-y:auto;}
+        .nav-section{font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:var(--subtle);font-weight:700;padding:.65rem .7rem .25rem;}
+        .nav-item{display:flex;align-items:center;gap:.65rem;padding:.58rem .7rem;border-radius:8px;cursor:pointer;color:var(--muted);font-size:.84rem;font-weight:500;transition:all .16s;position:relative;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif;}
+        .nav-item:hover{background:rgba(42,157,143,.08);color:var(--text);}
+        .nav-item.active{background:rgba(42,157,143,.14);color:var(--primary-light);}
+        .nav-item.active::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:3px;background:var(--primary);border-radius:0 3px 3px 0;}
+        .nav-item i{width:16px;text-align:center;font-size:.82rem;}
+        .nbadge{margin-left:auto;background:var(--danger);color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:20px;font-family:'DM Mono',monospace;}
+        .nav-extlink{display:flex;align-items:center;gap:.65rem;padding:.58rem .7rem;border-radius:8px;cursor:pointer;font-size:.84rem;font-weight:600;transition:all .2s;position:relative;border:1px solid rgba(42,157,143,.22);background:rgba(42,157,143,.06);width:100%;text-align:left;font-family:'DM Sans',sans-serif;color:var(--primary-light);text-decoration:none;margin-top:.25rem;}
+        .nav-extlink:hover{background:rgba(42,157,143,.16);border-color:rgba(42,157,143,.5);color:#fff;transform:translateX(2px);}
+        .nav-extlink i.ico{width:16px;text-align:center;font-size:.82rem;}
+        .nav-extlink i.ext{margin-left:auto;font-size:.58rem;opacity:.5;}
+        .sb-footer{padding:.7rem;border-top:1px solid var(--border);}
+        .profile-row{display:flex;align-items:center;gap:.65rem;padding:.6rem .7rem;border-radius:10px;}
+        .avatar{width:33px;height:33px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;color:#fff;flex-shrink:0;}
+        .p-name{font-size:.76rem;font-weight:600;}.p-role{font-size:.65rem;color:var(--primary);font-weight:500;}
+        .main{flex:1;margin-left:255px;display:flex;flex-direction:column;min-height:100vh;}
+        .topbar{padding:.85rem 1.6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(13,17,23,.88);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50;}
+        .tb-left{display:flex;align-items:center;gap:.65rem;}
+        .pg-title{font-size:1.05rem;font-weight:700;}.pg-sub{font-size:.72rem;color:var(--muted);margin-top:1px;}
+        .tb-actions{display:flex;align-items:center;gap:.55rem;}
+        .tbtn{background:var(--bg-card);border:1px solid var(--border);color:var(--muted);padding:.42rem .68rem;border-radius:8px;cursor:pointer;font-size:.77rem;display:flex;align-items:center;gap:.32rem;transition:all .16s;font-family:'DM Sans',sans-serif;font-weight:500;}
+        .tbtn:hover{border-color:var(--primary);color:var(--primary);}
+        .tbtn-p{background:var(--primary);border-color:var(--primary);color:#fff;}
+        .tbtn-p:hover{background:var(--primary-dark);border-color:var(--primary-dark);color:#fff;}
+        .tbtn-d{color:var(--danger);}
+        .tbtn-acceso{background:rgba(42,157,143,.1);border-color:rgba(42,157,143,.35);color:var(--primary-light);text-decoration:none;font-weight:600;}
+        .tbtn-acceso:hover{background:rgba(42,157,143,.22);border-color:var(--primary-light);color:#fff;}
+        .menu-toggle{display:none;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:.42rem .52rem;border-radius:8px;cursor:pointer;}
+        .content{padding:1.4rem 1.6rem;flex:1;}
+        .page{display:none;animation:fadeIn .25s ease;}.page.active{display:block;}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.2rem;}
+        .kpi{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.15rem;position:relative;overflow:hidden;transition:all .2s;}
+        .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+        .kpi.teal::before{background:linear-gradient(90deg,var(--primary),var(--primary-light));}
+        .kpi.green::before{background:linear-gradient(90deg,var(--success),#81c784);}
+        .kpi.amber::before{background:linear-gradient(90deg,var(--accent),var(--warning));}
+        .kpi.red::before{background:linear-gradient(90deg,var(--danger),#c94c34);}
+        .kpi.purple::before{background:linear-gradient(90deg,#9c27b0,#ce93d8);}
+        .kpi:hover{background:var(--bg-hover);border-color:rgba(42,157,143,.4);transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.3);}
+        .kpi-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.85rem;}
+        .kpi-lbl{font-size:.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
+        .kpi-ico{width:33px;height:33px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.82rem;}
+        .kpi-ico.teal{background:rgba(42,157,143,.14);color:var(--primary-light);}
+        .kpi-ico.green{background:rgba(76,175,80,.14);color:var(--success);}
+        .kpi-ico.amber{background:rgba(233,196,106,.14);color:var(--accent);}
+        .kpi-ico.red{background:rgba(231,111,81,.14);color:var(--danger);}
+        .kpi-ico.purple{background:rgba(156,39,176,.14);color:#ce93d8;}
+        .kpi-val{font-size:1.7rem;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:-.02em;}
+        .kpi-chg{font-size:.7rem;margin-top:.3rem;display:flex;align-items:center;gap:.22rem;}
+        .kpi-chg.up{color:var(--success);}.kpi-chg.down{color:var(--danger);}
+        .kpi-chg span{color:var(--muted);}
+        .skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--bg-hover) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;display:inline-block;}
+        @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+        .card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.15rem;}
+        .card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+        .card-title{font-size:.87rem;font-weight:700;}.card-sub{font-size:.7rem;color:var(--muted);margin-top:2px;}
+        .card-act{font-size:.72rem;color:var(--primary);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;font-weight:600;}
+        .card-act:hover{text-decoration:underline;}
+        .two-col{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-bottom:1.2rem;}
+        .two-even{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+        .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.2rem;}
+        .chart-bars{display:flex;align-items:flex-end;gap:5px;height:130px;}
+        .bar-grp{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+        .bar-wrap{width:100%;height:110px;display:flex;align-items:flex-end;gap:2px;}
+        .bar{flex:1;border-radius:4px 4px 0 0;transition:opacity .2s;cursor:pointer;min-height:4px;}
+        .bar:hover{opacity:.7;}
+        .bar.bs{background:linear-gradient(to top,var(--primary-dark),var(--primary-light));}
+        .bar.bo{background:linear-gradient(to top,rgba(233,196,106,.35),rgba(233,196,106,.75));}
+        .bar-lbl{font-size:.6rem;color:var(--subtle);font-family:'DM Mono',monospace;}
+        .legend{display:flex;gap:1rem;margin-top:.55rem;}
+        .leg-item{display:flex;align-items:center;gap:.3rem;font-size:.7rem;color:var(--muted);}
+        .leg-dot{width:8px;height:8px;border-radius:2px;}
+        .donut-wrap{display:flex;flex-direction:column;align-items:center;gap:.75rem;}
+        .donut-leg{width:100%;display:flex;flex-direction:column;gap:.4rem;}
+        .dl-item{display:flex;align-items:center;justify-content:space-between;font-size:.73rem;}
+        .dl-left{display:flex;align-items:center;gap:.45rem;color:var(--muted);}
+        .dl-val{font-weight:700;font-family:'DM Mono',monospace;font-size:.72rem;}
+        .dtbl{width:100%;border-collapse:collapse;}
+        .dtbl th{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle);font-weight:700;padding:.42rem .6rem;text-align:left;border-bottom:1px solid var(--border);}
+        .dtbl td{padding:.62rem .6rem;font-size:.78rem;color:var(--muted);border-bottom:1px solid rgba(33,38,45,.5);vertical-align:middle;}
+        .dtbl tr:last-child td{border-bottom:none;}.dtbl tr:hover td{background:rgba(255,255,255,.02);}
+        .t-name{font-weight:600;color:var(--text);font-size:.78rem;}.t-sub{font-size:.67rem;color:var(--muted);}
+        .sbadge{display:inline-flex;align-items:center;gap:.28rem;padding:2px 7px;border-radius:20px;font-size:.62rem;font-weight:700;}
+        .sbadge::before{content:'';width:5px;height:5px;border-radius:50%;}
+        .sb-ok{background:rgba(76,175,80,.12);color:var(--success);}.sb-ok::before{background:var(--success);}
+        .sb-low{background:rgba(244,162,97,.12);color:var(--warning);}.sb-low::before{background:var(--warning);}
+        .sb-out{background:rgba(231,111,81,.12);color:var(--danger);}.sb-out::before{background:var(--danger);}
+        .sb-pend{background:rgba(233,196,106,.12);color:var(--accent);}.sb-pend::before{background:var(--accent);}
+        .sb-done{background:rgba(76,175,80,.12);color:var(--success);}.sb-done::before{background:var(--success);}
+        .sb-canc{background:rgba(231,111,81,.12);color:var(--danger);}.sb-canc::before{background:var(--danger);}
+        .sb-blue{background:rgba(42,157,143,.12);color:var(--primary-light);}.sb-blue::before{background:var(--primary-light);}
+        .stock-bar-wrap{display:flex;align-items:center;gap:.4rem;}
+        .stock-bar{height:4px;background:var(--border);border-radius:99px;flex:1;overflow:hidden;}
+        .stock-fill{height:100%;border-radius:99px;}
+        .stock-num{font-size:.67rem;font-family:'DM Mono',monospace;width:26px;text-align:right;}
+        .act-list{display:flex;flex-direction:column;}
+        .act-item{display:flex;gap:.65rem;padding:.6rem 0;border-bottom:1px solid rgba(33,38,45,.5);animation:fadeIn .3s ease both;}
+        .act-item:last-child{border-bottom:none;}
+        .act-dot{width:29px;height:29px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:1px;}
+        .act-dot.venta{background:rgba(42,157,143,.12);color:var(--primary-light);}
+        .act-dot.cita{background:rgba(233,196,106,.12);color:var(--accent);}
+        .act-dot.alert{background:rgba(231,111,81,.12);color:var(--danger);}
+        .act-text{font-size:.78rem;color:var(--text);line-height:1.4;}.act-time{font-size:.67rem;color:var(--subtle);margin-top:1px;}
+        .search-bar{position:relative;}
+        .search-bar i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.8rem;pointer-events:none;}
+        .search-input{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem .5rem 2rem;color:var(--text);font-size:.82rem;font-family:'DM Sans',sans-serif;width:220px;transition:border-color .2s;}
+        .search-input:focus{outline:none;border-color:var(--primary);}.search-input::placeholder{color:var(--subtle);}
+        .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
+        .sec-hdr-left{display:flex;align-items:center;gap:.75rem;}
+        .user-row{display:flex;align-items:center;gap:.6rem;}
+        .user-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.72rem;color:#fff;flex-shrink:0;}
+        .stat-row{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;border-bottom:1px solid rgba(33,38,45,.5);}
+        .stat-row:last-child{border-bottom:none;}
+        .stat-label{font-size:.8rem;color:var(--muted);}.stat-val{font-size:.8rem;font-weight:700;font-family:'DM Mono',monospace;}
+        .prog-bar{height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:.35rem;}
+        .prog-fill{height:100%;border-radius:99px;}
+        .prod-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;transition:all .2s;}
+        .prod-card:hover{border-color:rgba(42,157,143,.4);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.25);}
+        .prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
+        .export-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1.1rem;text-align:left;cursor:pointer;transition:all .18s;width:100%;}
+        .export-card:hover{border-color:rgba(42,157,143,.4);background:var(--bg-card);}
+        .config-title{font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
+        .config-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem 0;border-bottom:1px solid rgba(33,38,45,.4);}
+        .config-row:last-child{border-bottom:none;}
+        .config-label{font-size:.82rem;color:var(--text);}.config-sub{font-size:.7rem;color:var(--muted);margin-top:2px;}
+        .toggle{width:38px;height:20px;background:var(--border);border-radius:99px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+        .toggle.on{background:var(--primary);}
+        .toggle::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s;}
+        .toggle.on::after{transform:translateX(18px);}
+        .fi{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.52rem .68rem;color:var(--text);font-size:.84rem;font-family:'DM Sans',sans-serif;transition:border-color .2s;}
+        .fi:focus{outline:none;border-color:var(--primary);}
+        .fi option{background:var(--bg-card);color:var(--text);}
+        .fi-lbl{font-size:.67rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;display:block;}
+        .fg{margin-bottom:.85rem;}.f-grid2{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);z-index:200;display:none;align-items:center;justify-content:center;}
+        .modal-overlay.open{display:flex;}
+        .modal{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;width:460px;max-width:95vw;animation:modalIn .22s ease;}
+        @keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+        .modal-title{font-size:.98rem;font-weight:700;margin-bottom:.2rem;}.modal-sub{font-size:.76rem;color:var(--muted);margin-bottom:1.2rem;}
+        .modal-footer{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1.2rem;}
+        .btn-m{padding:.52rem 1.05rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .18s;}
+        .btn-cancel{background:var(--bg);border:1px solid var(--border);color:var(--muted);}
+        .btn-cancel:hover{border-color:var(--muted);color:var(--text);}
+        .btn-ok{background:var(--primary);color:#fff;}.btn-ok:hover{background:var(--primary-dark);}
+        .btn-danger{background:rgba(231,111,81,.15);color:var(--danger);border:1px solid rgba(231,111,81,.3);}
+        .btn-danger:hover{background:var(--danger);color:#fff;}
+        .toast{position:fixed;top:1rem;right:1rem;padding:.65rem 1.05rem;border-radius:10px;font-size:.8rem;font-weight:500;z-index:9999;display:none;border:1px solid;backdrop-filter:blur(10px);animation:slideT .3s ease;}
+        @keyframes slideT{from{opacity:0;transform:translateX(70px)}to{opacity:1;transform:translateX(0)}}
+        .toast.s{background:rgba(76,175,80,.12);border-color:var(--success);color:var(--success);}
+        .toast.e{background:rgba(231,111,81,.12);border-color:var(--danger);color:var(--danger);}
+        .toast.i{background:rgba(42,157,143,.12);border-color:var(--primary);color:var(--primary-light);}
+        .db-status{display:flex;align-items:center;gap:.4rem;font-size:.68rem;padding:.3rem .6rem;border-radius:20px;background:var(--bg);border:1px solid var(--border);}
+        .db-dot{width:6px;height:6px;border-radius:50%;background:var(--subtle);}
+        .db-dot.connected{background:var(--success);box-shadow:0 0 6px var(--success);}
+        .db-dot.error{background:var(--danger);box-shadow:0 0 6px var(--danger);}
+        .db-dot.loading{background:var(--accent);animation:pulse 1s infinite;}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+        /* ── STOCK CONTROLS ── */
+        .stock-controls{display:flex;align-items:center;gap:.3rem;}
+        .stock-btn{width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;transition:all .15s;font-family:'DM Mono',monospace;flex-shrink:0;}
+        .stock-btn:hover{border-color:var(--primary);color:var(--primary);}
+        .stock-btn.minus:hover{border-color:var(--danger);color:var(--danger);}
+        .stock-val{font-family:'DM Mono',monospace;font-size:.78rem;font-weight:700;min-width:30px;text-align:center;}
+
+        /* ── ACTION BUTTONS ROW ── */
+        .action-btns{display:flex;gap:.3rem;align-items:center;}
+        .act-btn{padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;font-family:'DM Sans',sans-serif;border:1px solid var(--border);background:none;color:var(--muted);transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:.25rem;}
+        .act-btn:hover{border-color:var(--primary);color:var(--primary-light);background:rgba(42,157,143,.08);}
+        .act-btn.danger:hover{border-color:var(--danger);color:var(--danger);background:rgba(231,111,81,.08);}
+
+        /* ── pw-req-item ── */
+        .pw-req-item{font-size:.68rem;display:flex;align-items:center;gap:.3rem;transition:color .2s;}
+        .pw-req-item i{font-size:.55rem;transition:all .2s;}
+        .pw-req-item.ok{color:var(--success);}
+        .pw-req-item.fail{color:var(--danger);}
+        .rol-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-top:.35rem;}
+        .rol-btn{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.55rem .4rem;cursor:pointer;text-align:center;transition:all .2s;font-family:'DM Sans',sans-serif;}
+        .rol-btn:hover{border-color:rgba(42,157,143,.4);}
+        .rol-btn.selected{border-color:var(--primary);background:rgba(42,157,143,.12);}
+        .rol-btn .rol-ico{font-size:1.2rem;margin-bottom:.3rem;}
+        .rol-btn .rol-lbl{font-size:.7rem;font-weight:700;color:var(--text);}
+        .rol-btn .rol-sub{font-size:.6rem;color:var(--muted);margin-top:1px;}
+
+        /* ── CONFIRM MODAL ── */
+        .confirm-icon{font-size:2.2rem;text-align:center;margin-bottom:.75rem;}
+        .confirm-body{font-size:.82rem;color:var(--muted);text-align:center;line-height:1.5;}
+        .confirm-name{color:var(--text);font-weight:700;}
+
+        ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px;}
+        @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}}
+        @media(max-width:900px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.two-even{grid-template-columns:1fr;}.kpi-grid{grid-template-columns:repeat(2,1fr);}.menu-toggle{display:flex!important;}.three-col{grid-template-columns:1fr;}}
+        @media(max-width:520px){.kpi-grid{grid-template-columns:1fr;}.content{padding:1rem;}.search-input{width:150px;}}
+    </style>
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+    <div class="logo-area">
+        <div class="logo-pill">💊</div>
+        <div><div class="logo-name">Salud Total</div><div class="logo-sub">Admin Panel</div></div>
+    </div>
+    <nav class="nav">
+        <div class="nav-section">General</div>
+        <button class="nav-item active" onclick="goTo('dashboard',this)"><i class="fas fa-th-large"></i> Dashboard</button>
+        <button class="nav-item" onclick="goTo('ventas',this)"><i class="fas fa-chart-line"></i> Ventas</button>
+        <button class="nav-item" onclick="goTo('citas',this)"><i class="fas fa-calendar-check"></i> Citas <span class="nbadge" id="citas-badge" style="display:none">0</span></button>
+        <div class="nav-section">Gestión</div>
+        <button class="nav-item" onclick="goTo('inventario',this)"><i class="fas fa-boxes"></i> Inventario</button>
+        <button class="nav-item" onclick="goTo('medicamentos',this)"><i class="fas fa-pills"></i> Medicamentos</button>
+        <button class="nav-item" onclick="goTo('usuarios',this)"><i class="fas fa-users"></i> Usuarios</button>
+        <div class="nav-section">Sistema</div>
+        <button class="nav-item" onclick="goTo('reportes',this)"><i class="fas fa-file-alt"></i> Reportes</button>
+        <button class="nav-item" onclick="goTo('config',this)"><i class="fas fa-cog"></i> Configuración</button>
+        <div class="nav-section">Accesos</div>
+        <a href="Inicio.html" class="nav-extlink"><i class="fas fa-home ico"></i> Inicio <i class="fas fa-external-link-alt ext"></i></a>
+        <a href="index.html" class="nav-extlink"><i class="fas fa-store ico"></i> Farmacia <i class="fas fa-external-link-alt ext"></i></a>
+        <a href="Medicamentos.html" class="nav-extlink"><i class="fas fa-pills ico"></i> Medicamentos <i class="fas fa-external-link-alt ext"></i></a>
+    </nav>
+    <div class="sb-footer">
+        <div class="profile-row">
+            <div class="avatar" id="sb-avatar">A</div>
+            <div style="flex:1;min-width:0"><div class="p-name" id="sb-name">Administrador</div><div class="p-role">Admin · Salud Total</div></div>
+        </div>
+    </div>
+</aside>
+
+<main class="main">
+    <header class="topbar">
+        <div class="tb-left">
+            <button class="menu-toggle" id="mob-menu"><i class="fas fa-bars"></i></button>
+            <div><div class="pg-title" id="pg-title">Dashboard</div><div class="pg-sub" id="pg-sub">Resumen general del sistema</div></div>
+        </div>
+        <div class="tb-actions">
+            <div class="db-status"><div class="db-dot loading" id="db-dot"></div><span id="db-label">Conectando...</span></div>
+            <button class="tbtn" onclick="refreshPage()"><i class="fas fa-sync-alt" id="ri"></i> Actualizar</button>
+            <a href="Inicio.html" class="tbtn tbtn-acceso"><i class="fas fa-home"></i> Inicio</a>
+            <a href="index.html" class="tbtn tbtn-acceso"><i class="fas fa-store"></i> Farmacia</a>
+            <button class="tbtn tbtn-p" onclick="openModalMed()"><i class="fas fa-plus"></i> Nuevo med.</button>
+            <button class="tbtn tbtn-d" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </header>
+
+    <div class="content">
+
+        <!-- DASHBOARD -->
+        <div class="page active" id="p-dashboard">
+            <div class="kpi-grid">
+                <div class="kpi teal"><div class="kpi-hdr"><div class="kpi-lbl">Ventas Hoy</div><div class="kpi-ico teal"><i class="fas fa-dollar-sign"></i></div></div><div class="kpi-val" id="d-ventas-hoy"><span class="skeleton" style="width:110px;height:28px">&nbsp;</span></div><div class="kpi-chg up" id="d-ventas-sub"><span style="color:var(--muted)">cargando...</span></div></div>
+                <div class="kpi green"><div class="kpi-hdr"><div class="kpi-lbl">Ventas del Mes</div><div class="kpi-ico green"><i class="fas fa-calendar-alt"></i></div></div><div class="kpi-val" id="d-ventas-mes"><span class="skeleton" style="width:90px;height:28px">&nbsp;</span></div><div class="kpi-chg up" id="d-mes-sub"><i class="fas fa-arrow-up"></i>&nbsp;<span>este mes</span></div></div>
+                <div class="kpi amber"><div class="kpi-hdr"><div class="kpi-lbl">Clientes</div><div class="kpi-ico amber"><i class="fas fa-users"></i></div></div><div class="kpi-val" id="d-clientes"><span class="skeleton" style="width:60px;height:28px">&nbsp;</span></div><div class="kpi-chg up"><i class="fas fa-user-plus"></i>&nbsp;<span>registrados</span></div></div>
+                <div class="kpi red"><div class="kpi-hdr"><div class="kpi-lbl">Stock Crítico</div><div class="kpi-ico red"><i class="fas fa-exclamation-triangle"></i></div></div><div class="kpi-val" id="d-critical"><span class="skeleton" style="width:60px;height:28px">&nbsp;</span></div><div class="kpi-chg down"><i class="fas fa-box-open"></i>&nbsp;<span>bajo mínimo</span></div></div>
+            </div>
+            <div class="two-col">
+                <div class="card">
+                    <div class="card-hdr"><div><div class="card-title">Ventas Semanales</div><div class="card-sub">Ingresos RD$ por día — últimos 7 días</div></div><button class="card-act" onclick="goTo('ventas',document.querySelectorAll('.nav-item')[1])">Ver más →</button></div>
+                    <div class="chart-bars" id="db-chart"><div style="width:100%;display:flex;align-items:center;justify-content:center;color:var(--subtle);font-size:.78rem">Cargando...</div></div>
+                    <div class="legend"><div class="leg-item"><div class="leg-dot" style="background:var(--primary)"></div>Ingresos RD$</div><div class="leg-item"><div class="leg-dot" style="background:var(--accent)"></div>Nº ventas</div></div>
+                </div>
+                <div class="card">
+                    <div class="card-hdr"><div><div class="card-title">Medicamentos</div><div class="card-sub">Distribución por categoría</div></div></div>
+                    <div class="donut-wrap"><svg id="db-donut" width="130" height="130" viewBox="0 0 130 130"></svg><div class="donut-leg" id="db-donut-leg"></div></div>
+                </div>
+            </div>
+            <div class="two-even">
+                <div class="card">
+                    <div class="card-hdr"><div><div class="card-title">Inventario Crítico</div><div class="card-sub">Medicamentos con stock bajo</div></div><button class="card-act" onclick="goTo('inventario',document.querySelectorAll('.nav-item')[3])">Ver todo →</button></div>
+                    <table class="dtbl"><thead><tr><th>Medicamento</th><th>Stock</th><th>Estado</th></tr></thead><tbody id="db-stock"><tr><td colspan="3" style="text-align:center;color:var(--subtle);padding:1.5rem">Cargando...</td></tr></tbody></table>
+                </div>
+                <div class="card">
+                    <div class="card-hdr"><div><div class="card-title">Últimas Ventas</div><div class="card-sub">Transacciones recientes</div></div></div>
+                    <div class="act-list" id="db-activity"><div style="text-align:center;color:var(--subtle);padding:1.5rem;font-size:.78rem">Cargando...</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VENTAS -->
+        <div class="page" id="p-ventas">
+            <div class="kpi-grid">
+                <div class="kpi teal"><div class="kpi-hdr"><div class="kpi-lbl">Ventas Hoy</div><div class="kpi-ico teal"><i class="fas fa-dollar-sign"></i></div></div><div class="kpi-val" id="v-hoy">—</div></div>
+                <div class="kpi green"><div class="kpi-hdr"><div class="kpi-lbl">Esta Semana</div><div class="kpi-ico green"><i class="fas fa-calendar-week"></i></div></div><div class="kpi-val" id="v-semana">—</div></div>
+                <div class="kpi amber"><div class="kpi-hdr"><div class="kpi-lbl">Este Mes</div><div class="kpi-ico amber"><i class="fas fa-calendar-alt"></i></div></div><div class="kpi-val" id="v-mes">—</div></div>
+                <div class="kpi purple"><div class="kpi-hdr"><div class="kpi-lbl">Ticket Promedio</div><div class="kpi-ico purple"><i class="fas fa-receipt"></i></div></div><div class="kpi-val" id="v-ticket">—</div></div>
+            </div>
+            <div class="two-col" style="margin-bottom:1.2rem">
+                <div class="card"><div class="card-hdr"><div><div class="card-title">Tendencia — Últimas 2 semanas</div><div class="card-sub">Ingresos diarios en RD$</div></div></div><div class="chart-bars" id="v-chart" style="height:150px"></div><div class="legend"><div class="leg-item"><div class="leg-dot" style="background:var(--primary)"></div>Ingresos RD$</div></div></div>
+                <div class="card"><div class="card-hdr"><div><div class="card-title">Top Productos Vendidos</div><div class="card-sub">Desde detalle_ventas</div></div></div><div id="v-top-prods"><div style="text-align:center;color:var(--subtle);font-size:.78rem;padding:1rem">Cargando...</div></div></div>
+            </div>
+            <div class="card">
+                <div class="card-hdr"><div><div class="card-title">Historial de Ventas</div><div class="card-sub">Tabla: ventas</div></div><div class="search-bar"><i class="fas fa-search"></i><input class="search-input" placeholder="Buscar por ID o producto..." id="v-search" oninput="filterVentas()"></div></div>
+                <table class="dtbl"><thead><tr><th>#ID</th><th>Fecha</th><th>Producto</th><th>Cant.</th><th>Total</th><th>Método</th><th>Estado</th></tr></thead><tbody id="v-tbody"><tr><td colspan="7" style="text-align:center;color:var(--subtle);padding:2rem">Cargando...</td></tr></tbody></table>
+            </div>
+        </div>
+
+        <!-- CITAS -->
+        <div class="page" id="p-citas">
+            <div class="kpi-grid">
+                <div class="kpi teal"><div class="kpi-hdr"><div class="kpi-lbl">Total Citas</div><div class="kpi-ico teal"><i class="fas fa-calendar-check"></i></div></div><div class="kpi-val" id="c-total">—</div></div>
+                <div class="kpi amber"><div class="kpi-hdr"><div class="kpi-lbl">Pendientes</div><div class="kpi-ico amber"><i class="fas fa-clock"></i></div></div><div class="kpi-val" id="c-pend">—</div></div>
+                <div class="kpi green"><div class="kpi-hdr"><div class="kpi-lbl">Completadas</div><div class="kpi-ico green"><i class="fas fa-check-circle"></i></div></div><div class="kpi-val" id="c-done">—</div></div>
+                <div class="kpi red"><div class="kpi-hdr"><div class="kpi-lbl">Canceladas</div><div class="kpi-ico red"><i class="fas fa-times-circle"></i></div></div><div class="kpi-val" id="c-canc">—</div></div>
+            </div>
+            <div class="card">
+                <div class="card-hdr"><div><div class="card-title">Gestión de Citas</div><div class="card-sub">Tabla: citas</div></div>
+                    <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
+                        <div class="search-bar"><i class="fas fa-search"></i><input class="search-input" placeholder="Buscar paciente..." id="c-search" oninput="filterCitas()"></div>
+                        <select class="fi" id="c-filter" style="width:auto;padding:.48rem .65rem;font-size:.78rem" onchange="filterCitas()"><option value="">Todas</option><option value="pendiente">Pendiente</option><option value="completada">Completada</option><option value="cancelada">Cancelada</option></select>
+                        <button class="tbtn" onclick="openModalDescargaCitas()" style="border-color:rgba(42,157,143,.35);color:var(--primary-light)"><i class="fas fa-file-download"></i> Descargar citas</button>
+                    </div>
+                </div>
+                <table class="dtbl"><thead><tr><th>#ID</th><th>Fecha</th><th>Hora</th><th>Paciente</th><th>Motivo</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="c-tbody"><tr><td colspan="7" style="text-align:center;color:var(--subtle);padding:2rem">Cargando...</td></tr></tbody></table>
+            </div>
+        </div>
+
+        <!-- INVENTARIO -->
+        <div class="page" id="p-inventario">
+            <div class="kpi-grid">
+                <div class="kpi teal"><div class="kpi-hdr"><div class="kpi-lbl">Total</div><div class="kpi-ico teal"><i class="fas fa-boxes"></i></div></div><div class="kpi-val" id="inv-total">—</div></div>
+                <div class="kpi green"><div class="kpi-hdr"><div class="kpi-lbl">Stock Normal</div><div class="kpi-ico green"><i class="fas fa-check-circle"></i></div></div><div class="kpi-val" id="inv-ok">—</div></div>
+                <div class="kpi amber"><div class="kpi-hdr"><div class="kpi-lbl">Stock Bajo</div><div class="kpi-ico amber"><i class="fas fa-battery-quarter"></i></div></div><div class="kpi-val" id="inv-low">—</div></div>
+                <div class="kpi red"><div class="kpi-hdr"><div class="kpi-lbl">Agotados</div><div class="kpi-ico red"><i class="fas fa-times-circle"></i></div></div><div class="kpi-val" id="inv-out">—</div></div>
+            </div>
+            <div class="card">
+                <div class="card-hdr"><div><div class="card-title">Control de Inventario</div><div class="card-sub">Ajusta stock directamente desde la tabla</div></div>
+                    <div style="display:flex;gap:.5rem;align-items:center">
+                        <div class="search-bar"><i class="fas fa-search"></i><input class="search-input" placeholder="Buscar..." id="inv-search" oninput="filterInv()"></div>
+                        <button class="tbtn tbtn-p" onclick="openModalMed()"><i class="fas fa-plus"></i> Agregar</button>
+                    </div>
+                </div>
+                <table class="dtbl"><thead><tr><th>Medicamento</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="inv-tbody"><tr><td colspan="6" style="text-align:center;color:var(--subtle);padding:2rem">Cargando...</td></tr></tbody></table>
+            </div>
+        </div>
+
+        <!-- MEDICAMENTOS -->
+        <div class="page" id="p-medicamentos">
+            <div class="sec-hdr">
+                <div class="sec-hdr-left">
+                    <div class="search-bar"><i class="fas fa-search"></i><input class="search-input" placeholder="Buscar medicamento..." id="med-search" oninput="filterMeds()"></div>
+                    <select class="fi" id="med-cat-filter" style="width:auto;padding:.48rem .65rem;font-size:.78rem" onchange="filterMeds()"><option value="">Todas las categorías</option></select>
+                </div>
+                <button class="tbtn tbtn-p" onclick="openModalMed()"><i class="fas fa-plus"></i> Nuevo</button>
+            </div>
+            <div class="prod-grid" id="med-grid"><div style="color:var(--subtle);text-align:center;padding:2rem">Cargando...</div></div>
+        </div>
+
+        <!-- USUARIOS -->
+        <div class="page" id="p-usuarios">
+            <div class="kpi-grid">
+                <div class="kpi teal"><div class="kpi-hdr"><div class="kpi-lbl">Total</div><div class="kpi-ico teal"><i class="fas fa-users"></i></div></div><div class="kpi-val" id="u-total">—</div></div>
+                <div class="kpi green"><div class="kpi-hdr"><div class="kpi-lbl">Clientes</div><div class="kpi-ico green"><i class="fas fa-user-check"></i></div></div><div class="kpi-val" id="u-clientes">—</div></div>
+                <div class="kpi amber"><div class="kpi-hdr"><div class="kpi-lbl">Farmacéuticos</div><div class="kpi-ico amber"><i class="fas fa-user-md"></i></div></div><div class="kpi-val" id="u-farm">—</div></div>
+                <div class="kpi red"><div class="kpi-hdr"><div class="kpi-lbl">Admins</div><div class="kpi-ico red"><i class="fas fa-user-shield"></i></div></div><div class="kpi-val" id="u-admin">—</div></div>
+            </div>
+            <div class="card">
+                <div class="card-hdr">
+                    <div><div class="card-title">Gestión de Usuarios</div><div class="card-sub">Tabla: usuario</div></div>
+                    <div style="display:flex;gap:.5rem;align-items:center">
+                        <div class="search-bar"><i class="fas fa-search"></i><input class="search-input" placeholder="Buscar usuario..." id="u-search" oninput="filterUsuarios()"></div>
+                        <button class="tbtn tbtn-p" onclick="openModalUsuario()"><i class="fas fa-user-plus"></i> Nuevo usuario</button>
+                    </div>
+                </div>
+                <table class="dtbl"><thead><tr><th>Usuario</th><th>Correo</th><th>Teléfono</th><th>Rol</th><th>Último login</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="u-tbody"><tr><td colspan="7" style="text-align:center;color:var(--subtle);padding:2rem">Cargando...</td></tr></tbody></table>
+            </div>
+        </div>
+
+        <!-- REPORTES -->
+        <div class="page" id="p-reportes">
+            <div class="three-col">
+                <div class="card"><div class="card-hdr"><div><div class="card-title">Resumen Financiero</div><div class="card-sub">Tabla ventas</div></div></div><div id="rep-financiero"></div></div>
+                <div class="card"><div class="card-hdr"><div><div class="card-title">Ventas por Día</div><div class="card-sub">Últimos 7 días</div></div></div><div id="rep-semanal"></div></div>
+                <div class="card"><div class="card-hdr"><div><div class="card-title">Por Categoría</div><div class="card-sub">Tabla medicamentos</div></div></div><div id="rep-categorias"></div></div>
+            </div>
+            <div class="card"><div class="card-hdr"><div><div class="card-title">Exportar Reportes</div></div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem" id="rep-exports"></div></div>
+        </div>
+
+        <!-- CONFIG -->
+        <div class="page" id="p-config">
+            <div class="two-even">
+                <div class="card">
+                    <div class="config-title"><i class="fas fa-store" style="color:var(--primary);margin-right:.5rem"></i>Datos de la Farmacia</div>
+                    <div class="fg"><label class="fi-lbl">Nombre</label><input class="fi" value="Farmacia Salud Total"></div>
+                    <div class="fg"><label class="fi-lbl">RNC</label><input class="fi" value="101-12345-6"></div>
+                    <div class="f-grid2"><div class="fg"><label class="fi-lbl">Teléfono</label><input class="fi" value="809-555-1234"></div><div class="fg"><label class="fi-lbl">WhatsApp</label><input class="fi" value="809-555-5678"></div></div>
+                    <div class="fg"><label class="fi-lbl">Dirección</label><input class="fi" value="Av. Winston Churchill, Santo Domingo"></div>
+                    <div class="fg"><label class="fi-lbl">Email</label><input class="fi" value="info@saludtotal.com.do"></div>
+                    <button onclick="showToast('Datos guardados','s')" style="background:var(--primary);border:none;color:#fff;padding:.52rem 1rem;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;"><i class="fas fa-save"></i> Guardar</button>
+                </div>
+                <div class="card">
+                    <div class="config-title"><i class="fas fa-bell" style="color:var(--accent);margin-right:.5rem"></i>Notificaciones</div>
+                    <div id="cfg-notif"></div>
+                    <div class="config-title" style="margin-top:1.2rem"><i class="fas fa-shield-alt" style="color:var(--danger);margin-right:.5rem"></i>Seguridad</div>
+                    <div id="cfg-security"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ══════════════════════════════════════
+     MODAL AGREGAR / EDITAR MEDICAMENTO
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-med">
+    <div class="modal">
+        <div class="modal-title" id="med-modal-title">➕ Agregar Medicamento</div>
+        <div class="modal-sub" id="med-modal-sub">Completa los campos del nuevo medicamento</div>
+
+        <div class="fg"><label class="fi-lbl">Nombre *</label><input class="fi" id="m-nom" placeholder="Ej: Paracetamol 500mg"></div>
+
+        <div class="fg"><label class="fi-lbl">Categoría *</label>
+            <select class="fi" id="m-cat">
+                <option value="">Seleccionar...</option>
+                <option>Analgésicos</option><option>Antibióticos</option><option>Vitaminas</option>
+                <option>Antiinflamatorios</option><option>Antihistamínicos</option>
+                <option>Gastrointestinal</option><option>Antidiabéticos</option>
+                <option>Cardiovascular</option><option>Otros</option>
+            </select>
+        </div>
+
+        <div class="f-grid2">
+            <div class="fg"><label class="fi-lbl">Precio RD$ *</label><input class="fi" id="m-pre" type="number" placeholder="0.00" min="0" step="0.01"></div>
+            <div class="fg"><label class="fi-lbl">Stock *</label><input class="fi" id="m-sto" type="number" placeholder="0" min="0"></div>
+        </div>
+
+        <input type="hidden" id="m-edit-id">
+
+        <div class="modal-footer">
+            <button class="btn-m btn-cancel" onclick="closeModalMed()">Cancelar</button>
+            <button class="btn-m btn-ok" id="med-save-btn" onclick="saveMedicamento()"><i class="fas fa-check"></i> Guardar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL AJUSTAR STOCK
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-stock">
+    <div class="modal" style="width:380px">
+        <div class="modal-title">📦 Ajustar Stock</div>
+        <div class="modal-sub" id="stock-med-name">Medicamento</div>
+
+        <div style="display:flex;align-items:center;justify-content:center;gap:1.5rem;padding:1.2rem 0">
+            <button class="stock-btn minus" style="width:42px;height:42px;font-size:1.2rem;border-radius:10px" onclick="changeStockModal(-1)">−</button>
+            <div style="text-align:center">
+                <div id="stock-modal-val" style="font-family:'DM Mono',monospace;font-size:2.4rem;font-weight:700;color:var(--text);line-height:1">0</div>
+                <div style="font-size:.7rem;color:var(--muted);margin-top:.25rem">unidades</div>
+            </div>
+            <button class="stock-btn" style="width:42px;height:42px;font-size:1.2rem;border-radius:10px" onclick="changeStockModal(1)">+</button>
+        </div>
+
+        <div class="fg">
+            <label class="fi-lbl">O ingresa cantidad exacta</label>
+            <input class="fi" id="stock-input-exact" type="number" min="0" placeholder="Ej: 50" oninput="syncStockInput()">
+        </div>
+
+        <input type="hidden" id="stock-edit-id">
+        <input type="hidden" id="stock-original">
+
+        <div class="modal-footer">
+            <button class="btn-m btn-cancel" onclick="closeModalStock()">Cancelar</button>
+            <button class="btn-m btn-ok" onclick="saveStock()"><i class="fas fa-save"></i> Guardar stock</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL CONFIRMAR ELIMINAR
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-confirm">
+    <div class="modal" style="width:360px;text-align:center">
+        <div class="confirm-icon">🗑️</div>
+        <div class="modal-title" style="text-align:center">Eliminar medicamento</div>
+        <div class="confirm-body" style="margin-top:.5rem">
+            ¿Estás seguro que deseas eliminar <span class="confirm-name" id="confirm-med-name"></span>? Esta acción no se puede deshacer.
+        </div>
+        <input type="hidden" id="confirm-delete-id">
+        <div class="modal-footer" style="justify-content:center">
+            <button class="btn-m btn-cancel" onclick="closeModalConfirm()">Cancelar</button>
+            <button class="btn-m btn-danger" onclick="deleteMedicamento()"><i class="fas fa-trash"></i> Eliminar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL DESCARGAR CITAS
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-descarga-citas">
+    <div class="modal" style="width:600px;max-width:96vw;max-height:90vh;display:flex;flex-direction:column">
+        <div class="modal-title">📄 Descargar Citas Completadas</div>
+        <div class="modal-sub">Selecciona una o varias citas para generar su documento PDF</div>
+
+        <!-- Filtros rápidos -->
+        <div style="display:flex;gap:.5rem;margin-bottom:.85rem;flex-wrap:wrap">
+            <div class="search-bar" style="flex:1;min-width:160px">
+                <i class="fas fa-search"></i>
+                <input class="search-input" style="width:100%" placeholder="Buscar paciente..." id="dc-search" oninput="filterDescargaCitas()">
+            </div>
+            <button class="tbtn" onclick="selectAllDescarga(true)" style="font-size:.72rem"><i class="fas fa-check-square"></i> Seleccionar todas</button>
+            <button class="tbtn" onclick="selectAllDescarga(false)" style="font-size:.72rem"><i class="fas fa-square"></i> Limpiar</button>
+        </div>
+
+        <!-- Contador -->
+        <div style="font-size:.73rem;color:var(--muted);margin-bottom:.6rem"><span id="dc-count" style="color:var(--primary-light);font-weight:700">0</span> cita(s) seleccionada(s)</div>
+
+        <!-- Lista de citas completadas -->
+        <div id="dc-list" style="flex:1;overflow-y:auto;max-height:340px;display:flex;flex-direction:column;gap:.35rem;scrollbar-width:thin;padding-right:.2rem">
+            <div style="text-align:center;color:var(--subtle);padding:2rem;font-size:.8rem">Cargando citas...</div>
+        </div>
+
+        <div class="modal-footer" style="margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem">
+            <button class="btn-m btn-cancel" onclick="closeModalDescargaCitas()"><i class="fas fa-times"></i> Cancelar</button>
+            <button class="btn-m btn-ok" onclick="descargarCitasSeleccionadas()" id="dc-btn-dl"><i class="fas fa-file-pdf"></i> Generar PDF</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL CREAR USUARIO
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-usuario">
+    <div class="modal" style="width:520px;max-width:96vw;max-height:92vh;overflow-y:auto;scrollbar-width:thin;">
+        <div class="modal-title">👤 Crear nuevo usuario</div>
+        <div class="modal-sub">El usuario se guardará en la tabla <code style="background:rgba(42,157,143,.15);color:var(--primary-light);padding:1px 6px;border-radius:4px;font-size:.75rem">usuario</code> de Supabase</div>
+        <div class="fg">
+            <label class="fi-lbl">Rol del usuario *</label>
+            <div class="rol-selector">
+                <div class="rol-btn" id="rol-cliente" onclick="selectRol('cliente')"><div class="rol-ico">🛒</div><div class="rol-lbl">Cliente</div><div class="rol-sub">Compras y citas</div></div>
+                <div class="rol-btn" id="rol-farmaceutico" onclick="selectRol('farmaceutico')"><div class="rol-ico">💊</div><div class="rol-lbl">Farmacéutico</div><div class="rol-sub">Gestión inventario</div></div>
+                <div class="rol-btn" id="rol-admin" onclick="selectRol('admin')"><div class="rol-ico">🛡️</div><div class="rol-lbl">Admin</div><div class="rol-sub">Acceso total</div></div>
+            </div>
+            <div id="rol-err" style="font-size:.7rem;color:var(--danger);margin-top:.3rem;display:none"><i class="fas fa-exclamation-circle"></i> Selecciona un rol</div>
+        </div>
+        <div class="f-grid2">
+            <div class="fg"><label class="fi-lbl">Nombre *</label><input class="fi" id="mu-nombre" placeholder="Ej: Juan"></div>
+            <div class="fg"><label class="fi-lbl">Apellido *</label><input class="fi" id="mu-apellido" placeholder="Ej: Pérez"></div>
+        </div>
+        <div class="fg"><label class="fi-lbl">Correo electrónico *</label><div style="position:relative"><input class="fi" id="mu-email" type="email" placeholder="usuario@ejemplo.com" style="padding-left:2.2rem"><i class="fas fa-at" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.78rem;pointer-events:none"></i></div></div>
+        <div class="fg"><label class="fi-lbl">Teléfono</label><div style="position:relative"><input class="fi" id="mu-tel" type="tel" placeholder="809-555-5555" style="padding-left:2.2rem"><i class="fas fa-phone" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.78rem;pointer-events:none"></i></div></div>
+        <div class="fg"><label class="fi-lbl">Contraseña *</label><div style="position:relative"><input class="fi" id="mu-pass" type="password" placeholder="Mínimo 8 caracteres" style="padding-right:2.5rem"><button type="button" onclick="togglePassVis('mu-pass','mu-eye')" id="mu-eye" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:.82rem;line-height:1;padding:0"><i class="far fa-eye"></i></button></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.28rem;margin-top:.45rem;padding:.6rem .75rem;background:rgba(13,17,23,.5);border:1px solid var(--border);border-radius:8px">
+                <div class="pw-req-item" id="mu-req-len"><i class="fas fa-circle"></i> 8 caracteres</div>
+                <div class="pw-req-item" id="mu-req-up"><i class="fas fa-circle"></i> Mayúscula</div>
+                <div class="pw-req-item" id="mu-req-num"><i class="fas fa-circle"></i> Número</div>
+                <div class="pw-req-item" id="mu-req-spc"><i class="fas fa-circle"></i> Especial (!@#…)</div>
+            </div>
+        </div>
+        <div class="fg"><label class="fi-lbl">Confirmar contraseña *</label><div style="position:relative"><input class="fi" id="mu-pass2" type="password" placeholder="Repetir contraseña" style="padding-right:2.5rem"><button type="button" onclick="togglePassVis('mu-pass2','mu-eye2')" id="mu-eye2" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:.82rem;line-height:1;padding:0"><i class="far fa-eye"></i></button></div><div id="mu-match" style="font-size:.72rem;margin-top:.3rem;font-weight:500;min-height:1rem"></div></div>
+        <div class="fg" style="margin-bottom:.5rem"><label class="fi-lbl">Estado de la cuenta</label><div style="display:flex;align-items:center;gap:.75rem;margin-top:.35rem"><div class="toggle on" id="mu-active-toggle" onclick="this.classList.toggle('on')"></div><span style="font-size:.82rem;color:var(--muted)">Cuenta activa (puede iniciar sesión)</span></div></div>
+        <div class="modal-footer">
+            <button class="btn-m btn-cancel" onclick="closeModalUsuario()"><i class="fas fa-times"></i> Cancelar</button>
+            <button class="btn-m btn-ok" onclick="saveUsuario()" id="mu-save-btn"><i class="fas fa-user-plus"></i> Crear usuario</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  SUPABASE
+// ══════════════════════════════════════════════
+const SB_URL = 'https://suwkfmizletxfbmlclco.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1d2tmbWl6bGV0eGZibWxjbGNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzNzU4NzQsImV4cCI6MjA4NTk1MTg3NH0.gZrI-Jkz2CRzb6RZPV7eonIGe1G4UDleegyAop8h5IU';
+const sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+var _meds=null,_usrs=null,_ventas=null,_citas=null,_det=null;
+function clearCache(){ _meds=null;_usrs=null;_ventas=null;_citas=null;_det=null; }
+function setDbStatus(s,l){ document.getElementById('db-dot').className='db-dot '+s; document.getElementById('db-label').textContent=l; }
+function showToast(msg,type){ var t=document.getElementById('toast'); t.textContent=msg; t.className='toast '+(type||'s'); t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(function(){ t.style.display='none'; },3500); }
+function fmtRD(v){ v=parseFloat(v)||0; if(v>=1000000) return 'RD$'+(v/1000000).toFixed(1)+'M'; if(v>=1000) return 'RD$'+(v/1000).toFixed(1)+'k'; return 'RD$'+Math.round(v).toLocaleString('es-DO'); }
+function timeAgo(d){ if(!d) return '—'; var s=(Date.now()-new Date(d))/1000; if(s<60) return 'hace '+Math.round(s)+'s'; if(s<3600) return 'hace '+Math.round(s/60)+' min'; if(s<86400) return 'hace '+Math.round(s/3600)+'h'; return 'hace '+Math.round(s/86400)+'d'; }
+function ds(v){ if(!v) return ''; return String(v).substring(0,10); }
+function todayStr(){ return ds(new Date().toISOString()); }
+function daysAgoStr(n){ var d=new Date(); d.setDate(d.getDate()-n); return ds(d.toISOString()); }
+function firstOfMonthStr(){ var d=new Date(); d.setDate(1); return ds(d.toISOString()); }
+function getTotal(r){ return parseFloat(r.total||0); }
+function getStock(m){ return parseInt(m.stock||0); }
+function getPrecio(m){ return parseFloat(m.precio||0); }
+function getEstado(r){ return (r.estado||'pendiente').toLowerCase(); }
+
+var usr = JSON.parse(sessionStorage.getItem('user')||sessionStorage.getItem('pharmanet_session')||'{}');
+if(usr.nombre){ document.getElementById('sb-name').textContent=(usr.nombre+' '+(usr.apellido||'')).trim(); document.getElementById('sb-avatar').textContent=usr.nombre.charAt(0).toUpperCase(); }
+
+var pageInfo = {dashboard:['Dashboard','Resumen general del sistema'],ventas:['Ventas','Tabla: ventas'],citas:['Citas','Tabla: citas'],inventario:['Inventario','Control de stock — edición directa'],medicamentos:['Medicamentos','Tabla: medicamentos'],usuarios:['Usuarios','Tabla: usuario'],reportes:['Reportes','Análisis y exportación'],config:['Configuración','Ajustes del sistema']};
+var curPage='dashboard';
+
+function goTo(page,el){
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('p-'+page).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
+    if(el) el.classList.add('active');
+    var info=pageInfo[page]||['',''];
+    document.getElementById('pg-title').textContent=info[0];
+    document.getElementById('pg-sub').textContent=info[1];
+    curPage=page;
+    document.getElementById('sidebar').classList.remove('open');
+    loadPageData(page);
+}
+function refreshPage(){ var ic=document.getElementById('ri'); ic.classList.add('fa-spin'); clearCache(); loadPageData(curPage); setTimeout(function(){ ic.classList.remove('fa-spin'); },900); }
+document.getElementById('mob-menu').addEventListener('click',function(){ document.getElementById('sidebar').classList.toggle('open'); });
+
+// ══════════════════════════════════════════════
+//  MODAL MEDICAMENTO (ADD / EDIT)
+// ══════════════════════════════════════════════
+function openModalMed(med){
+    var isEdit = med && med.id;
+    document.getElementById('med-modal-title').textContent = isEdit ? '✏️ Editar Medicamento' : '➕ Agregar Medicamento';
+    document.getElementById('med-modal-sub').textContent   = isEdit ? 'Modifica los datos del medicamento' : 'Completa los campos del nuevo medicamento';
+    document.getElementById('m-nom').value     = isEdit ? (med.nombre||'')    : '';
+    document.getElementById('m-cat').value     = isEdit ? (med.categoria||'') : '';
+    document.getElementById('m-pre').value     = isEdit ? (med.precio||'')    : '';
+    document.getElementById('m-sto').value     = isEdit ? (med.stock||'')     : '';
+    document.getElementById('m-edit-id').value = isEdit ? med.id              : '';
+    document.getElementById('med-save-btn').innerHTML = isEdit ? '<i class="fas fa-save"></i> Actualizar' : '<i class="fas fa-check"></i> Guardar';
+    document.getElementById('modal-med').classList.add('open');
+}
+function closeModalMed(){ document.getElementById('modal-med').classList.remove('open'); }
+document.getElementById('modal-med').addEventListener('click',function(e){ if(e.target===e.currentTarget) closeModalMed(); });
+
+async function saveMedicamento(){
+    var n=document.getElementById('m-nom').value.trim();
+    var c=document.getElementById('m-cat').value;
+    var p=parseFloat(document.getElementById('m-pre').value);
+    var s=parseInt(document.getElementById('m-sto').value);
+    var editId=document.getElementById('m-edit-id').value;
+    if(!n||!c||isNaN(p)||isNaN(s)||s<0||p<0){ showToast('Completa todos los campos correctamente','e'); return; }
+    var btn=document.getElementById('med-save-btn');
+    btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Verificando...';
+
+    // ── Verificar nombre duplicado ──
+    // Busca cualquier medicamento con el mismo nombre (case-insensitive)
+    var dupCheck = await sb.from('medicamentos')
+        .select('id,nombre')
+        .ilike('nombre', n);
+
+    if(dupCheck.error){
+        showToast('Error al verificar: '+dupCheck.error.message,'e');
+        btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> Guardar'; return;
+    }
+
+    // Filtra: si estamos editando, ignoramos el propio registro
+    var duplicates = (dupCheck.data||[]).filter(function(m){
+        return !editId || String(m.id) !== String(editId);
+    });
+
+    if(duplicates.length > 0){
+        // Resalta el campo nombre con error visual
+        var nomInput = document.getElementById('m-nom');
+        nomInput.style.borderColor = 'var(--danger)';
+        nomInput.style.boxShadow   = '0 0 0 3px rgba(231,111,81,.18)';
+        nomInput.addEventListener('input', function resetBorder(){
+            nomInput.style.borderColor = '';
+            nomInput.style.boxShadow   = '';
+            nomInput.removeEventListener('input', resetBorder);
+        });
+        showToast('⚠️ Ya existe "'+duplicates[0].nombre+'" — cambia el nombre','e');
+        btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> Guardar'; return;
+    }
+
+    btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Guardando...';
+    var payload={nombre:n,categoria:c,precio:p,stock:s};
+    var res;
+    if(editId){
+        res = await sb.from('medicamentos').update(payload).eq('id',editId);
+    } else {
+        res = await sb.from('medicamentos').insert([payload]);
+    }
+    if(res.error){ showToast('Error: '+res.error.message,'e'); btn.disabled=false; btn.innerHTML='<i class="fas fa-check"></i> Guardar'; return; }
+    showToast(editId ? '✓ Medicamento actualizado' : '✓ Medicamento agregado','s');
+    _meds=null; closeModalMed();
+    btn.disabled=false;
+    loadPageData(curPage);
+}
+
+// ══════════════════════════════════════════════
+//  MODAL STOCK
+// ══════════════════════════════════════════════
+var _stockCurrent=0;
+function openModalStock(med){
+    _stockCurrent=getStock(med);
+    document.getElementById('stock-edit-id').value=med.id;
+    document.getElementById('stock-original').value=_stockCurrent;
+    document.getElementById('stock-med-name').textContent=med.nombre||'';
+    document.getElementById('stock-modal-val').textContent=_stockCurrent;
+    document.getElementById('stock-input-exact').value=_stockCurrent;
+    document.getElementById('modal-stock').classList.add('open');
+}
+function closeModalStock(){ document.getElementById('modal-stock').classList.remove('open'); }
+document.getElementById('modal-stock').addEventListener('click',function(e){ if(e.target===e.currentTarget) closeModalStock(); });
+
+function changeStockModal(delta){
+    _stockCurrent=Math.max(0,_stockCurrent+delta);
+    document.getElementById('stock-modal-val').textContent=_stockCurrent;
+    document.getElementById('stock-input-exact').value=_stockCurrent;
+    colorStockVal();
+}
+function syncStockInput(){
+    var v=parseInt(document.getElementById('stock-input-exact').value)||0;
+    _stockCurrent=Math.max(0,v);
+    document.getElementById('stock-modal-val').textContent=_stockCurrent;
+    colorStockVal();
+}
+function colorStockVal(){
+    var el=document.getElementById('stock-modal-val');
+    el.style.color=_stockCurrent===0?'var(--danger)':_stockCurrent<10?'var(--warning)':'var(--text)';
+}
+
+async function saveStock(){
+    var id=document.getElementById('stock-edit-id').value;
+    var res=await sb.from('medicamentos').update({stock:_stockCurrent}).eq('id',id);
+    if(res.error){ showToast('Error: '+res.error.message,'e'); return; }
+    showToast('Stock actualizado a '+_stockCurrent+' unidades','s');
+    _meds=null; closeModalStock(); loadPageData(curPage);
+}
+
+// ══════════════════════════════════════════════
+//  MODAL CONFIRMAR ELIMINAR
+// ══════════════════════════════════════════════
+function openModalConfirm(med){
+    document.getElementById('confirm-delete-id').value=med.id;
+    document.getElementById('confirm-med-name').textContent=med.nombre||'este medicamento';
+    document.getElementById('modal-confirm').classList.add('open');
+}
+function closeModalConfirm(){ document.getElementById('modal-confirm').classList.remove('open'); }
+document.getElementById('modal-confirm').addEventListener('click',function(e){ if(e.target===e.currentTarget) closeModalConfirm(); });
+
+async function deleteMedicamento(){
+    var id=document.getElementById('confirm-delete-id').value;
+    var res=await sb.from('medicamentos').delete().eq('id',id);
+    if(res.error){ showToast('Error al eliminar: '+res.error.message,'e'); return; }
+    showToast('Medicamento eliminado','i'); _meds=null; closeModalConfirm(); loadPageData(curPage);
+}
+
+async function logout(){ await sb.auth.signOut(); sessionStorage.removeItem('user'); sessionStorage.removeItem('pharmanet_session'); showToast('Sesión cerrada','i'); setTimeout(function(){ window.location.href='acceso.html'; },1200); }
+
+// ══════════════════════════════════════════════
+//  MODAL USUARIO
+// ══════════════════════════════════════════════
+var _rolSeleccionado='';
+function selectRol(rol){ _rolSeleccionado=rol; ['cliente','farmaceutico','admin'].forEach(function(r){ document.getElementById('rol-'+r).classList.toggle('selected',r===rol); }); document.getElementById('rol-err').style.display='none'; }
+function openModalUsuario(){
+    _rolSeleccionado='';
+    ['cliente','farmaceutico','admin'].forEach(function(r){ document.getElementById('rol-'+r).classList.remove('selected'); });
+    ['mu-nombre','mu-apellido','mu-email','mu-tel','mu-pass','mu-pass2'].forEach(function(id){ document.getElementById(id).value=''; });
+    document.getElementById('mu-match').textContent=''; document.getElementById('mu-match').style.color=''; document.getElementById('rol-err').style.display='none';
+    ['mu-req-len','mu-req-up','mu-req-num','mu-req-spc'].forEach(function(id){ var el=document.getElementById(id); el.className='pw-req-item'; el.querySelector('i').className='fas fa-circle'; });
+    var tog=document.getElementById('mu-active-toggle'); if(!tog.classList.contains('on')) tog.classList.add('on');
+    document.getElementById('mu-pass').oninput=checkMusPass; document.getElementById('mu-pass2').oninput=checkMusPass;
+    document.getElementById('modal-usuario').classList.add('open');
+}
+function closeModalUsuario(){ document.getElementById('modal-usuario').classList.remove('open'); }
+document.getElementById('modal-usuario').addEventListener('click',function(e){ if(e.target===e.currentTarget) closeModalUsuario(); });
+function togglePassVis(inputId,btnId){ var inp=document.getElementById(inputId); var btn=document.getElementById(btnId); var show=inp.type==='password'; inp.type=show?'text':'password'; btn.innerHTML=show?'<i class="far fa-eye-slash"></i>':'<i class="far fa-eye"></i>'; }
+function checkMusPass(){ var pw=document.getElementById('mu-pass').value; var pw2=document.getElementById('mu-pass2').value; var reqs={'mu-req-len':pw.length>=8,'mu-req-up':/[A-Z]/.test(pw),'mu-req-num':/\d/.test(pw),'mu-req-spc':/[!@#$%^&*(),.?":{}|<>]/.test(pw)}; Object.keys(reqs).forEach(function(id){ var el=document.getElementById(id); var ok=reqs[id]; var ico=el.querySelector('i'); if(ok){ el.className='pw-req-item ok'; ico.className='fas fa-check-circle'; } else if(pw.length>0){ el.className='pw-req-item fail'; ico.className='fas fa-times-circle'; } else { el.className='pw-req-item'; ico.className='fas fa-circle'; } }); var matchEl=document.getElementById('mu-match'); if(pw2.length>0){ if(pw===pw2){ matchEl.textContent='✓ Las contraseñas coinciden'; matchEl.style.color='var(--success)'; } else { matchEl.textContent='✗ Las contraseñas no coinciden'; matchEl.style.color='var(--danger)'; } } else { matchEl.textContent=''; } }
+function genUUID(){ if(crypto.randomUUID) return crypto.randomUUID(); return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){ var r=Math.random()*16|0; return (c==='x'?r:(r&0x3|0x8)).toString(16); }); }
+async function saveUsuario(){ var nombre=document.getElementById('mu-nombre').value.trim(),apellido=document.getElementById('mu-apellido').value.trim(),email=document.getElementById('mu-email').value.trim(),tel=document.getElementById('mu-tel').value.trim(),pw=document.getElementById('mu-pass').value,pw2=document.getElementById('mu-pass2').value,activo=document.getElementById('mu-active-toggle').classList.contains('on'),btn=document.getElementById('mu-save-btn'); if(!_rolSeleccionado){ document.getElementById('rol-err').style.display='block'; showToast('Selecciona un rol','e'); return; } if(!nombre||!apellido){ showToast('Ingresa nombre y apellido','e'); return; } if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showToast('Correo inválido','e'); return; } if(pw.length<8||!/[A-Z]/.test(pw)||!/\d/.test(pw)||!/[!@#$%^&*(),.?":{}|<>]/.test(pw)){ showToast('La contraseña no cumple los requisitos','e'); return; } if(pw!==pw2){ showToast('Las contraseñas no coinciden','e'); return; } btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Creando...'; try { var check=await sb.from('usuario').select('id').eq('email',email).limit(1); if(check.data&&check.data.length>0){ showToast('Ya existe una cuenta con ese correo','e'); btn.disabled=false; btn.innerHTML='<i class="fas fa-user-plus"></i> Crear usuario'; return; } var newUser={id:genUUID(),nombre,apellido,email,telefono:tel||null,rol:_rolSeleccionado,contrasena:pw,auth_provider:'email',email_verified:false,is_active:activo}; var res=await sb.from('usuario').insert([newUser]); if(res.error){ showToast('Error: '+res.error.message,'e'); btn.disabled=false; btn.innerHTML='<i class="fas fa-user-plus"></i> Crear usuario'; return; } showToast('✓ Usuario creado: '+nombre+' '+apellido,'s'); btn.innerHTML='<i class="fas fa-check"></i> ¡Creado!'; _usrs=null; setTimeout(function(){ closeModalUsuario(); btn.disabled=false; btn.innerHTML='<i class="fas fa-user-plus"></i> Crear usuario'; if(curPage==='usuarios') loadUsuarios(); },1300); } catch(err){ showToast('Error de conexión','e'); btn.disabled=false; btn.innerHTML='<i class="fas fa-user-plus"></i> Crear usuario'; } }
+
+// ══════════════════════════════════════════════
+//  FETCH
+// ══════════════════════════════════════════════
+async function fetchMedicamentos(){ if(_meds) return _meds; var r=await sb.from('medicamentos').select('id,nombre,categoria,precio,stock').order('nombre',{ascending:true}); if(r.error){ console.error(r.error); return []; } _meds=r.data||[]; return _meds; }
+async function fetchUsuarios(){ if(_usrs) return _usrs; var r=await sb.from('usuario').select('id,email,nombre,apellido,telefono,rol,is_active,created_at,last_login'); if(r.error) return []; _usrs=r.data||[]; return _usrs; }
+async function fetchVentas(){ if(_ventas) return _ventas; var r=await sb.from('ventas').select('id,producto,cantidad,total,fecha,metodo_pago,estado,pago_detalles').order('fecha',{ascending:false}).limit(500); if(r.error) return []; _ventas=r.data||[]; return _ventas; }
+async function fetchCitas(){ if(_citas) return _citas; var r=await sb.from('citas').select('id,nombre_paciente,fecha_cita,hora_cita,motivo,estado').order('fecha_cita',{ascending:false}).limit(300); if(r.error) return []; _citas=r.data||[]; return _citas; }
+async function fetchDetalles(){ if(_det) return _det; var r=await sb.from('detalle_ventas').select('id,id_venta,producto,cantidad,precio_unitario,subtotal').limit(1000); if(r.error) return []; _det=r.data||[]; return _det; }
+
+// ── CHARTS ──
+function buildBars(id,sales,orders,lbls){ var el=document.getElementById(id); if(!el) return; var maxS=Math.max.apply(null,sales.concat([1])),maxO=orders?Math.max.apply(null,orders.concat([1])):1,html=''; for(var i=0;i<sales.length;i++){ var sh=Math.max((sales[i]/maxS)*100,4),oh=orders?Math.max((orders[i]/maxO)*75,4):0; html+='<div class="bar-grp" title="'+lbls[i]+': '+fmtRD(sales[i])+'"><div class="bar-wrap"><div class="bar bs" style="height:'+sh+'%"></div>'+(orders?'<div class="bar bo" style="height:'+oh+'%"></div>':'')+'</div><span class="bar-lbl">'+lbls[i]+'</span></div>'; } el.innerHTML=html; }
+function buildDonut(svgId,legId,cats){ var colors=['#2a9d8f','#e9c46a','#4caf50','#e76f51','#a8dadc','#9c27b0']; var svg=document.getElementById(svgId); if(!svg) return; var total=cats.reduce(function(s,c){ return s+c.val; },0); if(!total){ svg.innerHTML='<text x="65" y="70" text-anchor="middle" fill="var(--subtle)" font-size="10" font-family="DM Sans">Sin datos</text>'; return; } var ang=-Math.PI/2,cx=65,cy=65,r=50,inn=32,paths=''; cats.forEach(function(cat,i){ var a=(cat.val/total)*2*Math.PI,x1=cx+r*Math.cos(ang),y1=cy+r*Math.sin(ang),x2=cx+r*Math.cos(ang+a),y2=cy+r*Math.sin(ang+a),ix1=cx+inn*Math.cos(ang),iy1=cy+inn*Math.sin(ang),ix2=cx+inn*Math.cos(ang+a),iy2=cy+inn*Math.sin(ang+a),lg=a>Math.PI?1:0; var d='M'+x1+' '+y1+'A'+r+' '+r+' 0 '+lg+' 1 '+x2+' '+y2+'L'+ix2+' '+iy2+'A'+inn+' '+inn+' 0 '+lg+' 0 '+ix1+' '+iy1+'Z'; paths+='<path d="'+d+'" fill="'+colors[i]+'" opacity=".85" style="cursor:pointer;transition:opacity .2s" onmouseover="this.style.opacity=\'1\'" onmouseout="this.style.opacity=\'.85\'"><title>'+cat.label+': '+Math.round(cat.val/total*100)+'%</title></path>'; ang+=a; }); paths+='<text x="65" y="61" text-anchor="middle" fill="#e6edf3" font-family="DM Mono" font-size="13" font-weight="700">'+total+'</text><text x="65" y="75" text-anchor="middle" fill="#7d8590" font-family="DM Sans" font-size="9">total</text>'; svg.innerHTML=paths; if(legId&&document.getElementById(legId)){ var lh=''; cats.forEach(function(cat,j){ lh+='<div class="dl-item"><div class="dl-left"><div class="leg-dot" style="background:'+colors[j]+';border-radius:2px"></div>'+cat.label+'</div><div class="dl-val">'+cat.val+'</div></div>'; }); document.getElementById(legId).innerHTML=lh; } }
+
+// ══════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════
+async function loadDashboard(){
+    setDbStatus('loading','Cargando...');
+    try{
+        var [meds,ventas,usrs,citas]=await Promise.all([fetchMedicamentos(),fetchVentas(),fetchUsuarios(),fetchCitas()]);
+        var hoy=todayStr(),mes=firstOfMonthStr();
+        var vHoy=ventas.filter(function(v){ return ds(v.fecha)===hoy; });
+        var tHoy=vHoy.reduce(function(s,v){ return s+getTotal(v); },0);
+        document.getElementById('d-ventas-hoy').textContent=fmtRD(tHoy);
+        document.getElementById('d-ventas-sub').innerHTML='<i class="fas fa-shopping-cart"></i>&nbsp;<span>'+vHoy.length+' ventas hoy</span>';
+        var vMes=ventas.filter(function(v){ return ds(v.fecha)>=mes; });
+        var tMes=vMes.reduce(function(s,v){ return s+getTotal(v); },0);
+        document.getElementById('d-ventas-mes').textContent=fmtRD(tMes);
+        document.getElementById('d-mes-sub').innerHTML='<i class="fas fa-shopping-bag"></i>&nbsp;<span>'+vMes.length+' ventas este mes</span>';
+        var cli=usrs.filter(function(u){ return (u.rol||'').toLowerCase().trim()==='cliente'; });
+        document.getElementById('d-clientes').textContent=cli.length>0?cli.length:usrs.length;
+        var crit=meds.filter(function(m){ return getStock(m)<10; });
+        document.getElementById('d-critical').textContent=crit.length;
+        var dL=['D','L','M','X','J','V','S'],sArr=new Array(7).fill(0),cArr=new Array(7).fill(0),lbls=[];
+        for(var i=6;i>=0;i--){ var d=new Date(); d.setDate(d.getDate()-i); lbls.push(dL[d.getDay()]); }
+        ventas.forEach(function(v){ var fv=ds(v.fecha); if(!fv) return; var diff=Math.round((new Date(hoy)-new Date(fv))/86400000); var idx=6-diff; if(idx>=0&&idx<7){ sArr[idx]+=getTotal(v); cArr[idx]+=1; } });
+        buildBars('db-chart',sArr,cArr,lbls);
+        var catMap={}; meds.forEach(function(m){ var c=m.categoria||'Sin categoría'; catMap[c]=(catMap[c]||0)+1; });
+        buildDonut('db-donut','db-donut-leg',Object.keys(catMap).map(function(k){ return {label:k,val:catMap[k]}; }).sort(function(a,b){ return b.val-a.val; }).slice(0,6));
+        var critSorted=meds.slice().sort(function(a,b){ return getStock(a)-getStock(b); }).slice(0,6); var stHtml='';
+        critSorted.forEach(function(m){ var s=getStock(m),clr=s===0?'var(--danger)':s<10?'var(--warning)':'var(--success)',sc=s===0?'sb-out':s<10?'sb-low':'sb-ok',sl=s===0?'Sin stock':s<10?'Bajo':'Normal'; stHtml+='<tr><td><div class="t-name">'+(m.nombre||'—')+'</div><div class="t-sub">'+(m.categoria||'—')+'</div></td><td><div class="stock-bar-wrap"><div class="stock-bar"><div class="stock-fill" style="width:'+Math.min(s,100)+'%;background:'+clr+'"></div></div><span class="stock-num" style="color:'+clr+'">'+s+'</span></div></td><td><span class="sbadge '+sc+'">'+sl+'</span></td></tr>'; });
+        document.getElementById('db-stock').innerHTML=stHtml||'<tr><td colspan="3" style="text-align:center;color:var(--success);padding:1rem">✓ Todo el stock está bien</td></tr>';
+        var aHtml='';
+        ventas.slice(0,6).forEach(function(v,i){ var est=getEstado(v),tipo=est==='cancelado'?'alert':'venta',icon=est==='cancelado'?'fas fa-times':'fas fa-cash-register'; var badge='<span class="sbadge '+(est==='completado'||est==='pagado'?'sb-done':est==='cancelado'?'sb-canc':'sb-pend')+'">'+est+'</span>'; var metodo=v.metodo_pago?' <span style="font-size:.65rem;color:var(--muted)">('+v.metodo_pago+')</span>':''; aHtml+='<div class="act-item" style="animation-delay:'+(i*.05)+'s"><div class="act-dot '+tipo+'"><i class="'+icon+'"></i></div><div><div class="act-text">'+(v.producto||'Venta #'+v.id)+metodo+' — '+fmtRD(getTotal(v))+' '+badge+'</div><div class="act-time">'+timeAgo(v.fecha)+'</div></div></div>'; });
+        document.getElementById('db-activity').innerHTML=aHtml||'<div style="text-align:center;color:var(--subtle);padding:1.5rem;font-size:.78rem">Sin ventas recientes</div>';
+        var cp=citas.filter(function(c){ return (c.estado||'').toLowerCase()==='pendiente'; }).length; var badge=document.getElementById('citas-badge'); if(badge){ badge.textContent=cp; badge.style.display=cp>0?'':'none'; }
+        setDbStatus('connected','Conectado ✓');
+    } catch(e){ console.error(e); setDbStatus('error','Error BD'); showToast('Error: '+e.message,'e'); }
+}
+
+// ══════════════════════════════════════════════
+//  VENTAS
+// ══════════════════════════════════════════════
+var _vf=[];
+async function loadVentas(){
+    var ventas=await fetchVentas(); var hoy=todayStr(),sem=daysAgoStr(6),mes=firstOfMonthStr();
+    var vH=ventas.filter(function(v){ return ds(v.fecha)===hoy; }); var vS=ventas.filter(function(v){ return ds(v.fecha)>=sem; }); var vM=ventas.filter(function(v){ return ds(v.fecha)>=mes; });
+    var tH=vH.reduce(function(s,v){ return s+getTotal(v); },0),tS=vS.reduce(function(s,v){ return s+getTotal(v); },0),tM=vM.reduce(function(s,v){ return s+getTotal(v); },0);
+    document.getElementById('v-hoy').textContent=fmtRD(tH); document.getElementById('v-semana').textContent=fmtRD(tS); document.getElementById('v-mes').textContent=fmtRD(tM); document.getElementById('v-ticket').textContent=vM.length?fmtRD(tM/vM.length):'—';
+    var dL=['D','L','M','X','J','V','S'],d14=new Array(14).fill(0),l14=[];
+    for(var i=13;i>=0;i--){ var d=new Date(); d.setDate(d.getDate()-i); l14.push(dL[d.getDay()]); }
+    ventas.forEach(function(v){ var fv=ds(v.fecha); if(!fv) return; var diff=Math.round((new Date(todayStr())-new Date(fv))/86400000); var idx=13-diff; if(idx>=0&&idx<14) d14[idx]+=getTotal(v); });
+    buildBars('v-chart',d14,null,l14);
+    var det=await fetchDetalles(); var pMap={};
+    det.forEach(function(d){ var n=d.producto||'?'; pMap[n]=(pMap[n]||0)+parseFloat(d.subtotal||0); });
+    if(!Object.keys(pMap).length){ ventas.forEach(function(v){ var n=v.producto||'?'; pMap[n]=(pMap[n]||0)+getTotal(v); }); }
+    var topArr=Object.keys(pMap).map(function(k){ return {n:k,v:pMap[k]}; }).sort(function(a,b){ return b.v-a.v; });
+    var maxV=topArr.length?topArr[0].v:1,tHtml='<div style="display:flex;flex-direction:column;gap:.65rem">';
+    topArr.slice(0,5).forEach(function(p){ var pct=Math.round((p.v/maxV)*100); tHtml+='<div><div style="display:flex;justify-content:space-between;margin-bottom:.2rem"><span style="font-size:.78rem;font-weight:600;color:var(--text)">'+p.n+'</span><span style="font-size:.72rem;font-family:DM Mono,monospace;color:var(--primary-light)">'+fmtRD(p.v)+'</span></div><div style="display:flex;align-items:center;gap:.5rem"><div class="prog-bar" style="flex:1"><div class="prog-fill" style="width:'+pct+'%;background:linear-gradient(90deg,var(--primary),var(--primary-light))"></div></div><span style="font-size:.65rem;color:var(--muted);width:30px;text-align:right">'+pct+'%</span></div></div>'; });
+    tHtml+='</div>'; document.getElementById('v-top-prods').innerHTML=tHtml;
+    _vf=ventas; renderVentasTable(ventas);
+}
+function renderVentasTable(v){ var q=(document.getElementById('v-search')||{}).value||''; var f=q?v.filter(function(x){ return String(x.id).includes(q)||(x.producto||'').toLowerCase().includes(q.toLowerCase()); }):v; if(!f.length){ document.getElementById('v-tbody').innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--subtle);padding:2rem">Sin resultados</td></tr>'; return; } var html=''; f.slice(0,100).forEach(function(x){ var est=getEstado(x); var badge=est==='completado'||est==='pagado'?'<span class="sbadge sb-done">Completada</span>':est==='cancelado'?'<span class="sbadge sb-canc">Cancelada</span>':'<span class="sbadge sb-pend">Pendiente</span>'; html+='<tr><td style="font-family:DM Mono,monospace;font-size:.75rem;color:var(--primary-light)">#'+x.id+'</td><td style="font-size:.75rem">'+(x.fecha||'—')+'</td><td><div class="t-name">'+(x.producto||'—')+'</div></td><td style="font-family:DM Mono,monospace;text-align:center">'+(x.cantidad||'—')+'</td><td style="font-family:DM Mono,monospace;font-weight:700;color:var(--text)">'+fmtRD(getTotal(x))+'</td><td style="font-size:.74rem;color:var(--muted)">'+(x.metodo_pago||'—')+'</td><td>'+badge+'</td></tr>'; });
+    document.getElementById('v-tbody').innerHTML=html; }
+function filterVentas(){ renderVentasTable(_vf); }
+
+// ══════════════════════════════════════════════
+//  CITAS
+// ══════════════════════════════════════════════
+var _cf=[];
+async function loadCitas(){ var citas=await fetchCitas(); var pend=citas.filter(function(c){ return (c.estado||'').toLowerCase()==='pendiente'; }).length,done=citas.filter(function(c){ return (c.estado||'').toLowerCase()==='completada'; }).length,canc=citas.filter(function(c){ return (c.estado||'').toLowerCase()==='cancelada'; }).length; document.getElementById('c-total').textContent=citas.length; document.getElementById('c-pend').textContent=pend; document.getElementById('c-done').textContent=done; document.getElementById('c-canc').textContent=canc; var badge=document.getElementById('citas-badge'); if(badge){ badge.textContent=pend; badge.style.display=pend>0?'':'none'; } _cf=citas; renderCitasTable(citas); }
+function renderCitasTable(citas){ var q=(document.getElementById('c-search')||{}).value||'',ef=(document.getElementById('c-filter')||{}).value||''; var f=citas.filter(function(c){ return (!q||String(c.id).includes(q)||(c.nombre_paciente||'').toLowerCase().includes(q.toLowerCase()))&&(!ef||(c.estado||'').toLowerCase()===ef); }); if(!f.length){ document.getElementById('c-tbody').innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--subtle);padding:2rem">Sin citas</td></tr>'; return; } var html=''; f.slice(0,100).forEach(function(c){ var est=(c.estado||'pendiente').toLowerCase(); var stCls=est==='completada'?'sb-done':est==='cancelada'?'sb-canc':'sb-pend'; var stLbl=est.charAt(0).toUpperCase()+est.slice(1); var esPend=est==='pendiente'; var esComp=est==='completada'; var citaJson=encodeURIComponent(JSON.stringify({id:c.id,nombre_paciente:c.nombre_paciente,fecha_cita:c.fecha_cita,hora_cita:c.hora_cita,motivo:c.motivo,estado:c.estado})); var accion=''; if(esPend){ accion='<button onclick="markCitaDone(this,\''+c.id+'\')" style="background:rgba(42,157,143,.14);border:none;color:var(--primary-light);padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;font-family:DM Sans,sans-serif"><i class="fas fa-check"></i> Atender</button>'; } else if(esComp){ accion='<button onclick="descargarCitaUnica(JSON.parse(decodeURIComponent(\''+citaJson+'\')))" style="background:rgba(42,157,143,.08);border:1px solid rgba(42,157,143,.25);color:var(--primary-light);padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;font-family:DM Sans,sans-serif;display:inline-flex;align-items:center;gap:.3rem" onmouseover="this.style.background=\'rgba(42,157,143,.2)\'" onmouseout="this.style.background=\'rgba(42,157,143,.08)\'"><i class="fas fa-file-pdf"></i> PDF</button>'; } else { accion='—'; } html+='<tr><td style="font-family:DM Mono,monospace;font-size:.75rem;color:var(--primary-light)">#'+c.id+'</td><td style="font-size:.75rem">'+(c.fecha_cita||'—')+'</td><td style="font-size:.75rem">'+(c.hora_cita||'—')+'</td><td><div class="user-row"><div class="user-avatar">'+((c.nombre_paciente||'P').charAt(0).toUpperCase())+'</div><div class="t-name">'+(c.nombre_paciente||'—')+'</div></div></td><td style="font-size:.75rem;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(c.motivo||'—')+'</td><td><span class="sbadge '+stCls+'">'+stLbl+'</span></td><td>'+accion+'</td></tr>'; });
+    document.getElementById('c-tbody').innerHTML=html; }
+function filterCitas(){ renderCitasTable(_cf); }
+async function markCitaDone(btn,id){ var res=await sb.from('citas').update({estado:'completada'}).eq('id',id); if(res.error){ showToast('Error: '+res.error.message,'e'); return; } _citas=null; showToast('Cita completada ✓','s'); loadCitas(); }
+
+// ── GENERAR PDF DE UNA SOLA CITA ──
+function generarPDFCita(c){
+    var {jsPDF}=window.jspdf;
+    var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    // Header verde teal
+    doc.setFillColor(42,157,143); doc.rect(0,0,210,32,'F');
+    doc.setFillColor(30,114,104); doc.rect(0,28,210,6,'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(20); doc.setFont('helvetica','bold');
+    doc.text('FARMACIA SALUD TOTAL',14,13);
+    doc.setFontSize(10); doc.setFont('helvetica','normal');
+    doc.text('Documento de Cita Médica',14,22);
+    doc.text('Generado: '+new Date().toLocaleDateString('es-DO',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}),210-14,22,{align:'right'});
+
+    // Badge estado
+    var est=(c.estado||'pendiente').toLowerCase();
+    var estColor=est==='completada'?[76,175,80]:est==='cancelada'?[231,111,81]:[244,162,97];
+    doc.setFillColor.apply(doc,estColor);
+    doc.roundedRect(14,38,40,10,2,2,'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(9); doc.setFont('helvetica','bold');
+    doc.text(est.toUpperCase(),34,44.5,{align:'center'});
+
+    // ID de cita
+    doc.setTextColor(42,157,143); doc.setFontSize(11); doc.setFont('helvetica','bold');
+    doc.text('CITA #'+(c.id||'—'),210-14,44.5,{align:'right'});
+
+    // Línea separadora
+    doc.setDrawColor(33,38,45); doc.setLineWidth(0.5); doc.line(14,52,196,52);
+
+    // Sección datos del paciente
+    var y=60;
+    doc.setFillColor(22,27,34); doc.roundedRect(14,y-5,182,8,2,2,'F');
+    doc.setTextColor(61,191,175); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text('INFORMACIÓN DEL PACIENTE',18,y);
+    y+=10;
+
+    var fields=[
+        ['Nombre del Paciente', c.nombre_paciente||'—'],
+        ['Fecha de la Cita',     c.fecha_cita||'—'],
+        ['Hora de la Cita',      c.hora_cita||'—'],
+        ['Estado',               est.charAt(0).toUpperCase()+est.slice(1)],
+    ];
+    fields.forEach(function(f){
+        doc.setFillColor(240,250,249); doc.rect(14,y-4,182,10,'F');
+        doc.setTextColor(125,133,144); doc.setFontSize(8); doc.setFont('helvetica','normal');
+        doc.text(f[0]+':',18,y+1);
+        doc.setTextColor(38,38,38); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+        doc.text(String(f[1]),90,y+1);
+        y+=12;
+    });
+
+    // Motivo / Descripción
+    y+=4;
+    doc.setFillColor(22,27,34); doc.roundedRect(14,y-5,182,8,2,2,'F');
+    doc.setTextColor(61,191,175); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text('MOTIVO DE LA CITA',18,y);
+    y+=12;
+    doc.setFillColor(245,252,251); doc.roundedRect(14,y-4,182,28,2,2,'F');
+    doc.setDrawColor(42,157,143); doc.setLineWidth(0.3); doc.roundedRect(14,y-4,182,28,2,2,'S');
+    doc.setTextColor(50,50,50); doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    var motivoLines=doc.splitTextToSize(c.motivo||'Sin motivo especificado.',170);
+    doc.text(motivoLines,18,y+4);
+
+    // Footer
+    doc.setFillColor(22,27,34); doc.rect(0,272,210,25,'F');
+    doc.setTextColor(125,133,144); doc.setFontSize(8); doc.setFont('helvetica','normal');
+    doc.text('Farmacia Salud Total · Av. Winston Churchill, Santo Domingo · Tel: 809-555-1234',105,281,{align:'center'});
+    doc.text('Este documento es generado automáticamente y tiene validez como comprobante de cita.',105,287,{align:'center'});
+    doc.setTextColor(42,157,143);
+    doc.text('www.saludtotal.com.do',105,293,{align:'center'});
+
+    return doc;
+}
+
+function descargarCitaUnica(c){
+    showToast('Generando PDF...','i');
+    var doc=generarPDFCita(c);
+    var nombre=(c.nombre_paciente||'Paciente').replace(/\s+/g,'_');
+    doc.save('Cita_'+nombre+'_'+todayLabel()+'.pdf');
+    showToast('PDF descargado ✓','s');
+}
+
+// ── MODAL DESCARGA MÚLTIPLE ──
+var _dcCitasComp=[];
+function openModalDescargaCitas(){
+    var completadas=(_citas||_cf||[]).filter(function(c){ return (c.estado||'').toLowerCase()==='completada'; });
+    _dcCitasComp=completadas;
+    document.getElementById('dc-search').value='';
+    document.getElementById('dc-count').textContent='0';
+    renderDescargaList(completadas);
+    document.getElementById('modal-descarga-citas').classList.add('open');
+}
+function closeModalDescargaCitas(){ document.getElementById('modal-descarga-citas').classList.remove('open'); }
+document.getElementById('modal-descarga-citas').addEventListener('click',function(e){ if(e.target===e.currentTarget) closeModalDescargaCitas(); });
+
+function renderDescargaList(citas){
+    var list=document.getElementById('dc-list');
+    if(!citas.length){ list.innerHTML='<div style="text-align:center;color:var(--subtle);padding:2rem;font-size:.8rem">No hay citas completadas</div>'; return; }
+    var html='';
+    citas.forEach(function(c,i){
+        html+='<label style="display:flex;align-items:center;gap:.75rem;padding:.65rem .8rem;border-radius:9px;border:1px solid var(--border);background:var(--bg);cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'rgba(42,157,143,.4)\';this.style.background=\'var(--bg-hover)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.background=\'var(--bg)\'">'
+            +'<input type="checkbox" data-idx="'+i+'" onchange="updateDcCount()" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer;flex-shrink:0">'
+            +'<div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;color:#fff;flex-shrink:0">'+((c.nombre_paciente||'P').charAt(0).toUpperCase())+'</div>'
+            +'<div style="flex:1;min-width:0">'
+              +'<div style="font-weight:600;font-size:.82rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(c.nombre_paciente||'—')+'</div>'
+              +'<div style="font-size:.7rem;color:var(--muted);margin-top:1px">'+(c.fecha_cita||'—')+' · '+(c.hora_cita||'—')+' · '+(c.motivo||'Sin motivo')+'</div>'
+            +'</div>'
+            +'<span style="font-size:.65rem;font-family:DM Mono,monospace;color:var(--subtle);flex-shrink:0">#'+c.id+'</span>'
+            +'</label>';
+    });
+    list.innerHTML=html;
+}
+
+function filterDescargaCitas(){
+    var q=document.getElementById('dc-search').value.toLowerCase();
+    var filtered=_dcCitasComp.filter(function(c){ return !q||(c.nombre_paciente||'').toLowerCase().includes(q)||(c.motivo||'').toLowerCase().includes(q)||(c.fecha_cita||'').includes(q); });
+    renderDescargaList(filtered);
+}
+
+function updateDcCount(){
+    var checked=document.querySelectorAll('#dc-list input[type=checkbox]:checked').length;
+    document.getElementById('dc-count').textContent=checked;
+}
+
+function selectAllDescarga(val){
+    document.querySelectorAll('#dc-list input[type=checkbox]').forEach(function(cb){ cb.checked=val; });
+    updateDcCount();
+}
+
+function descargarCitasSeleccionadas(){
+    var checkboxes=document.querySelectorAll('#dc-list input[type=checkbox]:checked');
+    if(!checkboxes.length){ showToast('Selecciona al menos una cita','e'); return; }
+    showToast('Generando PDF...','i');
+    var selected=[];
+    checkboxes.forEach(function(cb){
+        var idx=parseInt(cb.dataset.idx);
+        // We re-filter the list to get the right cita
+        var q=document.getElementById('dc-search').value.toLowerCase();
+        var filtered=_dcCitasComp.filter(function(c){ return !q||(c.nombre_paciente||'').toLowerCase().includes(q)||(c.motivo||'').toLowerCase().includes(q)||(c.fecha_cita||'').includes(q); });
+        if(filtered[idx]) selected.push(filtered[idx]);
+    });
+    if(!selected.length){ showToast('Error al leer citas seleccionadas','e'); return; }
+
+    if(selected.length===1){
+        // PDF individual con diseño bonito
+        var doc=generarPDFCita(selected[0]);
+        var nombre=(selected[0].nombre_paciente||'Paciente').replace(/\s+/g,'_');
+        doc.save('Cita_'+nombre+'_'+todayLabel()+'.pdf');
+    } else {
+        // PDF con todas en tabla
+        var {jsPDF}=window.jspdf;
+        var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+        doc.setFillColor(42,157,143); doc.rect(0,0,210,32,'F');
+        doc.setFillColor(30,114,104); doc.rect(0,28,210,6,'F');
+        doc.setTextColor(255,255,255);
+        doc.setFontSize(18); doc.setFont('helvetica','bold');
+        doc.text('FARMACIA SALUD TOTAL',14,13);
+        doc.setFontSize(10); doc.setFont('helvetica','normal');
+        doc.text('Reporte de Citas Completadas ('+selected.length+')',14,22);
+        doc.text(new Date().toLocaleDateString('es-DO',{day:'2-digit',month:'long',year:'numeric'}),210-14,22,{align:'right'});
+        doc.autoTable({
+            startY:42,
+            head:[['#ID','Paciente','Fecha','Hora','Motivo','Estado']],
+            body:selected.map(function(c){ return ['#'+c.id, c.nombre_paciente||'—', c.fecha_cita||'—', c.hora_cita||'—', c.motivo||'—', (c.estado||'—').charAt(0).toUpperCase()+(c.estado||'').slice(1)]; }),
+            theme:'grid',
+            headStyles:{fillColor:[42,157,143],textColor:255,fontStyle:'bold',fontSize:9},
+            bodyStyles:{fontSize:8,textColor:[40,40,40]},
+            alternateRowStyles:{fillColor:[240,250,249]},
+            columnStyles:{4:{cellWidth:50}},
+            margin:{left:14,right:14}
+        });
+        doc.setFillColor(22,27,34); doc.rect(0,272,210,25,'F');
+        doc.setTextColor(125,133,144); doc.setFontSize(8); doc.setFont('helvetica','normal');
+        doc.text('Farmacia Salud Total · Tel: 809-555-1234 · www.saludtotal.com.do',105,283,{align:'center'});
+        doc.save('Citas_Completadas_'+selected.length+'_'+todayLabel()+'.pdf');
+    }
+    showToast('PDF descargado ✓','s');
+    closeModalDescargaCitas();
+}
+
+// ══════════════════════════════════════════════
+//  INVENTARIO — con controles de stock inline + editar/eliminar
+// ══════════════════════════════════════════════
+async function loadInventario(){
+    var meds=await fetchMedicamentos();
+    var ok=meds.filter(function(m){ return getStock(m)>=10; }).length;
+    var low=meds.filter(function(m){ return getStock(m)>0&&getStock(m)<10; }).length;
+    var out=meds.filter(function(m){ return getStock(m)===0; }).length;
+    document.getElementById('inv-total').textContent=meds.length;
+    document.getElementById('inv-ok').textContent=ok;
+    document.getElementById('inv-low').textContent=low;
+    document.getElementById('inv-out').textContent=out;
+    renderInvTable(meds);
+}
+
+function renderInvTable(meds){
+    if(!meds.length){ document.getElementById('inv-tbody').innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--subtle);padding:1.5rem">Sin medicamentos</td></tr>'; return; }
+    var html='';
+    meds.forEach(function(m){
+        var s=getStock(m),p=getPrecio(m);
+        var clr=s===0?'var(--danger)':s<10?'var(--warning)':'var(--success)';
+        var sc=s===0?'sb-out':s<10?'sb-low':'sb-ok',sl=s===0?'Agotado':s<10?'Stock bajo':'Normal';
+        var medJson=encodeURIComponent(JSON.stringify({id:m.id,nombre:m.nombre,categoria:m.categoria,precio:m.precio,stock:m.stock}));
+        html+='<tr>'
+            +'<td><div class="t-name">'+(m.nombre||'—')+'</div></td>'
+            +'<td><span style="font-size:.72rem;background:rgba(42,157,143,.1);color:var(--primary-light);padding:2px 7px;border-radius:20px">'+(m.categoria||'—')+'</span></td>'
+            +'<td style="font-family:DM Mono,monospace;font-weight:600;color:var(--text)">RD$'+p.toLocaleString('es-DO')+'</td>'
+            +'<td>'
+              +'<div class="stock-controls">'
+                +'<button class="stock-btn minus" onclick="quickStock(\''+m.id+'\',-1,this)" title="Quitar 1">−</button>'
+                +'<span class="stock-val" style="color:'+clr+'" id="sv-'+m.id+'">'+s+'</span>'
+                +'<button class="stock-btn" onclick="quickStock(\''+m.id+'\',1,this)" title="Agregar 1">+</button>'
+              +'</div>'
+            +'</td>'
+            +'<td><span class="sbadge '+sc+'" id="sb-'+m.id+'">'+sl+'</span></td>'
+            +'<td>'
+              +'<div class="action-btns">'
+                +'<button class="act-btn" onclick="openModalStock(JSON.parse(decodeURIComponent(\''+medJson+'\')))" title="Ajustar stock"><i class="fas fa-boxes"></i> Stock</button>'
+                +'<button class="act-btn" onclick="openModalMed(JSON.parse(decodeURIComponent(\''+medJson+'\')))" title="Editar"><i class="fas fa-pen"></i> Editar</button>'
+                +'<button class="act-btn danger" onclick="openModalConfirm(JSON.parse(decodeURIComponent(\''+medJson+'\')))" title="Eliminar"><i class="fas fa-trash"></i> Eliminar</button>'
+              +'</div>'
+            +'</td>'
+            +'</tr>';
+    });
+    document.getElementById('inv-tbody').innerHTML=html;
+}
+
+// Quick +/- stock sin abrir modal
+async function quickStock(id, delta, btn){
+    var spanVal=document.getElementById('sv-'+id);
+    var spanBadge=document.getElementById('sb-'+id);
+    if(!spanVal) return;
+    var current=parseInt(spanVal.textContent)||0;
+    var newVal=Math.max(0,current+delta);
+    btn.disabled=true;
+    var res=await sb.from('medicamentos').update({stock:newVal}).eq('id',id);
+    if(res.error){ showToast('Error: '+res.error.message,'e'); btn.disabled=false; return; }
+    spanVal.textContent=newVal;
+    var clr=newVal===0?'var(--danger)':newVal<10?'var(--warning)':'var(--success)';
+    spanVal.style.color=clr;
+    var sl=newVal===0?'Agotado':newVal<10?'Stock bajo':'Normal';
+    var sc=newVal===0?'sb-out':newVal<10?'sb-low':'sb-ok';
+    spanBadge.textContent=sl; spanBadge.className='sbadge '+sc;
+    // update cache
+    if(_meds){ var med=_meds.find(function(m){ return String(m.id)===String(id); }); if(med) med.stock=newVal; }
+    btn.disabled=false;
+    showToast((delta>0?'+1 ':'−1 ')+' unidad guardada','s');
+}
+
+function filterInv(){ var q=document.getElementById('inv-search').value.toLowerCase(); renderInvTable((_meds||[]).filter(function(m){ return (m.nombre||'').toLowerCase().includes(q)||(m.categoria||'').toLowerCase().includes(q); })); }
+
+// ══════════════════════════════════════════════
+//  MEDICAMENTOS GRID (cards)
+// ══════════════════════════════════════════════
+async function loadMedicamentos(){
+    var meds=await fetchMedicamentos();
+    var cats=[...new Set(meds.map(function(m){ return m.categoria||'Sin categoría'; }))];
+    var sel=document.getElementById('med-cat-filter');
+    if(sel&&sel.options.length<=1){ cats.forEach(function(c){ var o=document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o); }); }
+    renderMedGrid(meds);
+}
+function renderMedGrid(meds){
+    var grid=document.getElementById('med-grid'); if(!grid) return;
+    if(!meds.length){ grid.innerHTML='<p style="color:var(--muted);padding:1rem">Sin medicamentos</p>'; return; }
+    var html='';
+    meds.forEach(function(m){
+        var s=getStock(m),p=getPrecio(m);
+        var st=s===0?'out':s<10?'low':'ok',cls=st==='ok'?'sb-ok':st==='low'?'sb-low':'sb-out';
+        var lbl=st==='ok'?'Normal':st==='low'?'Bajo':'Agotado',clr=st==='ok'?'var(--success)':st==='low'?'var(--warning)':'var(--danger)';
+        var medJson=encodeURIComponent(JSON.stringify({id:m.id,nombre:m.nombre,categoria:m.categoria,precio:m.precio,stock:m.stock}));
+        html+='<div class="prod-card">'
+            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem">'
+              +'<div style="font-size:1.8rem">💊</div>'
+              +'<div style="display:flex;gap:.25rem">'
+                +'<button class="act-btn" onclick="openModalMed(JSON.parse(decodeURIComponent(\''+medJson+'\')))" title="Editar" style="padding:3px 7px"><i class="fas fa-pen"></i></button>'
+                +'<button class="act-btn danger" onclick="openModalConfirm(JSON.parse(decodeURIComponent(\''+medJson+'\')))" title="Eliminar" style="padding:3px 7px"><i class="fas fa-trash"></i></button>'
+              +'</div>'
+            +'</div>'
+            +'<div style="font-weight:700;font-size:.82rem;color:var(--text);margin-bottom:.2rem">'+(m.nombre||'—')+'</div>'
+            +'<div style="font-size:.7rem;color:var(--muted);margin-bottom:.6rem">'+(m.categoria||'—')+'</div>'
+            +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">'
+              +'<span style="font-family:DM Mono,monospace;font-weight:700;color:var(--primary-light);font-size:.85rem">RD$'+p.toLocaleString('es-DO')+'</span>'
+              +'<span class="sbadge '+cls+'">'+lbl+'</span>'
+            +'</div>'
+            +'<div style="display:flex;align-items:center;gap:.35rem;margin-bottom:.65rem">'
+              +'<div class="stock-bar" style="flex:1"><div class="stock-fill" style="width:'+Math.min(s,100)+'%;background:'+clr+'"></div></div>'
+              +'<span style="font-size:.67rem;font-family:DM Mono,monospace;color:'+clr+'">'+s+'</span>'
+            +'</div>'
+            +'<button onclick="openModalStock(JSON.parse(decodeURIComponent(\''+medJson+'\')))" style="width:100%;background:rgba(42,157,143,.08);border:1px solid rgba(42,157,143,.2);color:var(--primary-light);padding:.4rem;border-radius:7px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;transition:all .15s" onmouseover="this.style.background=\'rgba(42,157,143,.18)\'" onmouseout="this.style.background=\'rgba(42,157,143,.08)\'"><i class="fas fa-boxes"></i> Ajustar stock</button>'
+            +'</div>';
+    });
+    grid.innerHTML=html;
+}
+function filterMeds(){ var q=(document.getElementById('med-search').value||'').toLowerCase(); var cat=document.getElementById('med-cat-filter').value; renderMedGrid((_meds||[]).filter(function(m){ return ((m.nombre||'').toLowerCase().includes(q)||(m.categoria||'').toLowerCase().includes(q))&&(!cat||(m.categoria||'')===cat); })); }
+
+// ══════════════════════════════════════════════
+//  USUARIOS
+// ══════════════════════════════════════════════
+var _uf=[];
+async function loadUsuarios(){ var usrs=await fetchUsuarios(); var getRol=function(u){ return (u.rol||'').toLowerCase().trim(); }; document.getElementById('u-total').textContent=usrs.length; document.getElementById('u-clientes').textContent=usrs.filter(function(u){ return getRol(u)==='cliente'; }).length; document.getElementById('u-farm').textContent=usrs.filter(function(u){ return getRol(u).includes('farm'); }).length; document.getElementById('u-admin').textContent=usrs.filter(function(u){ return getRol(u)==='admin'; }).length; _uf=usrs; renderUsuariosTable(usrs); }
+function renderUsuariosTable(usrs){ if(!usrs.length){ document.getElementById('u-tbody').innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--subtle);padding:1.5rem">Sin usuarios</td></tr>'; return; } var html=''; usrs.forEach(function(u){ var rol=(u.rol||'').toLowerCase().trim(); var rolCls=rol==='admin'?'sb-out':rol.includes('farm')?'sb-pend':'sb-blue'; var activo=u.is_active===true||u.is_active===1||u.is_active==='true'; var ultimoAcceso=u.last_login||u.created_at; var fechaLabel=ultimoAcceso?new Date(ultimoAcceso).toLocaleDateString('es-DO',{day:'2-digit',month:'short',year:'numeric'}):'—'; var inicial=(u.nombre||'U').charAt(0).toUpperCase(); var rolIco=rol==='admin'?'🛡️':rol.includes('farm')?'💊':'🛒'; html+='<tr><td><div class="user-row"><div class="user-avatar">'+inicial+'</div><div><div class="t-name">'+(u.nombre||'')+' '+(u.apellido||'')+'</div></div></div></td><td style="font-size:.77rem">'+(u.email||'—')+'</td><td style="font-size:.77rem;font-family:DM Mono,monospace">'+(u.telefono||'—')+'</td><td><span class="sbadge '+rolCls+'">'+rolIco+' '+(u.rol||'—')+'</span></td><td style="font-size:.75rem;color:var(--muted)">'+fechaLabel+'</td><td><span class="sbadge '+(activo?'sb-ok':'sb-out')+'">'+(activo?'Activo':'Inactivo')+'</span></td><td><button onclick="toggleUsuarioActivo(\''+u.id+'\','+activo+')" style="background:none;border:1px solid var(--border);color:var(--muted);padding:3px 8px;border-radius:6px;font-size:.7rem;cursor:pointer;font-family:DM Sans,sans-serif" onmouseover="this.style.borderColor=\'var(--primary)\';this.style.color=\'var(--primary-light)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--muted)\'">'+(activo?'<i class="fas fa-ban"></i> Desactivar':'<i class="fas fa-check"></i> Activar')+'</button></td></tr>'; });
+    document.getElementById('u-tbody').innerHTML=html; }
+function filterUsuarios(){ var q=document.getElementById('u-search').value.toLowerCase(); renderUsuariosTable(_uf.filter(function(u){ return (u.nombre||'').toLowerCase().includes(q)||(u.apellido||'').toLowerCase().includes(q)||(u.email||'').toLowerCase().includes(q)||(u.rol||'').toLowerCase().includes(q); })); }
+async function toggleUsuarioActivo(id,estaActivo){ var res=await sb.from('usuario').update({is_active:!estaActivo}).eq('id',id); if(res.error){ showToast('Error: '+res.error.message,'e'); return; } _usrs=null; showToast(!estaActivo?'Usuario activado ✓':'Usuario desactivado',!estaActivo?'s':'i'); loadUsuarios(); }
+
+// ══════════════════════════════════════════════
+//  REPORTES
+// ══════════════════════════════════════════════
+function triggerDownload(blob,filename){ var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },300); }
+function todayLabel(){ return new Date().toLocaleDateString('es-DO',{day:'2-digit',month:'2-digit',year:'numeric'}).replace(/\//g,'-'); }
+async function exportVentasExcel(){ showToast('Generando Excel...','i'); var ventas=await fetchVentas(); var mes=firstOfMonthStr(); var vM=ventas.filter(function(v){ return ds(v.fecha)>=mes; }); if(!vM.length){ showToast('No hay ventas este mes','e'); return; } var wsData=[['#ID','Fecha','Producto','Cantidad','Total (RD$)','Método de Pago','Estado']]; vM.forEach(function(v){ wsData.push([v.id,v.fecha||'—',v.producto||'—',v.cantidad||0,parseFloat(v.total||0),v.metodo_pago||'—',v.estado||'—']); }); wsData.push([]); var totalSum=vM.reduce(function(s,v){ return s+parseFloat(v.total||0); },0),cantSum=vM.reduce(function(s,v){ return s+(parseInt(v.cantidad)||0); },0); wsData.push(['','','TOTALES',cantSum,totalSum,'','']); var wb=XLSX.utils.book_new(); var ws=XLSX.utils.aoa_to_sheet(wsData); ws['!cols']=[{wch:8},{wch:14},{wch:30},{wch:10},{wch:14},{wch:22},{wch:14}]; XLSX.utils.book_append_sheet(wb,ws,'Ventas del Mes'); var wbout=XLSX.write(wb,{bookType:'xlsx',type:'array'}); triggerDownload(new Blob([wbout],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'Ventas_Mes_'+todayLabel()+'.xlsx'); showToast('Excel descargado ✓','s'); }
+async function exportInventarioPDF(){ showToast('Generando PDF...','i'); var meds=await fetchMedicamentos(); if(!meds.length){ showToast('No hay medicamentos','e'); return; } var {jsPDF}=window.jspdf; var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'}); doc.setFillColor(42,157,143); doc.rect(0,0,210,28,'F'); doc.setTextColor(255,255,255); doc.setFontSize(18); doc.setFont('helvetica','bold'); doc.text('FARMACIA SALUD TOTAL',14,12); doc.setFontSize(11); doc.setFont('helvetica','normal'); doc.text('Inventario — '+new Date().toLocaleDateString('es-DO',{day:'2-digit',month:'long',year:'numeric'}),14,21); var tableRows=meds.map(function(m){ var s=parseInt(m.stock)||0; return [m.nombre||'—',m.categoria||'—','RD$'+(parseFloat(m.precio)||0).toLocaleString('es-DO'),s,s===0?'AGOTADO':s<10?'STOCK BAJO':'NORMAL']; }); doc.autoTable({startY:35,head:[['Medicamento','Categoría','Precio','Stock','Estado']],body:tableRows,theme:'grid',headStyles:{fillColor:[42,157,143],textColor:255,fontStyle:'bold',fontSize:9},bodyStyles:{fontSize:8,textColor:[40,40,40]},alternateRowStyles:{fillColor:[240,250,249]},margin:{left:14,right:14}}); doc.save('Inventario_'+todayLabel()+'.pdf'); showToast('PDF descargado ✓','s'); }
+async function exportUsuariosCSV(){ showToast('Generando CSV...','i'); var usrs=await fetchUsuarios(); if(!usrs.length){ showToast('No hay usuarios','e'); return; } var headers=['ID','Email','Nombre','Apellido','Telefono','Rol','Activo','Ultimo Login','Fecha Registro']; var rows=usrs.map(function(u){ return [u.id,u.email||'',u.nombre||'',u.apellido||'',u.telefono||'',u.rol||'',u.is_active?'Sí':'No',u.last_login?new Date(u.last_login).toLocaleDateString('es-DO'):'—',u.created_at?new Date(u.created_at).toLocaleDateString('es-DO'):'—']; }); var csv='\uFEFF'+headers.join(';')+'\n'; rows.forEach(function(r){ csv+=r.map(function(c){ var s=String(c).replace(/"/g,'""'); return s.includes(';')||s.includes('"')||s.includes('\n')?'"'+s+'"':s; }).join(';')+'\n'; }); triggerDownload(new Blob([csv],{type:'text/csv;charset=utf-8;'}),'Usuarios_'+todayLabel()+'.csv'); showToast('CSV descargado ✓','s'); }
+// ── exportCitasPDF ahora abre el modal de selección de paciente ──
+async function exportCitasPDF(){
+    await openModalReporteCitas();
+}
+
+// ══════════════════════════════════════════════
+//  MODAL REPORTE CITAS COMPLETADAS POR PACIENTE
+// ══════════════════════════════════════════════
+var _rcCitas = [];
+var _rcPacSeleccionado = '';
+
+async function openModalReporteCitas(){
+    showToast('Cargando citas completadas...','i');
+    var citas = await fetchCitas();
+    _rcCitas = citas.filter(function(c){ return (c.estado||'').toLowerCase()==='completada'; });
+    if(!_rcCitas.length){ showToast('No hay citas completadas aún','e'); return; }
+
+    var pacientes = [];
+    var seen = {};
+    _rcCitas.forEach(function(c){
+        var n = (c.nombre_paciente||'').trim();
+        if(n && !seen[n.toLowerCase()]){ seen[n.toLowerCase()]=true; pacientes.push(n); }
+    });
+    pacientes.sort();
+
+    _rcPacSeleccionado = '';
+
+    var listHtml = '';
+    pacientes.forEach(function(p){
+        var count = _rcCitas.filter(function(c){ return (c.nombre_paciente||'').toLowerCase()===p.toLowerCase(); }).length;
+        var safeP = p.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        var safeAttr = p.replace(/"/g,'&quot;');
+        listHtml += '<div class="rc-pac-item" onclick="selectRcPac(this,\''+safeP+'\')" data-pac="'+safeAttr+'" style="display:flex;align-items:center;gap:.65rem;padding:.55rem .7rem;border-radius:8px;cursor:pointer;border:1px solid var(--border);background:var(--bg);transition:all .15s">'
+            +'<div class="user-avatar" style="width:32px;height:32px;flex-shrink:0;font-size:.8rem">'+p.charAt(0).toUpperCase()+'</div>'
+            +'<div style="flex:1;min-width:0"><div style="font-size:.82rem;font-weight:600;color:var(--text)">'+p+'</div>'
+            +'<div style="font-size:.68rem;color:var(--muted)">'+count+' cita'+(count!==1?'s':'')+' completada'+(count!==1?'s':'')+'</div></div>'
+            +'<div class="rc-check" style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:transparent;transition:all .15s"></div>'
+            +'</div>';
+    });
+
+    if(!document.getElementById('modal-reporte-citas')){
+        var m = document.createElement('div');
+        m.className = 'modal-overlay'; m.id = 'modal-reporte-citas';
+        m.innerHTML = '<div class="modal" style="width:480px;max-width:96vw;max-height:90vh;display:flex;flex-direction:column">'
+            +'<div class="modal-title">📋 Reporte de Citas Completadas</div>'
+            +'<div class="modal-sub">Selecciona el paciente para generar su reporte en PDF</div>'
+            +'<div style="position:relative;margin-bottom:.75rem"><i class="fas fa-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.78rem;pointer-events:none"></i>'
+            +'<input class="fi" id="rc-search" placeholder="Buscar paciente..." style="padding-left:2.2rem" oninput="filterRcPacientes()"></div>'
+            +'<div id="rc-pac-list" style="overflow-y:auto;max-height:300px;display:flex;flex-direction:column;gap:.35rem;padding-right:.25rem"></div>'
+            +'<div id="rc-sel-info" style="margin-top:.75rem;padding:.6rem .8rem;border-radius:8px;background:rgba(42,157,143,.08);border:1px solid rgba(42,157,143,.2);font-size:.76rem;color:var(--primary-light);display:none"></div>'
+            +'<div class="modal-footer">'
+            +'<button class="btn-m btn-cancel" onclick="closeModalReporteCitas()">Cancelar</button>'
+            +'<button class="btn-m" id="rc-btn-todos" onclick="generarReporteTodosPacientes()" style="background:rgba(42,157,143,.12);border:1px solid rgba(42,157,143,.3);color:var(--primary-light)"><i class="fas fa-users"></i> Todos</button>'
+            +'<button class="btn-m btn-ok" id="rc-btn-gen" onclick="generarReportePaciente()" disabled style="opacity:.5"><i class="fas fa-file-pdf"></i> Generar PDF</button>'
+            +'</div>'
+            +'</div>';
+        m.addEventListener('click',function(e){ if(e.target===m) closeModalReporteCitas(); });
+        document.body.appendChild(m);
+    }
+
+    document.getElementById('rc-pac-list').innerHTML = listHtml;
+    document.getElementById('rc-search').value = '';
+    document.getElementById('rc-sel-info').style.display = 'none';
+    document.getElementById('rc-btn-gen').disabled = true;
+    document.getElementById('rc-btn-gen').style.opacity = '.5';
+    document.getElementById('modal-reporte-citas').classList.add('open');
+}
+
+function closeModalReporteCitas(){
+    var m=document.getElementById('modal-reporte-citas');
+    if(m) m.classList.remove('open');
+}
+
+function filterRcPacientes(){
+    var q=(document.getElementById('rc-search').value||'').toLowerCase();
+    document.querySelectorAll('.rc-pac-item').forEach(function(el){
+        var name=(el.dataset.pac||'').toLowerCase();
+        el.style.display=(!q||name.includes(q))?'flex':'none';
+    });
+}
+
+function selectRcPac(el, nombre){
+    _rcPacSeleccionado = nombre;
+    document.querySelectorAll('.rc-pac-item').forEach(function(item){
+        var chk=item.querySelector('.rc-check');
+        if(item===el){
+            item.style.background='rgba(42,157,143,.1)';
+            item.style.borderColor='rgba(42,157,143,.4)';
+            chk.style.background='var(--primary)';
+            chk.style.borderColor='var(--primary)';
+            chk.style.color='#fff';
+            chk.innerHTML='✓';
+        } else {
+            item.style.background='var(--bg)';
+            item.style.borderColor='var(--border)';
+            chk.style.background='';
+            chk.style.borderColor='var(--border)';
+            chk.style.color='transparent';
+            chk.innerHTML='';
+        }
+    });
+    var count=_rcCitas.filter(function(c){ return (c.nombre_paciente||'').toLowerCase()===nombre.toLowerCase(); }).length;
+    var info=document.getElementById('rc-sel-info');
+    info.innerHTML='<i class="fas fa-user-check"></i> <strong>'+nombre+'</strong> — '+count+' cita'+(count!==1?'s':'')+' completada'+(count!==1?'s':'');
+    info.style.display='block';
+    var btn=document.getElementById('rc-btn-gen');
+    btn.disabled=false; btn.style.opacity='1';
+}
+
+function generarReportePaciente(){
+    if(!_rcPacSeleccionado){ showToast('Selecciona un paciente','e'); return; }
+    var citas=_rcCitas.filter(function(c){ return (c.nombre_paciente||'').toLowerCase()===_rcPacSeleccionado.toLowerCase(); });
+    if(!citas.length){ showToast('Sin citas para este paciente','e'); return; }
+    buildReporteCitasPDF(citas, _rcPacSeleccionado, false);
+    closeModalReporteCitas();
+}
+
+function generarReporteTodosPacientes(){
+    if(!_rcCitas.length){ showToast('No hay citas completadas','e'); return; }
+    buildReporteCitasPDF(_rcCitas, 'Todos los Pacientes', true);
+    closeModalReporteCitas();
+}
+
+function buildReporteCitasPDF(citas, titulo, esGeneral){
+    showToast('Generando PDF...','i');
+    var {jsPDF}=window.jspdf;
+    var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    var fecha=new Date().toLocaleDateString('es-DO',{day:'2-digit',month:'long',year:'numeric'});
+
+    doc.setFillColor(38,70,83); doc.rect(0,0,210,36,'F');
+    doc.setFillColor(42,157,143); doc.rect(0,32,210,5,'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(18); doc.setFont('helvetica','bold');
+    doc.text('FARMACIA SALUD TOTAL',14,14);
+    doc.setFontSize(9); doc.setFont('helvetica','normal');
+    doc.text('RNC: 101-12345-6  ·  Tel: 809-555-1234  ·  Santo Domingo, DO',14,22);
+    doc.text(fecha,210-14,22,{align:'right'});
+
+    doc.setFillColor(240,250,249); doc.rect(0,37,210,18,'F');
+    doc.setTextColor(38,70,83);
+    doc.setFontSize(13); doc.setFont('helvetica','bold');
+    doc.text('Reporte de Citas Completadas',14,47);
+    doc.setFontSize(9); doc.setFont('helvetica','normal');
+    if(!esGeneral){
+        doc.setTextColor(42,157,143);
+        doc.text('Paciente: '+titulo,14,54);
+    } else {
+        doc.setTextColor(100,116,139);
+        doc.text('Todos los pacientes — '+citas.length+' cita'+(citas.length!==1?'s':''),14,54);
+    }
+
+    var startY = 62;
+    var pacientesUnicos=[...new Set(citas.map(function(c){ return c.nombre_paciente||'—'; }))].length;
+    var motivosMap={};
+    citas.forEach(function(c){ var m=(c.motivo||'Sin motivo').substring(0,28); motivosMap[m]=(motivosMap[m]||0)+1; });
+    var topMotivo=Object.keys(motivosMap).sort(function(a,b){ return motivosMap[b]-motivosMap[a]; })[0]||'—';
+    var stats=esGeneral
+        ? [['Total citas',String(citas.length)],['Pacientes',String(pacientesUnicos)],['Motivo frecuente',topMotivo]]
+        : [['Total citas',String(citas.length)],['Paciente',titulo.substring(0,18)],['Motivo frecuente',topMotivo]];
+
+    var bw=57, bx=14;
+    stats.forEach(function(s){
+        doc.setFillColor(255,255,255); doc.roundedRect(bx,startY,bw,16,2,2,'F');
+        doc.setDrawColor(210,230,225); doc.roundedRect(bx,startY,bw,16,2,2,'S');
+        doc.setTextColor(100,116,139); doc.setFontSize(7); doc.setFont('helvetica','normal');
+        doc.text(String(s[0]).toUpperCase(),bx+bw/2,startY+5,{align:'center'});
+        doc.setTextColor(38,70,83); doc.setFontSize(9); doc.setFont('helvetica','bold');
+        var val=String(s[1]); if(val.length>17) val=val.substring(0,16)+'…';
+        doc.text(val,bx+bw/2,startY+12,{align:'center'});
+        bx+=bw+4;
+    });
+
+    var tableRows=citas.map(function(c,i){
+        var f=c.fecha_cita?new Date(c.fecha_cita+'T00:00:00').toLocaleDateString('es-DO',{day:'2-digit',month:'short',year:'numeric'}):c.fecha_cita||'—';
+        return [i+1, c.nombre_paciente||'—', f, c.hora_cita||'—', c.motivo||'Sin motivo', 'Completada'];
+    });
+
+    doc.autoTable({
+        startY: startY+22,
+        head:[['N°','Paciente','Fecha','Hora','Motivo / Consulta','Estado']],
+        body: tableRows,
+        theme:'grid',
+        headStyles:{fillColor:[38,70,83],textColor:255,fontStyle:'bold',fontSize:8,cellPadding:3},
+        bodyStyles:{fontSize:7.5,textColor:[40,40,40],cellPadding:2.5},
+        alternateRowStyles:{fillColor:[245,250,249]},
+        columnStyles:{
+            0:{cellWidth:9,halign:'center'},
+            1:{cellWidth:38},
+            2:{cellWidth:26},
+            3:{cellWidth:16,halign:'center'},
+            4:{cellWidth:65},
+            5:{cellWidth:22,halign:'center',fontStyle:'bold'}
+        },
+        margin:{left:14,right:14},
+        didParseCell: function(data){
+            if(data.column.index===5 && data.section==='body'){
+                data.cell.styles.textColor=[76,175,80];
+            }
+        }
+    });
+
+    var pageCount=doc.internal.getNumberOfPages();
+    for(var i=1;i<=pageCount;i++){
+        doc.setPage(i);
+        doc.setFillColor(22,27,34); doc.rect(0,272,210,25,'F');
+        doc.setTextColor(125,133,144); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+        doc.text('Farmacia Salud Total  ·  info@saludtotal.com.do  ·  Generado el '+fecha,105,281,{align:'center'});
+        doc.text('Página '+i+' de '+pageCount,105,287,{align:'center'});
+    }
+
+    var nomArchivo=esGeneral
+        ? 'Reporte_Citas_Completadas_'+todayLabel()+'.pdf'
+        : 'Reporte_Citas_'+(titulo.replace(/\s+/g,'_'))+'_'+todayLabel()+'.pdf';
+    doc.save(nomArchivo);
+    showToast('PDF descargado ✓','s');
+}
+
+async function loadReportes(){ var [ventas,meds,citas]=await Promise.all([fetchVentas(),fetchMedicamentos(),fetchCitas()]); var mes=firstOfMonthStr(),sem=daysAgoStr(6); var vM=ventas.filter(function(v){ return ds(v.fecha)>=mes; }),vS=ventas.filter(function(v){ return ds(v.fecha)>=sem; }); var tM=vM.reduce(function(s,v){ return s+getTotal(v); },0),tS=vS.reduce(function(s,v){ return s+getTotal(v); },0),pendCitas=citas.filter(function(c){ return (c.estado||'').toLowerCase()==='pendiente'; }).length; var fin=[['Ingresos del mes',fmtRD(tM)],['Ingresos esta semana',fmtRD(tS)],['Ventas este mes',vM.length+' transacciones'],['Ticket promedio',vM.length?fmtRD(tM/vM.length):'—'],['Medicamentos',meds.length+' items'],['Citas pendientes',pendCitas+' citas']]; var fH=''; fin.forEach(function(f){ fH+='<div class="stat-row"><span class="stat-label">'+f[0]+'</span><span class="stat-val" style="color:var(--primary-light)">'+f[1]+'</span></div>'; }); document.getElementById('rep-financiero').innerHTML=fH; var dNames=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],byDay=new Array(7).fill(0); vS.forEach(function(v){ if(v.fecha) byDay[new Date(v.fecha).getDay()]+=getTotal(v); }); var maxD=Math.max.apply(null,byDay.concat([1])),sH=''; for(var i=0;i<7;i++){ var pct=Math.round((byDay[i]/maxD)*100); sH+='<div style="margin-bottom:.55rem"><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.2rem"><span style="color:var(--muted)">'+dNames[i]+'</span><span style="font-family:DM Mono,monospace;color:var(--text);font-weight:600">'+fmtRD(byDay[i])+'</span></div><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%;background:linear-gradient(90deg,var(--primary),var(--primary-light))"></div></div></div>'; } document.getElementById('rep-semanal').innerHTML=sH; var catC=['var(--primary-light)','var(--accent)','var(--success)','var(--warning)','var(--muted)'],catMap={}; meds.forEach(function(m){ var c=m.categoria||'Otros'; catMap[c]=(catMap[c]||0)+1; }); var catArr=Object.keys(catMap).map(function(k){ return [k,catMap[k]]; }).sort(function(a,b){ return b[1]-a[1]; }); var maxC=catArr.length?catArr[0][1]:1,cH=''; catArr.slice(0,5).forEach(function(c,k){ var pct=Math.round((c[1]/maxC)*100); cH+='<div style="margin-bottom:.65rem"><div style="display:flex;justify-content:space-between;font-size:.75rem;margin-bottom:.22rem"><span style="color:var(--text);font-weight:600">'+c[0]+'</span><span style="font-family:DM Mono,monospace;color:var(--primary-light)">'+c[1]+' items</span></div><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%;background:'+catC[k]+'"></div></div></div>'; }); document.getElementById('rep-categorias').innerHTML=cH; var exps=[{ic:'fas fa-file-excel',n:'Ventas del Mes',t:'Excel (.xlsx)',c:'#1d6f42',bg:'rgba(29,111,66,.12)',sub:''+vM.length+' ventas · '+fmtRD(tM),fn:'exportVentasExcel()'},{ic:'fas fa-file-pdf',n:'Inventario',t:'PDF (.pdf)',c:'#c0392b',bg:'rgba(192,57,43,.12)',sub:''+meds.length+' medicamentos',fn:'exportInventarioPDF()'},{ic:'fas fa-file-csv',n:'Lista de Usuarios',t:'CSV (.csv)',c:'#b7791f',bg:'rgba(183,121,31,.12)',sub:'Exportar usuarios',fn:'exportUsuariosCSV()'},{ic:'fas fa-calendar-times',n:'Citas Completadas',t:'PDF (.pdf)',c:'#2a9d8f',bg:'rgba(42,157,143,.12)',sub:''+pendCitas+' pendientes',fn:'exportCitasPDF()'}]; var eH=''; exps.forEach(function(ex){ eH+='<button class="export-card" onclick="'+ex.fn+'" style="border-left:3px solid '+ex.c+'"><div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.55rem"><div style="width:40px;height:40px;border-radius:10px;background:'+ex.bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="'+ex.ic+'" style="font-size:1.2rem;color:'+ex.c+'"></i></div><div><div style="font-weight:700;font-size:.84rem;color:var(--text)">'+ex.n+'</div><div style="font-size:.68rem;color:var(--muted);margin-top:1px">'+ex.sub+'</div></div></div><div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:.7rem;font-weight:600;padding:3px 8px;border-radius:20px;background:'+ex.bg+';color:'+ex.c+'">'+ex.t+'</span><i class="fas fa-download" style="font-size:.75rem;color:'+ex.c+'"></i></div></button>'; }); document.getElementById('rep-exports').innerHTML=eH; }
+
+// ── CONFIG ──
+function loadConfig(){ var notifs=[{l:'Alertas de stock bajo',s:'Stock < 10 unidades',on:true},{l:'Nuevas ventas',s:'Notificar cada transacción',on:true},{l:'Nuevas citas',s:'Alerta al registrar cita',on:true},{l:'Reportes automáticos',s:'Envío semanal al email',on:false},{l:'Intentos de acceso',s:'Alertas de seguridad',on:true}]; var nH=''; notifs.forEach(function(n){ nH+='<div class="config-row"><div><div class="config-label">'+n.l+'</div><div class="config-sub">'+n.s+'</div></div><div class="toggle '+(n.on?'on':'')+'" onclick="this.classList.toggle(\'on\')"></div></div>'; }); document.getElementById('cfg-notif').innerHTML=nH; var sec=[{l:'Autenticación 2 pasos',s:'Verificación al iniciar sesión',on:false},{l:'Sesiones activas',s:'Ver y cerrar sesiones remotas',on:false}]; var sH=''; sec.forEach(function(s){ sH+='<div class="config-row"><div><div class="config-label">'+s.l+'</div><div class="config-sub">'+s.s+'</div></div><div class="toggle '+(s.on?'on':'')+'" onclick="this.classList.toggle(\'on\')"></div></div>'; }); document.getElementById('cfg-security').innerHTML=sH; }
+
+// ── MASTER LOAD ──
+async function loadPageData(page){ if(page==='dashboard') await loadDashboard(); else if(page==='ventas') await loadVentas(); else if(page==='citas') await loadCitas(); else if(page==='inventario') await loadInventario(); else if(page==='medicamentos') await loadMedicamentos(); else if(page==='usuarios') await loadUsuarios(); else if(page==='reportes') await loadReportes(); else if(page==='config') loadConfig(); }
+
+// ── INIT ──
+(async function(){
+    setDbStatus('loading','Conectando...');
+    var ping=await sb.from('ventas').select('id').limit(1);
+    if(ping.error){ setDbStatus('error','Error BD'); showToast('Error: '+ping.error.message,'e'); } else { setDbStatus('connected','Conectado ✓'); }
+    await loadPageData('dashboard');
+})();
+</script>
+</body>
+</html>
