@@ -1,44 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salud y Bienestar - Farmacia Fharmanet</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <title>FerroMax | La ferretería que no para</title>
+    <!-- Tipografías refinadas: Inter para texto, Syne para títulos -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Syne:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Librería para generar PDFs -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- EmailJS -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
-        /* ===== PALETA DE COLORES UNIFICADA (PHARMANET / CLÍNICA VITALIS) ===== */
-        :root {
-            --primary: #005f73;          /* Azul petróleo profundo */
-            --primary-dark: #004755;
-            --primary-light: #0a9396;    /* Turquesa */
-            --secondary: #0a9396;         /* Turquesa (mismo que primary-light) */
-            --secondary-light: #3bc9b8;
-            --accent: #ee9b00;            /* Naranja cálido */
-            --accent-dark: #cc7f00;
-            --accent-light: #ffb347;
-            --danger: #ae2012;             /* Rojo oscuro */
-            --danger-light: #d62828;
-            --light: #e9d8a6;               /* Beige claro */
-            --dark: #001219;                /* Casi negro azulado */
-            --clinic: #005f73;               /* Sinónimo de primary */
-            --success: #2a9d8f;              /* Verde farmacia (se mantiene) */
-            --wellness: #0a9396;              /* Turquesa (para bienestar) */
-            --wellness-dark: #005f73;
-            --wellness-light: #6abfaa;
-            --gradient-primary: linear-gradient(to right, #005f73, #0a9396);
-            --gradient-accent: linear-gradient(to right, #ee9b00, #ffb347);
-            --gradient-wellness: linear-gradient(to right, #0a9396, #005f73);
-            --gradient-sunset: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            --gradient-ocean: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            --gradient-forest: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
-            --gradient-lavender: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -46,1836 +18,822 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: var(--dark);
-            min-height: 100vh;
-            line-height: 1.6;
+            background: #0a0f1c;
+            font-family: 'Inter', sans-serif;
+            color: #eef2ff;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* Patrón de fondo industrial (más sutil) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(45deg, rgba(249, 184, 27, 0.02) 0px, rgba(249, 184, 27, 0.02) 2px, transparent 2px, transparent 8px),
+                repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, transparent 1px, transparent 12px);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
         }
 
         /* Header */
         .header {
-            background: var(--primary-dark);
-            color: white;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-bottom: 3px solid var(--accent);
-        }
-
-        .logo-container {
+            padding: 1.5rem 0;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
+            align-items: center;
             flex-wrap: wrap;
-            gap: 1.5rem;
+            gap: 1rem;
+            border-bottom: 2px solid rgba(249, 184, 27, 0.3);
+            margin-bottom: 3rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 0.8rem;
+            text-decoration: none;
         }
 
         .logo-icon {
-            font-size: 2.5rem;
-            background: var(--gradient-primary);
-            color: white;
-            width: 65px;
-            height: 65px;
-            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #f9b81b, #f39c12);
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .logo-text h1 {
-            font-size: 2.2rem;
             font-weight: 800;
-            color: white;
+            font-size: 1.3rem;
+            color: #0a0f1c;
+            transition: transform 0.3s ease;
         }
 
-        .logo-text p {
-            font-size: 1rem;
-            color: rgba(255,255,255,0.9);
+        .logo:hover .logo-icon {
+            transform: rotate(8deg) scale(1.03);
         }
 
-        /* Botones de navegación */
-        .nav-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .nav-button {
-            padding: 12px 24px;
-            border-radius: 10px;
+        .logo-text {
+            font-family: 'Syne', sans-serif;
             font-weight: 700;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-size: 1.7rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff, #f9b81b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .back-link {
+            color: #9ca3af;
+            text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: white;
-            text-decoration: none;
-            background: rgba(255,255,255,0.1);
+            gap: 0.5rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(4px);
         }
 
-        .nav-button:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-3px);
+        .back-link:hover {
+            color: #f9b81b;
+            background: rgba(249, 184, 27, 0.1);
+            transform: translateX(-4px);
         }
 
-        .nav-button.active {
-            background: var(--wellness);
-            box-shadow: 0 4px 12px rgba(10, 147, 150, 0.3);
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-            width: 100%;
-        }
-
-        /* Hero Section */
-        .wellness-hero {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-            border-radius: 20px;
-            padding: 3.5rem;
-            color: white;
-            margin-bottom: 3rem;
+        /* Hero */
+        .hero {
+            margin: 2rem 0 4rem;
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
-        .wellness-hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 300px;
-            height: 300px;
-            background: var(--accent-light);
-            opacity: 0.1;
-            border-radius: 50%;
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(249, 184, 27, 0.12);
+            backdrop-filter: blur(8px);
+            padding: 0.35rem 1rem;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(249, 184, 27, 0.3);
+            margin-bottom: 1.5rem;
         }
 
-        .wellness-hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            font-weight: 800;
-            font-family: 'Playfair Display', serif;
+        .hero-badge i {
+            font-size: 0.7rem;
+            color: #f9b81b;
         }
 
-        .wellness-hero h1 i {
-            color: var(--accent);
-            margin-right: 15px;
-            animation: float 3s ease-in-out infinite;
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #ffffff 0%, #f9b81b 40%, #ffffff 80%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shine 6s linear infinite;
+            letter-spacing: -0.01em;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @keyframes shine {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
         }
 
-        .wellness-hero p {
-            font-size: 1.2rem;
+        .hero p {
             max-width: 600px;
-            opacity: 0.95;
+            margin-top: 1.2rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.6;
+            color: #cbd5e6;
+            border-left: 3px solid #f9b81b;
+            padding-left: 1.5rem;
         }
 
-        /* Categorías de Bienestar */
-        .categories-grid {
+        /* Stats Cards */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin: 4rem 0;
         }
 
-        .category-card {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .stat-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(249, 184, 27, 0.2);
+            border-radius: 1.5rem;
+            padding: 1.5rem 1.2rem;
             text-align: center;
-            border: 1px solid #eee;
-            cursor: pointer;
+            transition: all 0.3s;
             position: relative;
             overflow: hidden;
         }
 
-        .category-card::before {
+        .stat-card::before {
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary), var(--wellness));
-            transform: translateX(-100%);
-            transition: transform 0.4s ease;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(249, 184, 27, 0.08), transparent);
+            transition: left 0.6s;
         }
 
-        .category-card:hover::before {
-            transform: translateX(0);
+        .stat-card:hover::before {
+            left: 100%;
         }
 
-        .category-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(10, 147, 150, 0.2);
-            border-color: var(--wellness);
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #f9b81b;
         }
 
-        .category-icon {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, rgba(10, 147, 150, 0.1), rgba(0, 95, 115, 0.1));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-            font-size: 3rem;
-            color: var(--wellness);
-            transition: all 0.5s ease;
-            border: 2px dashed var(--wellness);
-        }
-
-        .category-card:hover .category-icon {
-            background: var(--gradient-wellness);
-            color: white;
-            transform: rotate(360deg) scale(1.1);
-            border: 2px solid white;
-            box-shadow: 0 10px 20px rgba(10, 147, 150, 0.3);
-        }
-
-        .category-card h3 {
-            color: var(--primary-dark);
-            font-size: 1.5rem;
-            margin-bottom: 0.8rem;
+        .stat-number {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.8rem;
             font-weight: 700;
+            background: linear-gradient(135deg, #f9b81b, #ffd966);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1;
         }
 
-        .category-card p {
-            color: #666;
-            font-size: 0.95rem;
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+            color: #9ca3af;
+            margin-top: 0.4rem;
         }
 
-        /* Artículos Destacados */
-        .section-title {
-            font-size: 2.5rem;
-            color: var(--primary-dark);
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-weight: 800;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .section-title i {
-            color: var(--accent);
-            font-size: 2.5rem;
-            filter: drop-shadow(0 2px 5px rgba(238, 155, 0, 0.3));
-        }
-
-        .articles-grid {
+        /* Historia */
+        .history-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 2.5rem;
-            margin-bottom: 3rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin: 4rem 0;
+            align-items: center;
         }
 
-        .article-card {
-            background: white;
-            border-radius: 25px;
+        .history-text h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #f9b81b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1.2rem;
+            letter-spacing: -0.01em;
+        }
+
+        .history-text p {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #cbd5e6;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .history-image {
+            position: relative;
+            border-radius: 1.5rem;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid #eee;
-            position: relative;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .article-card:nth-child(1) {
-            background: linear-gradient(135deg, #fff5f5, #fff0f0);
-        }
-        .article-card:nth-child(2) {
-            background: linear-gradient(135deg, #f0f9ff, #e6f3ff);
-        }
-        .article-card:nth-child(3) {
-            background: linear-gradient(135deg, #f0fdf4, #e6f9ec);
-        }
-
-        .article-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            box-shadow: 0 30px 50px rgba(10, 147, 150, 0.2);
-            border-color: var(--wellness);
-        }
-
-        .article-image {
-            height: 220px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
+        .history-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             transition: transform 0.5s ease;
         }
 
-        .article-card:hover .article-image {
-            transform: scale(1.05);
+        .history-image:hover img {
+            transform: scale(1.03);
         }
 
-        .article-category {
+        .year-badge {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--gradient-wellness);
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            box-shadow: 0 4px 10px rgba(10, 147, 150, 0.3);
-            border: 2px solid white;
-            z-index: 2;
-        }
-
-        .article-content {
-            padding: 2rem;
-            position: relative;
-        }
-
-        .article-content h3 {
-            color: var(--primary-dark);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            line-height: 1.4;
-            font-weight: 700;
-        }
-
-        .article-content p {
-            color: #555;
-            margin-bottom: 1.5rem;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .read-more {
-            background: linear-gradient(135deg, var(--wellness), var(--wellness-dark));
-            color: white;
-            font-weight: 600;
-            padding: 12px 25px;
-            border-radius: 50px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            border: 2px solid white;
-            box-shadow: 0 5px 15px rgba(10, 147, 150, 0.2);
-        }
-
-        .read-more:hover {
-            gap: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(10, 147, 150, 0.3);
-        }
-
-        .read-more i {
-            transition: transform 0.3s ease;
-        }
-
-        .read-more:hover i {
-            transform: translateX(5px);
-        }
-
-        /* Recursos Descargables */
-        .resources-section {
-            background: white;
-            border-radius: 30px;
-            padding: 3rem;
-            margin-bottom: 3rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border: 1px solid #eee;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .resources-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 8px;
-            background: var(--gradient-wellness);
-        }
-
-        .resources-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .resource-item {
-            background: linear-gradient(135deg, #f8f9fa, #ffffff);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 2px solid #eee;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .resource-item:nth-child(1) {
-            border-top: 5px solid #ff6b6b;
-        }
-        .resource-item:nth-child(2) {
-            border-top: 5px solid #4ecdc4;
-        }
-        .resource-item:nth-child(3) {
-            border-top: 5px solid #45b7d1;
-        }
-        .resource-item:nth-child(4) {
-            border-top: 5px solid #96ceb4;
-        }
-
-        .resource-item:hover {
-            transform: translateY(-15px) scale(1.05);
-            border-color: var(--wellness);
-            box-shadow: 0 20px 40px rgba(10, 147, 150, 0.15);
-        }
-
-        .resource-icon {
-            font-size: 3.5rem;
-            color: var(--wellness);
-            margin-bottom: 1rem;
-            display: inline-block;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .resource-item h4 {
-            color: var(--primary-dark);
-            font-size: 1.3rem;
-            margin-bottom: 0.8rem;
-            font-weight: 700;
-        }
-
-        .resource-item p {
-            color: #666;
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-        }
-
-        .download-btn {
-            background: linear-gradient(135deg, var(--wellness), var(--wellness-dark));
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            border: 2px solid white;
-            box-shadow: 0 5px 15px rgba(10, 147, 150, 0.2);
-            cursor: pointer;
-        }
-
-        .download-btn:hover {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(10, 147, 150, 0.3);
-        }
-
-        .download-btn i {
-            transition: transform 0.3s ease;
-        }
-
-        .download-btn:hover i {
-            transform: translateY(3px);
-        }
-
-        /* Tips Rápidos */
-        .tips-section {
-            background: linear-gradient(135deg, #f0f9ff, #e6f3ff);
-            border-radius: 30px;
-            padding: 3rem;
-            margin-bottom: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tips-section::before {
-            content: '💡';
-            position: absolute;
-            top: -50px;
-            right: -50px;
-            font-size: 15rem;
-            opacity: 0.1;
-            transform: rotate(20deg);
-        }
-
-        .tips-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .tip-card {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
+            bottom: -16px;
+            left: -16px;
+            background: linear-gradient(135deg, #f9b81b, #e67e22);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
             display: flex;
-            align-items: flex-start;
-            gap: 1.2rem;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.03);
-            border: 2px solid #eee;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #0a0f1c;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border: 3px solid #fff;
+            font-family: 'Syne', sans-serif;
         }
 
-        .tip-card:hover {
-            transform: translateX(10px);
-            border-color: var(--wellness);
-            box-shadow: 0 15px 30px rgba(10, 147, 150, 0.1);
+        .year-badge small {
+            font-size: 0.65rem;
+            font-weight: 500;
         }
 
-        .tip-number {
-            background: var(--gradient-wellness);
-            color: white;
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin: 2.5rem 0 4rem;
+        }
+
+        .product-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(249, 184, 27, 0.2);
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            border-color: #f9b81b;
+            background: rgba(20, 30, 55, 0.8);
+        }
+
+        .product-icon {
             width: 50px;
             height: 50px;
-            border-radius: 15px;
+            background: linear-gradient(145deg, #f9b81b, #e67e22);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
+            margin-bottom: 1.2rem;
             font-size: 1.5rem;
-            flex-shrink: 0;
-            border: 3px solid white;
-            box-shadow: 0 5px 10px rgba(10, 147, 150, 0.2);
+            color: #0a0f1c;
         }
 
-        .tip-content h4 {
-            color: var(--primary-dark);
-            font-size: 1.3rem;
-            margin-bottom: 0.8rem;
-            font-weight: 700;
+        .product-card h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.3px;
         }
 
-        .tip-content p {
-            color: #666;
-            font-size: 1rem;
-            line-height: 1.6;
+        .product-card p {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            line-height: 1.5;
         }
 
-        /* Newsletter */
-        .newsletter {
-            background: var(--gradient-primary);
-            border-radius: 30px;
-            padding: 4rem;
-            color: white;
-            text-align: center;
-            margin-top: 2rem;
+        /* Process Section */
+        .process-section {
+            background: linear-gradient(105deg, #0f172a, #111827);
+            border-radius: 2rem;
+            padding: 3rem 2rem;
+            margin: 4rem 0;
             position: relative;
             overflow: hidden;
         }
 
-        .newsletter::before {
-            content: '✉️';
+        .process-section::after {
+            content: '⚙️';
             position: absolute;
-            bottom: -50px;
-            left: -50px;
-            font-size: 15rem;
-            opacity: 0.1;
-            transform: rotate(-20deg);
+            bottom: -20px;
+            right: -20px;
+            font-size: 8rem;
+            opacity: 0.04;
+            transform: rotate(15deg);
         }
 
-        .newsletter h3 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            font-family: 'Playfair Display', serif;
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.8rem;
+            margin-top: 2rem;
         }
 
-        .newsletter p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.95;
-        }
-
-        .newsletter-form {
-            display: flex;
-            max-width: 600px;
-            margin: 0 auto;
-            gap: 1rem;
-        }
-
-        .newsletter-form input {
-            flex: 1;
-            padding: 1.2rem 1.5rem;
-            border: none;
-            border-radius: 60px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
-            outline: none;
-            border: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .newsletter-form input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 5px rgba(238, 155, 0, 0.3);
-        }
-
-        .newsletter-form button {
-            background: var(--gradient-accent);
-            color: var(--dark);
-            border: none;
-            padding: 0 40px;
-            border-radius: 60px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.1rem;
-            border: 3px solid white;
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: #f9b81b;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0a0f1c;
+            margin: 0 auto 1rem;
+            box-shadow: 0 0 0 3px rgba(249, 184, 27, 0.3);
+            transition: transform 0.2s;
         }
 
-        .newsletter-form button:hover {
-            background: linear-gradient(135deg, #ffb347, #ee9b00);
+        .step:hover .step-number {
+            transform: scale(1.05);
+        }
+
+        .step h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        .step p {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+
+        /* Policies */
+        .policies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .policy {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(8px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            border: 1px solid rgba(249, 184, 27, 0.15);
+        }
+
+        .policy:hover {
+            background: rgba(20, 30, 55, 0.8);
+            border-color: #f9b81b;
             transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .policy-icon {
+            font-size: 1.8rem;
+            color: #f9b81b;
+            margin-bottom: 0.8rem;
+        }
+
+        .policy h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        .policy p {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+
+        /* FAQ */
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 0.3rem;
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+
+        .faq-question:hover {
+            color: #f9b81b;
+        }
+
+        .faq-icon {
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease-out;
+            color: #9ca3af;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            padding-bottom: 0;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding-bottom: 1rem;
+        }
+
+        /* Contact Bar */
+        .contact-bar {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 3rem 0;
+            border: 1px solid rgba(249, 184, 27, 0.25);
+        }
+
+        .contact-bar h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .contact-bar span {
+            color: #f9b81b;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-links a {
+            color: #cbd5e6;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .contact-links a:hover {
+            color: #f9b81b;
+            transform: translateY(-2px);
         }
 
         /* Footer */
         .footer {
-            background: var(--primary-dark);
-            color: white;
-            padding: 3rem 2rem 1.5rem;
-            text-align: center;
-            margin-top: auto;
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .footer p {
-            opacity: 0.9;
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-        }
-
-        .contact-info {
+            border-top: 1px solid rgba(249, 184, 27, 0.2);
+            padding: 1.8rem 0;
+            margin-top: 1.5rem;
             display: flex;
-            justify-content: center;
-            gap: 2.5rem;
+            justify-content: space-between;
             flex-wrap: wrap;
-            margin-bottom: 2rem;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 12px 20px;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .contact-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px) scale(1.05);
-        }
-
-        .copyright {
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.95rem;
-            opacity: 0.8;
-        }
-
-        /* Animaciones */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        /* Notificaciones */
-        .notification {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            background: white;
-            color: var(--dark);
-            padding: 1.2rem 2rem;
-            border-radius: 15px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
             gap: 1rem;
-            animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 400px;
-            border-left: 6px solid var(--success);
-            font-weight: 500;
+            font-size: 0.75rem;
+            color: #6b7280;
         }
 
-        .notification.error {
-            border-left-color: var(--danger);
+        .footer a {
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.2s;
         }
 
-        .notification.warning {
-            border-left-color: var(--accent);
+        .footer a:hover {
+            color: #f9b81b;
         }
 
-        .notification.info {
-            border-left-color: var(--wellness);
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .logo-container {
+            .container {
+                padding: 0 1.5rem;
+            }
+
+            .history-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .contact-bar {
                 flex-direction: column;
                 text-align: center;
             }
 
-            .wellness-hero h1 {
-                font-size: 2.5rem;
+            .hero h1 {
+                font-size: 2.2rem;
             }
 
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .newsletter-form {
-                flex-direction: column;
-            }
-
-            .newsletter-form button {
-                padding: 15px;
-            }
-
-            .contact-info {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .articles-grid {
-                grid-template-columns: 1fr;
+            .stats-grid {
+                gap: 1rem;
             }
         }
 
         @media (max-width: 480px) {
-            .wellness-hero {
-                padding: 2rem;
+            .hero p {
+                font-size: 0.9rem;
             }
 
-            .wellness-hero h1 {
-                font-size: 2rem;
-            }
-
-            .categories-grid,
-            .resources-grid,
-            .tips-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .tip-card {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .newsletter {
-                padding: 2rem;
-            }
-
-            .newsletter h3 {
-                font-size: 1.8rem;
+            .product-card h3 {
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
+
 <body>
+
     <div class="container">
         <!-- Header -->
-        <header class="header">
-            <div class="logo-container">
-                <a href="index.html" class="logo" style="text-decoration: none; color: white;">
-                    <div class="logo-icon">
-                        <i class="fas fa-prescription-bottle-alt"></i>
-                    </div>
-                    <div class="logo-text">
-                        <h1>Farmacia Fharmanet</h1>
-                        <p>Tu salud en nuestras manos</p>
-                    </div>
-                </a>
-                
-                <div class="nav-buttons">
-                    <a href="Medicamentos.html" class="nav-button">
-                        <i class="fas fa-pills"></i>
-                        <span>Medicamentos</span>
-                    </a>
-                    <a href="Citas.html" class="nav-button">
-                        <i class="fas fa-calendar-check"></i>
-                        <span>Citas</span>
-                    </a>
-                    <a href="index.html" class="nav-button active">
-                        <i class="fas fa-heartbeat"></i>
-                        <span>Inicio</span>
-                    </a>
+        <div class="header">
+            <a href="#" class="logo">
+                <div class="logo-icon">FM</div>
+                <div class="logo-text">FerroMax</div>
+            </a>
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Volver al Inicio
+            </a>
+        </div>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">
+                <i class="fas fa-hard-hat"></i> Desde 2001 construyendo contigo
+            </div>
+            <h1>La ferretería<br>que no para.</h1>
+            <p>FerroMax es una ferretería 100% online. Llevamos herramientas, materiales y equipos directamente al sitio
+                que elijas, sin filas, sin complicaciones y con el respaldo de más de dos décadas en el rubro.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">+100</div>
+                <div class="stat-label">Productos en stock</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">24H</div>
+                <div class="stat-label">Despacho exprés</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">23</div>
+                <div class="stat-label">Años en el mercado</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4.8★</div>
+                <div class="stat-label">Valoración clientes</div>
+            </div>
+        </div>
+
+        <!-- Historia -->
+        <div class="history-section">
+            <div class="history-text">
+                <h2>De taller<br>a pantalla</h2>
+                <p>FerroMax nació en 2001 como una ferretería familiar en Santo Domingo. Durante veinte años atendimos a
+                    contratistas, maestros de obra y particulares desde el mostrador. En 2021 dimos el salto digital
+                    para llegar a toda la República Dominicana sin que nuestros clientes tuvieran que salir de la obra.
+                </p>
+                <p>Seguimos siendo la misma empresa de siempre: con stock real, precios claros y personas reales detrás
+                    del teléfono cuando necesitas orientación técnica.</p>
+            </div>
+            <div class="history-image">
+                <img src="https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=600"
+                    alt="Taller de herramientas">
+                <div class="year-badge">
+                    <span>2001</span>
+                    <small>fundada</small>
                 </div>
             </div>
-        </header>
+        </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Hero Section -->
-            <section class="wellness-hero fade-in-up">
-                <h1>
-                    <i class="fas fa-leaf"></i>
-                    Salud y Bienestar
-                </h1>
-                <p>Descubre recursos, consejos y guías para mantener un estilo de vida saludable y prevenir enfermedades. Tu bienestar integral es nuestra prioridad.</p>
-            </section>
+        <!-- Catálogo de productos -->
+        <h2 style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 700; margin: 2.5rem 0 1rem;">Lo que
+            encontrarás</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-icon"><i class="fas fa-tools"></i></div>
+                <h3>Herramientas manuales</h3>
+                <p>Llaves, destornilladores, martillos, niveles, cintas métricas y más de 1,200 referencias.</p>
+            </div>
+            <div class="product-card">
+                <div class="product-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Herramientas eléctricas</h3>
+                <p>Taladros, esmeriles, sierras circulares, compresores y lijadoras de marcas líderes.</p>
+            </div>
+            <div class="product-card">
+                <div class="product-icon"><i class="fas fa-layer-group"></i></div>
+                <h3>Materiales de construcción</h3>
+                <p>Cemento, yeso, mezclas secas, impermeabilizantes y adhesivos de alta resistencia.</p>
+            </div>
+            <div class="product-card">
+                <div class="product-icon"><i class="fas fa-faucet"></i></div>
+                <h3>Plomería y sanitarios</h3>
+                <p>Tuberías PVC, conexiones, llaves de paso, grifería y accesorios de instalación.</p>
+            </div>
+            <div class="product-card">
+                <div class="product-icon"><i class="fas fa-plug"></i></div>
+                <h3>Electricidad y domótica</h3>
+                <p>Cables, breakers, tomas, interruptores y sistemas de automatización básica.</p>
+            </div>
+            <div class="product-card">
+                <div class="product-icon"><i class="fas fa-hard-hat"></i></div>
+                <h3>Equipos de protección</h3>
+                <p>Cascos, guantes, gafas, botines dieléctricos y arneses certificados.</p>
+            </div>
+        </div>
 
-            <!-- Categorías de Bienestar -->
-            <section style="margin-bottom: 3rem;">
-                <h2 class="section-title">
-                    <i class="fas fa-compass"></i>
-                    Explora por Categoría
-                </h2>
-                <div class="categories-grid">
-                    <div class="category-card" onclick="window.location.href='#nutricion'">
-                        <div class="category-icon">
-                            <i class="fas fa-apple-alt"></i>
-                        </div>
-                        <h3>Nutrición</h3>
-                        <p>Guías de alimentación saludable, recetas y planes nutricionales para cada etapa de la vida.</p>
-                    </div>
-                    <div class="category-card" onclick="window.location.href='#ejercicio'">
-                        <div class="category-icon">
-                            <i class="fas fa-dumbbell"></i>
-                        </div>
-                        <h3>Ejercicio</h3>
-                        <p>Rutinas, consejos y videos para mantenerte activo desde casa o el gimnasio.</p>
-                    </div>
-                    <div class="category-card" onclick="window.location.href='#mental'">
-                        <div class="category-icon">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <h3>Salud Mental</h3>
-                        <p>Técnicas de relajación, manejo del estrés y bienestar emocional.</p>
-                    </div>
-                    <div class="category-card" onclick="window.location.href='#prevencion'">
-                        <div class="category-icon">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <h3>Prevención</h3>
-                        <p>Información sobre vacunas, chequeos médicos y prevención de enfermedades.</p>
-                    </div>
+        <!-- Proceso de compra -->
+        <div class="process-section">
+            <h2 style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem;">Cómo
+                funciona</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Buscás</h4>
+                    <p>Usás el buscador o navegás por categorías. Cada producto tiene ficha técnica y disponibilidad en
+                        tiempo real.</p>
                 </div>
-            </section>
-
-            <!-- Artículos Destacados -->
-            <section style="margin-bottom: 3rem;">
-                <h2 class="section-title">
-                    <i class="fas fa-newspaper"></i>
-                    Artículos Destacados
-                </h2>
-                <div class="articles-grid">
-                    <article class="article-card">
-                        <div class="article-image" style="background-image: url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=500');">
-                            <span class="article-category">Nutrición</span>
-                        </div>
-                        <div class="article-content">
-                            <h3>10 alimentos que fortalecen tu sistema inmunológico</h3>
-                            <p>Descubre cómo mejorar tus defensas de manera natural a través de una alimentación balanceada y rica en nutrientes esenciales.</p>
-                            <a href="#" class="read-more" onclick="openArticle('alimentos-inmunologico')">
-                                Leer artículo completo <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </article>
-
-                    <article class="article-card">
-                        <div class="article-image" style="background-image: url('https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=500');">
-                            <span class="article-category">Salud Mental</span>
-                        </div>
-                        <div class="article-content">
-                            <h3>Técnicas de respiración para reducir la ansiedad</h3>
-                            <p>Aprende ejercicios prácticos de respiración que te ayudarán a manejar el estrés y la ansiedad en tu día a día.</p>
-                            <a href="#" class="read-more" onclick="openArticle('respiracion-ansiedad')">
-                                Leer artículo completo <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </article>
-
-                    <article class="article-card">
-                        <div class="article-image" style="background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500');">
-                            <span class="article-category">Ejercicio</span>
-                        </div>
-                        <div class="article-content">
-                            <h3>Rutina de 20 minutos para hacer en casa</h3>
-                            <p>Mantente activo con esta rutina rápida y efectiva que no requiere equipo especial y puedes hacer desde casa.</p>
-                            <a href="#" class="read-more" onclick="openArticle('rutina-20-minutos')">
-                                Leer artículo completo <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </article>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Pedís</h4>
+                    <p>Agregás al carrito y elegís entre retiro en almacén o entrega a domicilio en todo el país.</p>
                 </div>
-            </section>
-
-            <!-- Recursos Descargables -->
-            <section class="resources-section">
-                <h2 class="section-title" style="margin-bottom: 0;">
-                    <i class="fas fa-download"></i>
-                    Recursos Gratuitos
-                </h2>
-                <p style="color: #666; margin-bottom: 2rem; font-size: 1.1rem;">Descarga guías prácticas para tu bienestar</p>
-                
-                <div class="resources-grid">
-                    <div class="resource-item">
-                        <div class="resource-icon">
-                            <i class="fas fa-utensils"></i>
-                        </div>
-                        <h4>Guía de Alimentación</h4>
-                        <p>Plan semanal de comidas saludables con recetas incluidas para toda la familia.</p>
-                        <button class="download-btn" onclick="downloadPDF('alimentacion')">
-                            <i class="fas fa-file-pdf"></i>
-                            Descargar PDF
-                        </button>
-                    </div>
-
-                    <div class="resource-item">
-                        <div class="resource-icon">
-                            <i class="fas fa-heartbeat"></i>
-                        </div>
-                        <h4>Checklist de Salud</h4>
-                        <p>Lista de chequeos médicos recomendados por edad con recordatorios importantes.</p>
-                        <button class="download-btn" onclick="downloadPDF('checklist')">
-                            <i class="fas fa-file-pdf"></i>
-                            Descargar PDF
-                        </button>
-                    </div>
-
-                    <div class="resource-item">
-                        <div class="resource-icon">
-                            <i class="fas fa-spa"></i>
-                        </div>
-                        <h4>Meditación Guiada</h4>
-                        <p>Guía paso a paso para comenzar a meditar con ejercicios de respiración y mindfulness.</p>
-                        <button class="download-btn" onclick="downloadPDF('meditacion')">
-                            <i class="fas fa-file-pdf"></i>
-                            Descargar PDF
-                        </button>
-                    </div>
-
-                    <div class="resource-item">
-                        <div class="resource-icon">
-                            <i class="fas fa-dumbbell"></i>
-                        </div>
-                        <h4>Rutina de Ejercicios</h4>
-                        <p>Plan de 30 días para principiantes con ilustraciones y explicaciones detalladas.</p>
-                        <button class="download-btn" onclick="downloadPDF('ejercicios')">
-                            <i class="fas fa-file-pdf"></i>
-                            Descargar PDF
-                        </button>
-                    </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Pagás</h4>
+                    <p>Tarjeta, transferencia o efectivo (retiro). Plataforma segura con SSL y factura incluida.</p>
                 </div>
-            </section>
-
-            <!-- Tips Rápidos -->
-            <section class="tips-section">
-                <h2 class="section-title">
-                    <i class="fas fa-lightbulb"></i>
-                    Tips Rápidos para tu Bienestar
-                </h2>
-                <div class="tips-grid">
-                    <div class="tip-card">
-                        <div class="tip-number">1</div>
-                        <div class="tip-content">
-                            <h4>Hidratación</h4>
-                            <p>Bebe al menos 8 vasos de agua al día. Mantén una botella reutilizable en tu escritorio como recordatorio.</p>
-                        </div>
-                    </div>
-
-                    <div class="tip-card">
-                        <div class="tip-number">2</div>
-                        <div class="tip-content">
-                            <h4>Sueño reparador</h4>
-                            <p>Duerme 7-8 horas diarias. Evita pantallas 1 hora antes de dormir para mejorar la calidad del sueño.</p>
-                        </div>
-                    </div>
-
-                    <div class="tip-card">
-                        <div class="tip-number">3</div>
-                        <div class="tip-content">
-                            <h4>Pausas activas</h4>
-                            <p>Si trabajas sentado, levántate cada 2 horas y camina 5 minutos. Estira tu cuello y espalda.</p>
-                        </div>
-                    </div>
-
-                    <div class="tip-card">
-                        <div class="tip-number">4</div>
-                        <div class="tip-content">
-                            <h4>Alimentación consciente</h4>
-                            <p>Come sin distracciones, mastica lentamente y disfruta cada bocado. Esto mejora la digestión.</p>
-                        </div>
-                    </div>
-
-                    <div class="tip-card">
-                        <div class="tip-number">5</div>
-                        <div class="tip-content">
-                            <h4>Sol y vitamina D</h4>
-                            <p>Toma 15 minutos de sol al día (antes de las 10am o después de las 4pm) para sintetizar vitamina D.</p>
-                        </div>
-                    </div>
-
-                    <div class="tip-card">
-                        <div class="tip-number">6</div>
-                        <div class="tip-content">
-                            <h4>Desconexión digital</h4>
-                            <p>Establece horarios libres de pantallas para conectar con familia, leer o realizar hobbies.</p>
-                        </div>
-                    </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Recibís</h4>
+                    <p>Despacho en 24–48 horas hábiles. Rastreo en línea desde la confirmación hasta la entrega.</p>
                 </div>
-            </section>
+            </div>
+        </div>
 
-            <!-- Newsletter -->
-            <section class="newsletter">
-                <h3>¡Recibe consejos de salud en tu correo!</h3>
-                <p>Suscríbete a nuestro newsletter semanal con tips, artículos y recursos exclusivos.</p>
-                <form class="newsletter-form" id="newsletterForm">
-                    <input type="email" id="newsletter-email" placeholder="Tu correo electrónico" required>
-                    <button type="submit" id="newsletter-submit">
-                        <i class="fas fa-paper-plane"></i>
-                        Suscribirme
-                    </button>
-                </form>
-            </section>
-        </main>
+        <!-- Políticas -->
+        <div class="policies">
+            <div class="policy">
+                <div class="policy-icon"><i class="fas fa-rotate-left"></i></div>
+                <h4>Devoluciones en 30 días</h4>
+                <p>Si el producto llega con defecto de fábrica o no es lo que pediste, gestionamos el cambio o reembolso
+                    en hasta 30 días.</p>
+            </div>
+            <div class="policy">
+                <div class="policy-icon"><i class="fas fa-shield-halved"></i></div>
+                <h4>Garantía de marca</h4>
+                <p>Todos los productos eléctricos y mecánicos incluyen garantía directa del fabricante (mínimo 12
+                    meses).</p>
+            </div>
+            <div class="policy">
+                <div class="policy-icon"><i class="fas fa-truck-fast"></i></div>
+                <h4>Envío gratis desde RD$5,000</h4>
+                <p>Pedidos superiores a cinco mil pesos tienen envío sin costo a cualquier provincia.</p>
+            </div>
+            <div class="policy">
+                <div class="policy-icon"><i class="fas fa-lock"></i></div>
+                <h4>Datos y pagos seguros</h4>
+                <p>Procesamos pagos con encriptación SSL. No almacenamos datos de tarjetas.</p>
+            </div>
+        </div>
+
+        <!-- Preguntas frecuentes -->
+        <h2 style="font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 700; margin: 2.5rem 0 1rem;">
+            Preguntas frecuentes</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <div class="faq-question">¿Tienen local físico donde retirar pedidos? <span class="faq-icon"><i
+                            class="fas fa-plus"></i></span></div>
+                <div class="faq-answer">Sí. Nuestro almacén central está en Santo Domingo Este. Al finalizar la compra
+                    podés seleccionar "Retiro en almacén" y te enviamos la dirección exacta y el horario de atención.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">¿Puedo pedir asesoría técnica antes de comprar? <span class="faq-icon"><i
+                            class="fas fa-plus"></i></span></div>
+                <div class="faq-answer">Claro. Tenés un chat en línea de Lunes a Sábado de 8am a 6pm. También podés
+                    escribirnos por WhatsApp y un técnico de ferretería te orienta sin costo.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">¿Hacen entregas fuera de Santo Domingo? <span class="faq-icon"><i
+                            class="fas fa-plus"></i></span></div>
+                <div class="faq-answer">Sí, llegamos a todas las provincias del país a través de empresas de mensajería
+                    aliadas. El tiempo de entrega en el interior es de 48–72 horas hábiles.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">¿Emiten facturas con NCF para empresas? <span class="faq-icon"><i
+                            class="fas fa-plus"></i></span></div>
+                <div class="faq-answer">Sí. Al registrarte como cliente empresarial o indicarlo en el pedido, emitimos
+                    comprobante fiscal (NCF) válido ante la DGII.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">¿Qué hago si un producto llega dañado? <span class="faq-icon"><i
+                            class="fas fa-plus"></i></span></div>
+                <div class="faq-answer">Documentá el daño con fotos y contáctanos dentro de las 48 horas de recibido.
+                    Gestionamos el retiro del producto defectuoso y el reenvío o reembolso.</div>
+            </div>
+        </div>
+
+        <!-- Contacto -->
+        <div class="contact-bar">
+            <h3>¿Necesitás hablar con alguien?<br><span>Estamos de lunes a sábado, 8am–6pm.</span></h3>
+            <div class="contact-links">
+                <a href="#"><i class="fas fa-phone"></i> +1 (829) 555-3421</a>
+                <a href="#"><i class="fab fa-whatsapp"></i> +1 (849) 555-8800</a>
+                <a href="#"><i class="fas fa-envelope"></i> ventas@ferromax.com.do</a>
+            </div>
+        </div>
 
         <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <p>Farmacia Fharmanet - Comprometidos con tu salud y bienestar</p>
-                
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-phone-alt"></i>
-                        <span>+1 (849 628 5792)</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>Fharmanet@gmail.com</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-clock"></i>
-                        <span>Disponible 24/7</span>
-                    </div>
-                </div>
-                
-                <div class="copyright">
-                    <p>© 2026 Farmacia Fharmanet. Todos los derechos reservados.</p>
-                    <p>Desarrollado con ❤️ para tu salud y bienestar</p>
-                </div>
-            </div>
-        </footer>
+        <div class="footer">
+            <span>© 2026 FerroMax Online · República Dominicana</span>
+            <span><a href="#">Términos</a> | <a href="#">Privacidad</a> | <a href="#">Devoluciones</a></span>
+        </div>
     </div>
 
-    <!-- Notificación -->
-    <div id="notification" class="notification" style="display: none;"></div>
-
     <script>
-        // ===== CONFIGURACIÓN DE EMAILJS =====
-        // ⚠️ REEMPLAZA ESTOS VALORES con los que obtuviste de EmailJS
-        const PUBLIC_KEY = 'M92wKKtYMTj1mB944';       // Tu Public Key (de Citas)
-        const SERVICE_ID = 'service_8n52x1y';        // Tu Service ID (de Citas)
-        const NEWSLETTER_TEMPLATE_ID = 'template_yp8qcjp'; 
-
-        // Inicializar EmailJS
-        (function() {
-            emailjs.init(PUBLIC_KEY);
-            console.log('EmailJS inicializado correctamente');
-        })();
-
-        // Función para mostrar notificaciones
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.style.display = 'flex';
-            
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 4000);
-        }
-
-        // Función para manejar la suscripción al newsletter
-        function handleNewsletterSubmit(event) {
-            event.preventDefault();
-            
-            const emailInput = document.getElementById('newsletter-email');
-            const email = emailInput.value.trim();
-            const submitBtn = document.getElementById('newsletter-submit');
-            
-            // Validar email
-            if (!email || !email.includes('@') || !email.includes('.')) {
-                showNotification('Por favor, ingresa un correo electrónico válido.', 'error');
-                return;
-            }
-
-            // Cambiar estado del botón
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-            submitBtn.disabled = true;
-
-            // Preparar parámetros para la plantilla
-            const templateParams = {
-                to_email: email,
-                to_name: email.split('@')[0], // Nombre basado en el email
-                from_name: "Farmacia Fharmanet",
-                subscription_date: new Date().toLocaleDateString('es-ES', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                })
-            };
-
-            // Enviar correo usando EmailJS
-            emailjs.send(SERVICE_ID, NEWSLETTER_TEMPLATE_ID, templateParams)
-                .then(function(response) {
-                    console.log('Newsletter enviado correctamente', response);
-                    showNotification('✅ ¡Gracias por suscribirte! Revisa tu correo para más información.', 'success');
-                    emailInput.value = ''; // Limpiar campo
-                })
-                .catch(function(error) {
-                    console.error('Error al enviar newsletter:', error);
-                    showNotification('❌ Hubo un error al enviar el correo. Intenta nuevamente.', 'error');
-                })
-                .finally(function() {
-                    // Restaurar botón
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                });
-        }
-
-        // Función para descargar PDF (con colores actualizados)
-        function downloadPDF(type) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            const fecha = new Date().toLocaleDateString('es-ES');
-            
-            // NUEVOS COLORES: paleta Pharmanet
-            const primaryColor = [0, 95, 115];    // #005f73
-            const secondaryColor = [10, 147, 150]; // #0a9396
-            const accentColor = [238, 155, 0];     // #ee9b00
-            
-            // Encabezado común
-            doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-            doc.rect(0, 0, 210, 40, 'F');
-            
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(24);
-            doc.setFont("helvetica", "bold");
-            doc.text("Farmacia Fharmanet", 105, 20, { align: "center" });
-            doc.setFontSize(12);
-            doc.setFont("helvetica", "normal");
-            doc.text("Salud y Bienestar", 105, 30, { align: "center" });
-            
-            doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-            doc.setFontSize(18);
-            doc.setFont("helvetica", "bold");
-            
-            let title = "", content = "";
-            
-            switch(type) {
-                case 'alimentacion':
-                    title = "Guía de Alimentación Saludable";
-                    content = `
-                        Esta guía te ayudará a mantener una alimentación balanceada:
-                        
-                            DESAYUNO (7:00 - 8:00 AM)
-                        • Opción 1: Avena con frutas y frutos secos
-                        • Opción 2: Huevos revueltos con aguacate
-                        • Opción 3: Yogur griego con granola
-                         
-                            MEDIA MAÑANA (10:30 AM)
-                        • Fruta fresca (manzana, pera, plátano)
-                        • Puñado de nueces o almendras
-                        • Yogur natural
-                        
-                            ALMUERZO (1:00 - 2:00 PM)
-                        • Proteína: Pollo, pescado o legumbres
-                        • Carbohidratos: Arroz integral o quinoa
-                        • Vegetales: Ensalada variada
-                        
-                            MERIENDA (5:00 PM)
-                        • Batido de frutas natural
-                        • Palitos de zanahoria con hummus
-                        • Té verde con galletas integrales
-                        
-                            CENA (8:00 - 9:00 PM)
-                        • Crema de verduras
-                        • Ensalada con proteína ligera
-                        • Infusión relajante
-                        
-                        💧 HIDRATACIÓN: Bebe 8 vasos de agua al día
-                        
-                        🥗 RECETA SALUDABLE: Ensalada de quinoa
-                        Ingredientes: quinoa, pepino, tomate, aguacate, limón
-                        Preparación: Cocina la quinoa, mezcla con vegetales picados,
-                        aliña con limón y aceite de oliva.
-                        
-                        Recuerda: ¡La alimentación balanceada es la base de una vida saludable!
-                    `;
-                    break;
-                    
-                case 'checklist':
-                    title = "Checklist de Salud por Edad";
-                    content = `
-                        Mantén al día tus chequeos médicos:
-                        
-                            20-30 AÑOS
-                        ✓ Examen físico general (anual)
-                        ✓ Presión arterial (cada 2 años)
-                        ✓ Colesterol (cada 5 años)
-                        ✓ Papanicolaou (mujeres, cada 3 años)
-                        ✓ Autoexamen testicular (hombres, mensual)
-                        
-                            30-40 AÑOS
-                        ✓ Examen físico completo (anual)
-                        ✓ Glucosa en sangre (cada 3 años)
-                        ✓ Examen de la vista (cada 2 años)
-                        ✓ Examen dental (cada 6 meses)
-                        ✓ Perfil tiroideo (cada 5 años)
-                        
-                           40-50 AÑOS
-                        ✓ Mamografía (mujeres, anual)
-                        ✓ Próstata (hombres, anual)
-                        ✓ Colonoscopia (cada 10 años)
-                        ✓ Densitometría ósea (cada 5 años)
-                        ✓ Electrocardiograma (cada 2 años)
-                        
-                           50+ AÑOS
-                        ✓ Examen físico completo (anual)
-                        ✓ Vacuna neumococo (una dosis)
-                        ✓ Vacuna herpes zóster
-                        ✓ Evaluación cognitiva (anual)
-                        ✓ Prueba de equilibrio (anual)
-                        
-                        📅 RECOMENDACIONES GENERALES:
-                        • Vacuna influenza (anual)
-                        • Vitamina D (suplemento diario)
-                        • Examen de piel (anual)
-                        • Salud bucal (cada 6 meses)
-                    `;
-                    break;
-                    
-                case 'meditacion':
-                    title = "Guía de Meditación y Mindfulness";
-                    content = `
-                        Aprende a meditar paso a paso:
-                        
-                        🌅 MEDITACIÓN MATUTINA (5 minutos)
-                        1. Siéntate cómodamente con la espalda recta
-                        2. Cierra los ojos suavemente
-                        3. Respira profundamente 3 veces
-                        4. Observa tu respiración natural
-                        5. Cuando la mente divague, vuelve a la respiración
-                        
-                        ☀️ MINDFULNESS DURANTE EL DÍA
-                        • Al comer: saborea cada bocado sin distracciones
-                        • Al caminar: siente cada paso en el suelo
-                        • Al escuchar: presta atención plena a la otra persona
-                        
-                        🌆 MEDITACIÓN NOCTURNA (10 minutos)
-                        1. Acuéstate boca arriba
-                        2. Escanea tu cuerpo de pies a cabeza
-                        3. Relaja cada parte conscientemente
-                        4. Visualiza un lugar tranquilo
-                        5. Agradece por el día
-                        
-                        🧘 EJERCICIOS DE RESPIRACIÓN
-                        
-                        Respiración 4-7-8:
-                        • Inhala por nariz: 4 segundos
-                        • Retén el aire: 7 segundos
-                        • Exhala por boca: 8 segundos
-                        • Repite 4 veces
-                        
-                        Respiración cuadrada:
-                        • Inhala: 4 segundos
-                        • Retén: 4 segundos
-                        • Exhala: 4 segundos
-                        • Pausa: 4 segundos
-                        
-                        🌟 BENEFICIOS DE MEDITAR:
-                        ✓ Reduce el estrés y la ansiedad
-                        ✓ Mejora la concentración
-                        ✓ Aumenta la autoconciencia
-                        ✓ Promueve la salud emocional
-                        ✓ Mejora la calidad del sueño
-                    `;
-                    break;
-                    
-                case 'ejercicios':
-                    title = "Rutina de Ejercicios en Casa - 30 Días";
-                    content = `
-                        Plan para principiantes - 20 minutos diarios
-                        
-                        📅 SEMANA 1 (Inicio)
-                        Día 1-3: 15 min caminata + estiramientos
-                        Día 4-5: 10 sentadillas + 10 flexiones (3 rondas)
-                        Día 6-7: Descanso activo (caminata suave)
-                        
-                        📅 SEMANA 2 (Adaptación)
-                        Día 8-10: 15 sentadillas + 12 flexiones + 20 jumping jacks
-                        Día 11-12: Agrega plancha 30 segundos
-                        Día 13-14: Descanso activo
-                        
-                        📅 SEMANA 3 (Progreso)
-                        Día 15-17: Circuito completo 3 rondas:
-                        • 20 sentadillas
-                        • 15 flexiones (rodillas si es necesario)
-                        • 30 seg plancha
-                        • 20 jumping jacks
-                        
-                        Día 18-19: Agrega zancadas (10 cada pierna)
-                        Día 20-21: Descanso activo
-                        
-                        📅 SEMANA 4 (Consolidación)
-                        Día 22-24: Circuito avanzado 4 rondas:
-                        • 25 sentadillas
-                        • 20 flexiones
-                        • 45 seg plancha
-                        • 20 zancadas por pierna
-                        • 30 jumping jacks
-                        
-                        Día 25-26: Añade escaladores 30 seg
-                        Día 27-28: Desafío final (5 rondas)
-                        Día 29-30: Evaluación y descanso
-                        
-                        💪 EJERCICIOS EXPLICADOS:
-                        
-                        Sentadillas: Pies al ancho de hombros, baja como si
-                        fueras a sentarte, mantén espalda recta.
-                        
-                        Flexiones: Manos bajo hombros, cuerpo recto, baja
-                        pecho al suelo. Puedes hacerlas con rodillas.
-                        
-                        Plancha: Apoyo en antebrazos y puntas de pies,
-                        cuerpo recto como tabla.
-                        
-                        Zancadas: Paso adelante, baja rodilla trasera a 90°,
-                        alterna piernas.
-                        
-                        Jumping jacks: Salta abriendo piernas y brazos,
-                        vuelve a cerrar.
-                        
-                        🔥 CONSEJOS:
-                        • Calienta 5 minutos antes
-                        • Estira 5 minutos después
-                        • Hidrátate durante el ejercicio
-                        • Escucha a tu cuerpo y descansa si es necesario
-                        • ¡La constancia es la clave!
-                    `;
-                    break;
-            }
-            
-            // Agregar título
-            doc.setFontSize(20);
-            doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
-            doc.text(title, 20, 50);
-            
-            // Línea decorativa
-            doc.setDrawColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
-            doc.setLineWidth(0.5);
-            doc.line(20, 55, 190, 55);
-            
-            // Contenido
-            doc.setFontSize(11);
-            doc.setTextColor(60, 60, 60);
-            doc.setFont("helvetica", "normal");
-            
-            const lines = doc.splitTextToSize(content, 170);
-            doc.text(lines, 20, 70);
-            
-            // Footer
-            const yPos = Math.min(doc.internal.pageSize.height - 30, 70 + (lines.length * 7));
-            
-            doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-            doc.line(20, yPos, 190, yPos);
-            
-            doc.setFontSize(9);
-            doc.setTextColor(100, 100, 100);
-            doc.text(`© Farmacia Fharmanet - Guía generada el ${fecha}`, 105, yPos + 10, { align: "center" });
-            doc.text("www.farmaciafharmanet.com/bienestar", 105, yPos + 15, { align: "center" });
-            
-            // Descargar PDF
-            doc.save(`Fharmanet_${type}_${fecha}.pdf`);
-            
-            showNotification(`✅ Guía de ${title} descargada correctamente`, 'success');
-        }
-
-        // Función para abrir artículos (con colores actualizados)
-        function openArticle(articleId) {
-            // Definir el contenido de cada artículo
-            const articles = {
-                'alimentos-inmunologico': {
-                    title: '10 alimentos que fortalecen tu sistema inmunológico',
-                    category: 'Nutrición',
-                    content: `
-                        <div style="background: linear-gradient(135deg, #fff5f5, #ffe5e5); padding: 2rem; border-radius: 20px;">
-                            <h2 style="color: #005f73;">🥗 Alimentos poderosos para tus defensas</h2>
-                            
-                            <div style="display: grid; gap: 1.5rem;">
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 5px solid #ff6b6b;">
-                                    <h3 style="color: #ae2012;">1. Cítricos (Naranjas, limones, pomelos)</h3>
-                                    <p>Ricos en vitamina C, aumentan la producción de glóbulos blancos, clave para combatir infecciones.</p>
-                                    <p><strong>💡 Tip:</strong> Toma un vaso de agua tibia con limón en ayunas.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 5px solid #4ecdc4;">
-                                    <h3 style="color: #0a9396;">2. Brócoli</h3>
-                                    <p>Superalimento lleno de vitaminas A, C y E, además de fibra y antioxidantes.</p>
-                                    <p><strong>💡 Tip:</strong> Cocínalo al vapor para conservar sus nutrientes.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 5px solid #96ceb4;">
-                                    <h3 style="color: #0a9396;">3. Ajo</h3>
-                                    <p>Contiene alicina, un compuesto que fortalece las defensas y combate infecciones.</p>
-                                    <p><strong>💡 Tip:</strong> Machácalo y déjalo reposar 10 minutos antes de cocinar.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 5px solid #f4a261;">
-                                    <h3 style="color: #ae2012;">4. Jengibre</h3>
-                                    <p>Antiinflamatorio y antioxidante, ayuda a reducir la inflamación y combatir bacterias.</p>
-                                    <p><strong>💡 Tip:</strong> Prepara té de jengibre con miel y limón.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 5px solid #4a9eff;">
-                                    <h3 style="color: #0a9396;">5. Espinacas</h3>
-                                    <p>Ricas en vitamina C, antioxidantes y betacaroteno. Cocinarlas ligeramente facilita la absorción de nutrientes.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 5px solid #9b59b6;">
-                                    <h3 style="color: #9b59b6;">6. Yogur</h3>
-                                    <p>Los probióticos fortalecen la flora intestinal, base del sistema inmunológico.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 5px solid #e67e22;">
-                                    <h3 style="color: #e67e22;">7. Almendras</h3>
-                                    <p>Vitamina E y grasas saludables que protegen las células del daño oxidativo.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 5px solid #f1c40f;">
-                                    <h3 style="color: #f39c12;">8. Cúrcuma</h3>
-                                    <p>Potente antiinflamatorio, mejora la respuesta inmune. Combínala con pimienta negra para mejor absorción.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 5px solid #16a085;">
-                                    <h3 style="color: #16a085;">9. Té verde</h3>
-                                    <p>Flavonoides y antioxidantes que potencian las defensas.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 5px solid #27ae60;">
-                                    <h3 style="color: #27ae60;">10. Kiwi</h3>
-                                    <p>Más vitamina C que una naranja, además de folato y potasio.</p>
-                                </div>
-                            </div>
-                            
-                            <div style="background: linear-gradient(135deg, #005f73, #0a9396); color: white; padding: 2rem; border-radius: 15px; margin-top: 2rem;">
-                                <h3 style="color: white;">💡 Consejo adicional de Fharmanet</h3>
-                                <p>Combina estos alimentos con hábitos saludables: dormir bien, ejercicio moderado y manejo del estrés para maximizar sus beneficios. Recuerda consultar a tu médico antes de hacer cambios significativos en tu dieta.</p>
-                            </div>
-                        </div>
-                    `
-                },
-                'respiracion-ansiedad': {
-                    title: 'Técnicas de respiración para reducir la ansiedad',
-                    category: 'Salud Mental',
-                    content: `
-                        <div style="background: linear-gradient(135deg, #f0f9ff, #e6f3ff); padding: 2rem; border-radius: 20px;">
-                            <h2 style="color: #005f73;">🌬️ Respira, suelta, sana</h2>
-                            
-                            <div style="display: grid; gap: 2rem;">
-                                <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
-                                    <h3 style="color: #0a9396; display: flex; align-items: center; gap: 1rem;">
-                                        <span style="background: #0a9396; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">1</span>
-                                        Respiración diafragmática
-                                    </h3>
-                                    <p><strong>Cómo hacerlo:</strong> Siéntate cómodamente, coloca una mano en el pecho y otra en el abdomen. Inhala profundamente por la nariz sintiendo cómo se eleva el abdomen (no el pecho). Exhala lentamente por la boca.</p>
-                                    <p><strong>⏱️ Duración:</strong> 5-10 repeticiones</p>
-                                    <p><strong>🎯 Beneficio:</strong> Reduce la frecuencia cardíaca y la presión arterial.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
-                                    <h3 style="color: #005f73; display: flex; align-items: center; gap: 1rem;">
-                                        <span style="background: #005f73; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">2</span>
-                                        Técnica 4-7-8
-                                    </h3>
-                                    <p><strong>Cómo hacerlo:</strong> Inhala por la nariz contando 4 segundos. Mantén la respiración contando 7 segundos. Exhala por la boca contando 8 segundos.</p>
-                                    <p><strong>⏱️ Duración:</strong> 4 repeticiones</p>
-                                    <p><strong>🎯 Beneficio:</strong> Calma el sistema nervioso rápidamente.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
-                                    <h3 style="color: #ae2012; display: flex; align-items: center; gap: 1rem;">
-                                        <span style="background: #ae2012; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">3</span>
-                                        Respiración alternada
-                                    </h3>
-                                    <p><strong>Cómo hacerlo:</strong> Tapa la fosa nasal derecha con el pulgar, inhala por la izquierda. Tapa la izquierda con el anular, destapa la derecha y exhala. Inhala por derecha, tapa y exhala por izquierda.</p>
-                                    <p><strong>⏱️ Duración:</strong> 5 ciclos</p>
-                                    <p><strong>🎯 Beneficio:</strong> Equilibra los hemisferios cerebrales.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
-                                    <h3 style="color: #9b59b6; display: flex; align-items: center; gap: 1rem;">
-                                        <span style="background: #9b59b6; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">4</span>
-                                        Respiración cuadrada
-                                    </h3>
-                                    <p><strong>Cómo hacerlo:</strong> Inhala contando 4, retén 4, exhala 4, retén 4. Visualiza un cuadrado mientras lo haces.</p>
-                                    <p><strong>⏱️ Duración:</strong> 5 minutos</p>
-                                    <p><strong>🎯 Beneficio:</strong> Mejora la concentración.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
-                                    <h3 style="color: #ee9b00; display: flex; align-items: center; gap: 1rem;">
-                                        <span style="background: #ee9b00; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">5</span>
-                                        Respiración consciente
-                                    </h3>
-                                    <p>Simplemente observa tu respiración natural sin modificarla, notando el aire entrando y saliendo. Cuando la mente divague, suavemente regresa la atención a la respiración.</p>
-                                </div>
-                            </div>
-                            
-                            <div style="background: linear-gradient(135deg, #0a9396, #005f73); color: white; padding: 2rem; border-radius: 20px; margin-top: 2rem;">
-                                <h3 style="color: white;">📱 Apps recomendadas por Fharmanet</h3>
-                                <p>Prueba estas aplicaciones para sesiones guiadas:</p>
-                                <ul style="margin-left: 1.5rem;">
-                                    <li><strong>Calm</strong> - Meditaciones guiadas y paisajes sonoros</li>
-                                    <li><strong>Headspace</strong> - Ejercicios diarios de mindfulness</li>
-                                    <li><strong>Insight Timer</strong> - Meditaciones gratuitas de expertos</li>
-                                </ul>
-                            </div>
-                        </div>
-                    `
-                },
-                'rutina-20-minutos': {
-                    title: 'Rutina de 20 minutos para hacer en casa',
-                    category: 'Ejercicio',
-                    content: `
-                        <div style="background: linear-gradient(135deg, #f0fdf4, #e6f9ec); padding: 2rem; border-radius: 20px;">
-                            <h2 style="color: #005f73;">💪 Ejercítate en casa - 20 minutos</h2>
-                            
-                            <div style="background: #ae2012; color: white; padding: 2rem; border-radius: 20px; margin-bottom: 2rem;">
-                                <h3 style="color: white; text-align: center;">🔥 CALENTAMIENTO (3 minutos)</h3>
-                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
-                                    <div><strong>1.</strong> Rotación de cuello<br>30 seg</div>
-                                    <div><strong>2.</strong> Círculos de brazos<br>30 seg</div>
-                                    <div><strong>3.</strong> Rotación de cadera<br>30 seg</div>
-                                    <div><strong>4.</strong> Rodillas al pecho<br>30 seg</div>
-                                    <div><strong>5.</strong> Trotar en el lugar<br>1 min</div>
-                                </div>
-                            </div>
-                            
-                            <h3 style="color: #005f73; text-align: center;">⚡ CIRCUITO PRINCIPAL (15 minutos)</h3>
-                            <p style="text-align: center; background: #f8f9fa; padding: 1rem; border-radius: 50px; margin-bottom: 2rem;">
-                                <strong>Realiza cada ejercicio 45 segundos, descansa 15 segundos. Completa 2 rondas.</strong>
-                            </p>
-                            
-                            <div style="display: grid; gap: 1.5rem;">
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 8px solid #005f73;">
-                                    <h3 style="color: #005f73;">Ejercicio 1: Sentadillas</h3>
-                                    <p>Pies al ancho de hombros, baja como si fueras a sentarte, mantén la espalda recta.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 8px solid #ae2012;">
-                                    <h3 style="color: #ae2012;">Ejercicio 2: Flexiones</h3>
-                                    <p>Manos bajo hombros, cuerpo recto, baja el pecho hacia el suelo. Puedes hacerlas con rodillas si eres principiante.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 8px solid #0a9396;">
-                                    <h3 style="color: #0a9396;">Ejercicio 3: Zancadas alternas</h3>
-                                    <p>Da un paso adelante y baja hasta que ambas rodillas formen 90 grados. Alterna piernas.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 8px solid #ee9b00;">
-                                    <h3 style="color: #ee9b00;">Ejercicio 4: Plancha</h3>
-                                    <p>Apoyado en antebrazos y puntas de pies, cuerpo recto como una tabla. Mantén el abdomen contraído.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 8px solid #9b59b6;">
-                                    <h3 style="color: #9b59b6;">Ejercicio 5: Escaladores</h3>
-                                    <p>En posición de plancha, lleva rodillas alternas hacia el pecho rápidamente. Mantén el ritmo.</p>
-                                </div>
-                                
-                                <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 8px solid #16a085;">
-                                    <h3 style="color: #16a085;">Ejercicio 6: Puente de glúteos</h3>
-                                    <p>Acostado boca arriba con rodillas flexionadas, eleva la cadera hacia arriba. Aprieta glúteos al subir.</p>
-                                </div>
-                            </div>
-                            
-                            <div style="background: linear-gradient(135deg, #ee9b00, #ffb347); color: var(--dark); padding: 2rem; border-radius: 20px; margin-top: 2rem;">
-                                <h3 style="color: var(--dark);">🧘 ESTIRAMIENTOS (2 minutos)</h3>
-                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
-                                    <div><strong>Cuádriceps</strong><br>30 seg cada pierna</div>
-                                    <div><strong>Espalda</strong><br>30 seg</div>
-                                    <div><strong>Hombros</strong><br>30 seg</div>
-                                </div>
-                            </div>
-                            
-                            <div style="background: linear-gradient(135deg, #005f73, #0a9396); color: white; padding: 2rem; border-radius: 20px; margin-top: 2rem;">
-                                <h3 style="color: white;">💧 Consejos de Fharmanet</h3>
-                                <ul style="margin-left: 1.5rem;">
-                                    <li>Hidrátate antes, durante y después del ejercicio</li>
-                                    <li>Escucha a tu cuerpo y adapta la intensidad</li>
-                                    <li>Respira correctamente (no contengas el aire)</li>
-                                    <li>Usa ropa cómoda y calzado adecuado</li>
-                                    <li>Si sientes dolor, detente y consulta a un profesional</li>
-                                </ul>
-                            </div>
-                        </div>
-                    `
-                }
-            };
-
-            const article = articles[articleId];
-            if (article) {
-                // Crear una nueva ventana con el contenido del artículo
-                const articleWindow = window.open('', '_blank');
-                articleWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html lang="es">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>${article.title} - Farmacia Fharmanet</title>
-                        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-                        <style>
-                            * {
-                                margin: 0;
-                                padding: 0;
-                                box-sizing: border-box;
-                            }
-                            body {
-                                font-family: 'Poppins', sans-serif;
-                                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-                                color: #212529;
-                                line-height: 1.8;
-                                padding: 2rem;
-                            }
-                            :root {
-                                --primary: #005f73;
-                                --secondary: #0a9396;
-                                --accent: #ee9b00;
-                                --wellness: #0a9396;
-                            }
-                            .article-container {
-                                max-width: 1000px;
-                                margin: 0 auto;
-                                background: white;
-                                border-radius: 30px;
-                                padding: 3rem;
-                                box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-                            }
-                            .article-header {
-                                margin-bottom: 2rem;
-                                text-align: center;
-                            }
-                            .article-category {
-                                display: inline-block;
-                                background: linear-gradient(135deg, #0a9396, #005f73);
-                                color: white;
-                                padding: 0.8rem 2rem;
-                                border-radius: 50px;
-                                font-size: 1.1rem;
-                                font-weight: 700;
-                                margin-bottom: 1.5rem;
-                                border: 3px solid white;
-                                box-shadow: 0 5px 15px rgba(10, 147, 150, 0.3);
-                            }
-                            .article-title {
-                                font-size: 2.8rem;
-                                color: var(--primary);
-                                margin-bottom: 1rem;
-                                font-weight: 800;
-                            }
-                            .article-meta {
-                                color: #666;
-                                font-size: 1rem;
-                                display: flex;
-                                justify-content: center;
-                                gap: 2rem;
-                                margin-bottom: 2rem;
-                            }
-                            .article-content {
-                                color: #444;
-                            }
-                            .back-button {
-                                display: inline-flex;
-                                align-items: center;
-                                gap: 10px;
-                                background: var(--primary);
-                                color: white;
-                                padding: 15px 30px;
-                                border-radius: 50px;
-                                text-decoration: none;
-                                margin-top: 2rem;
-                                transition: all 0.3s ease;
-                                font-weight: 600;
-                                border: 2px solid white;
-                                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-                            }
-                            .back-button:hover {
-                                background: var(--secondary);
-                                transform: translateY(-3px) scale(1.05);
-                                box-shadow: 0 10px 25px rgba(10, 147, 150, 0.3);
-                            }
-                            @media print {
-                                .back-button {
-                                    display: none;
-                                }
-                            }
-                            @media (max-width: 768px) {
-                                .article-container {
-                                    padding: 1.5rem;
-                                }
-                                .article-title {
-                                    font-size: 2rem;
-                                }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="article-container">
-                            <div class="article-header">
-                                <span class="article-category">${article.category}</span>
-                                <h1 class="article-title">${article.title}</h1>
-                                <div class="article-meta">
-                                    <span><i class="far fa-calendar" style="color: var(--wellness);"></i> 19 de febrero, 2026</span>
-                                    <span><i class="far fa-clock" style="color: var(--wellness);"></i> 8 min de lectura</span>
-                                </div>
-                            </div>
-                            <div class="article-content">
-                                ${article.content}
-                            </div>
-                            <div style="text-align: center;">
-                                <a href="#" onclick="window.print(); return false;" class="back-button" style="background: var(--wellness); margin-right: 1rem;">
-                                    <i class="fas fa-print"></i>
-                                    Imprimir artículo
-                                </a>
-                                <a href="#" onclick="window.close()" class="back-button">
-                                    <i class="fas fa-arrow-left"></i>
-                                    Cerrar
-                                </a>
-                            </div>
-                        </div>
-                    </body>
-                    </html>
-                `);
-                articleWindow.document.close();
-            }
-        }
-
-        // Animación de entrada para elementos al hacer scroll
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configurar el formulario del newsletter
-            const newsletterForm = document.getElementById('newsletterForm');
-            if (newsletterForm) {
-                newsletterForm.addEventListener('submit', handleNewsletterSubmit);
-            }
-
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
-
-            // Observar elementos para animación de scroll
-            document.querySelectorAll('.category-card, .article-card, .resource-item, .tip-card').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(30px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
-        });
-
-        // Efecto hover mejorado para tarjetas
-        const cards = document.querySelectorAll('.category-card, .article-card, .resource-item');
-        cards.forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-10px)';
-            });
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
+        // Acordeón FAQ
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                const parent = q.parentElement;
+                parent.classList.toggle('active');
             });
         });
     </script>
 </body>
+
 </html>

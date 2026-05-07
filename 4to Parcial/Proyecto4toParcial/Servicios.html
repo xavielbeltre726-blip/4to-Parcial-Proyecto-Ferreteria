@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Servicios | Ferretería El Martillo Azul</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #fef7e6 0%, #f5ebd0 100%);
+            color: #1a2a3a;
+        }
+
+        :root {
+            --amarillo: #f9b81b;
+            --amarillo-oscuro: #e0a30f;
+            --amarillo-suave: #ffecb3;
+            --azul-marino: #0b2b4b;
+            --azul-profundo: #0a2a44;
+            --azul-acento: #1e4a76;
+            --azul-claro: #eef3fc;
+            --blanco: #ffffff;
+            --success: #27ae60;
+            --danger: #c0392b;
+            --shadow-sm: 0 6px 14px rgba(0, 20, 40, 0.06);
+            --shadow-md: 0 12px 28px rgba(0, 20, 40, 0.1);
+            --shadow-hover: 0 18px 32px rgba(0, 0, 0, 0.12);
+            --gradient-primary: linear-gradient(135deg, #f9b81b, #f39c12);
+            --gradient-secondary: linear-gradient(135deg, #0b2b4b, #0f3b5f);
+        }
+
+        .header {
+            background: var(--azul-marino);
+            padding: 1.2rem 2rem;
+            box-shadow: var(--shadow-md);
+            border-bottom: 5px solid var(--amarillo);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--gradient-primary);
+            width: 55px;
+            height: 55px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--azul-marino);
+        }
+
+        .logo-text h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text h1 span {
+            color: var(--amarillo);
+        }
+
+        .logo-text p {
+            font-size: 0.7rem;
+            color: #bdd4ff;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-button {
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: 0.25s;
+        }
+
+        .nav-button:hover {
+            background: rgba(249, 184, 27, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-button.active {
+            background: var(--amarillo);
+            color: var(--azul-marino);
+        }
+
+        .hero {
+            background: linear-gradient(105deg, var(--azul-profundo), var(--azul-acento));
+            border-radius: 28px;
+            margin: 2rem 2rem 0 2rem;
+            padding: 2.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .hero::before {
+            content: '🔧';
+            position: absolute;
+            bottom: -30px;
+            right: 20px;
+            font-size: 10rem;
+            opacity: 0.08;
+            transform: rotate(10deg);
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+        }
+
+        .hero h1 i {
+            color: var(--amarillo);
+            margin-right: 12px;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            max-width: 650px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+            border: 1px solid #ffe0a0;
+            text-align: center;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--amarillo);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--amarillo-suave);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.2rem;
+            font-size: 2.5rem;
+            color: var(--azul-marino);
+            transition: all 0.3s;
+        }
+
+        .service-card:hover .service-icon {
+            background: var(--gradient-primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .service-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: var(--azul-marino);
+        }
+
+        .service-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+        }
+
+        .btn-solicitar {
+            background: var(--gradient-secondary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-solicitar:hover {
+            background: linear-gradient(135deg, var(--azul-acento), var(--azul-marino));
+            transform: translateY(-2px);
+            gap: 12px;
+        }
+
+        .price-section {
+            background: white;
+            border-radius: 28px;
+            padding: 2rem;
+            margin: 3rem 0;
+            border: 1px solid #ffe0a0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .price-section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--azul-marino);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .price-section h2 i {
+            color: var(--amarillo);
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .price-table th {
+            background: var(--azul-marino);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .price-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        .contact-form-section {
+            background: linear-gradient(115deg, #eef5ff, #ffffff);
+            border-radius: 28px;
+            padding: 2rem;
+            margin: 3rem 0;
+            border: 1px solid #ffe0a0;
+        }
+
+        .contact-form-section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--azul-marino);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--azul-marino);
+            font-size: 0.85rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--amarillo);
+        }
+
+        .btn-enviar {
+            background: var(--gradient-primary);
+            color: var(--azul-marino);
+            border: none;
+            padding: 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.5rem;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+        }
+
+        .btn-enviar:hover {
+            background: #ffce4a;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            background: var(--azul-marino);
+            color: #eef3fc;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-top: 4px solid var(--amarillo);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 500;
+            border-left: 5px solid var(--success);
+            max-width: 350px;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .notification.error {
+            border-left-color: var(--danger);
+            color: var(--danger);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+
+            .price-table th,
+            .price-table td {
+                padding: 0.7rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-hard-hat"></i></div>
+                <div class="logo-text">
+                    <h1>El Martillo <span>Azul</span></h1>
+                    <p>Herramientas que construyen futuro</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <a href="index.html" class="nav-button"><i class="fas fa-store"></i> Tienda</a>
+                <a href="#" class="nav-button active"><i class="fas fa-tools"></i> Servicios</a>
+                <a href="index.html" class="nav-button"><i class="fas fa-home"></i> Inicio</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1><i class="fas fa-wrench"></i> Servicios profesionales</h1>
+        <p>No solo vendemos herramientas, también te ayudamos a usarlas. Asesoría técnica, alquiler de equipos,
+            presupuestos sin compromiso y mucho más.</p>
+    </section>
+
+    <div class="main-content">
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-chalkboard-user"></i></div>
+                <h3>Asesoría Técnica</h3>
+                <p>¿No sabes qué herramienta necesitas? Nuestros especialistas te orientan sin costo.</p><button
+                    class="btn-solicitar" onclick="scrollToForm()"><i class="fas fa-comment"></i> Consultar
+                    ahora</button>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-tools"></i></div>
+                <h3>Talleres y Capacitación</h3>
+                <p>Cursos mensuales de bricolaje, uso seguro de herramientas eléctricas y mantenimiento.</p><button
+                    class="btn-solicitar" onclick="scrollToForm()"><i class="fas fa-calendar-alt"></i>
+                    Inscribirme</button>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                <h3>Cotizaciones Mayoristas</h3>
+                <p>Presupuestos personalizados con descuentos por volumen y asesoría en obra.</p><button
+                    class="btn-solicitar" onclick="scrollToForm()"><i class="fas fa-calculator"></i> Solicitar
+                    cotización</button>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-truck-fast"></i></div>
+                <h3>Envío a Domicilio</h3>
+                <p>Entregas en 24-48 horas hábiles. Envíos gratis desde RD$5,000.</p><button class="btn-solicitar"
+                    onclick="scrollToForm()"><i class="fas fa-map-marker-alt"></i> Consultar cobertura</button>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                <h3>Alquiler de Herramientas</h3>
+                <p>Alquila por día o semana. Equipo revisado y garantizado.</p><button class="btn-solicitar"
+                    onclick="scrollToForm()"><i class="fas fa-calendar-week"></i> Ver precios</button>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fas fa-hard-hat"></i></div>
+                <h3>Seguridad y EPP</h3>
+                <p>Asesoría en equipos de protección personal (cascos, guantes, gafas, arneses).</p><button
+                    class="btn-solicitar" onclick="scrollToForm()"><i class="fas fa-shield-alt"></i> Pedir
+                    asesoría</button>
+            </div>
+        </div>
+
+        <div class="price-section">
+            <h2><i class="fas fa-hand-holding-usd"></i> Alquiler de herramientas — precios por día</h2>
+            <p>Equipos revisados y garantizados. Depósito reembolsable del 30% del valor.</p>
+            <table class="price-table">
+                <thead>
+                    <tr>
+                        <th>Herramienta</th>
+                        <th>Precio por día (RD$)</th>
+                        <th>Depósito (RD$)</th>
+                        <th>Disponibilidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Taladro Percutor 750W</td>
+                        <td>450</td>
+                        <td>1,200</td>
+                        <td>Alta</td>
+                    </tr>
+                    <tr>
+                        <td>Sierra Circular 1200W</td>
+                        <td>600</td>
+                        <td>1,800</td>
+                        <td>Media</td>
+                    </tr>
+                    <tr>
+                        <td>Andamio Metálico (sección 1.5m)</td>
+                        <td>350</td>
+                        <td>1,000</td>
+                        <td>Alta</td>
+                    </tr>
+                    <tr>
+                        <td>Compresor de Aire 24L</td>
+                        <td>800</td>
+                        <td>2,500</td>
+                        <td>Baja</td>
+                    </tr>
+                    <tr>
+                        <td>Lijadora Orbital</td>
+                        <td>350</td>
+                        <td>1,000</td>
+                        <td>Alta</td>
+                    </tr>
+                    <tr>
+                        <td>Nivel Láser 3D</td>
+                        <td>500</td>
+                        <td>2,000</td>
+                        <td>Media</td>
+                    </tr>
+                    <tr>
+                        <td>Martillo Demoledor 2kg</td>
+                        <td>700</td>
+                        <td>2,200</td>
+                        <td>Alta</td>
+                    </tr>
+                    <tr>
+                        <td>Escalera Tijera 6 escalones</td>
+                        <td>200</td>
+                        <td>600</td>
+                        <td>Alta</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: #666;"><i class="fas fa-info-circle"></i> El alquiler
+                incluye herramienta en perfecto estado. El depósito se reembolsa al devolver el equipo sin daños.</p>
+        </div>
+
+        <div class="contact-form-section" id="form-section">
+            <h2><i class="fas fa-envelope"></i> Solicita tu servicio</h2>
+            <p>Completa el formulario y nos pondremos en contacto contigo en menos de 24 horas.</p>
+            <form id="serviceForm" class="form-grid">
+                <div class="form-group"><label>Nombre completo *</label><input type="text" id="nombre"
+                        placeholder="Ej: Juan Pérez" required></div>
+                <div class="form-group"><label>Teléfono *</label><input type="tel" id="telefono"
+                        placeholder="809-555-1234" required></div>
+                <div class="form-group"><label>Correo electrónico *</label><input type="email" id="email"
+                        placeholder="juan@ejemplo.com" required></div>
+                <div class="form-group"><label>Servicio que necesitas *</label><select id="servicio" required>
+                        <option value="">Selecciona...</option>
+                        <option>Asesoría técnica</option>
+                        <option>Taller / Capacitación</option>
+                        <option>Cotización mayorista</option>
+                        <option>Envío a domicilio</option>
+                        <option>Alquiler de herramienta</option>
+                        <option>Equipo de protección (EPP)</option>
+                        <option>Otro</option>
+                    </select></div>
+                <div class="form-group full-width"><label>Mensaje o detalles adicionales</label><textarea id="mensaje"
+                        rows="3" placeholder="Cuéntanos qué necesitas, fechas, cantidades, etc."></textarea></div>
+                <div class="form-group full-width"><button type="button" class="btn-enviar" id="enviarBtn"><i
+                            class="fas fa-paper-plane"></i> Enviar solicitud</button></div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p><strong>Ferretería El Martillo Azul</strong> — Calidad y resistencia desde 1998</p>
+        <p style="font-size: 0.8rem;">📍 Av. Independencia #123, Santo Domingo | 📞 (809) 555-6789 | ✉️
+            servicio@martilloazul.com</p>
+        <p style="font-size: 0.7rem;">Horario: Lun-Vie 8am-6pm | Sáb 9am-2pm</p>
+    </footer>
+
+    <script>
+        // Función para mostrar notificaciones
+        function showNotification(message, isError = false) {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            const notif = document.createElement('div');
+            notif.className = `notification ${isError ? 'error' : ''}`;
+            notif.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${message}`;
+            document.body.appendChild(notif);
+            setTimeout(() => notif.remove(), 5000);
+        }
+
+        function scrollToForm() {
+            document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Envío del formulario (simulado, exitoso SIEMPRE, pero con validación)
+        document.getElementById('enviarBtn').addEventListener('click', function () {
+            const nombre = document.getElementById('nombre').value.trim();
+            const telefono = document.getElementById('telefono').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const servicio = document.getElementById('servicio').value;
+            const mensaje = document.getElementById('mensaje').value.trim();
+
+            // Validaciones
+            if (!nombre || !telefono || !email || !servicio) {
+                showNotification('Por favor, completa todos los campos obligatorios.', true);
+                return;
+            }
+            if (!email.includes('@') || !email.includes('.')) {
+                showNotification('Ingresa un correo electrónico válido.', true);
+                return;
+            }
+
+            // Simular envío exitoso
+            const btn = document.getElementById('enviarBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            btn.disabled = true;
+
+            // Aquí podrías agregar un envío real a un servidor o EmailJS
+            // Por ahora, simulamos éxito después de 1 segundo
+            setTimeout(() => {
+                console.log('Solicitud de servicio:', { nombre, telefono, email, servicio, mensaje });
+                showNotification('✅ ¡Solicitud enviada! Nos pondremos en contacto contigo en las próximas 24 horas.', false);
+                document.getElementById('serviceForm').reset();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>

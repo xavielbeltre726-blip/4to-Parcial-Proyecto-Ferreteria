@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Ferretería El Martillo Azul | Herramientas y materiales profesionales</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <title>FERROMAX | Herramientas y materiales profesionales</title>
+    <!-- Tipografías elegantes y modernas -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Syne:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
@@ -15,9 +19,25 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #f0f4fc;
-            color: #121826;
+            background: #0a0f1c;
+            color: #eef2ff;
             line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Patrón industrial sutil */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(45deg, rgba(249, 184, 27, 0.02) 0px, rgba(249, 184, 27, 0.02) 2px, transparent 2px, transparent 8px),
+                repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, transparent 1px, transparent 12px);
+            pointer-events: none;
+            z-index: 0;
         }
 
         :root {
@@ -27,10 +47,8 @@
             --azul-marino: #0b2b4b;
             --azul-profundo: #0a2a44;
             --azul-acento: #1e4a76;
-            --azul-claro: #eef3fc;
-            --gris-claro: #f8fafd;
-            --texto-oscuro: #1e2a3a;
-            --texto-gris: #4a5b6e;
+            --texto-claro: #eef2ff;
+            --texto-suave: #cbd5e6;
             --blanco: #ffffff;
             --shadow-sm: 0 6px 14px rgba(0, 20, 40, 0.06);
             --shadow-md: 0 12px 28px rgba(0, 20, 40, 0.1);
@@ -43,16 +61,20 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            position: relative;
+            z-index: 2;
         }
 
-        /* HEADER AZUL MARINO + AMARILLO - MÁS ESPACIOSO */
+        /* HEADER elegante */
         .header {
-            background: var(--azul-marino);
-            color: white;
-            padding: 2rem 2rem;   /* Aumentado verticalmente para más espacio */
-            box-shadow: var(--shadow-md);
-            border-bottom: 5px solid var(--amarillo);
-            position: relative;
+            background: rgba(11, 43, 75, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 1.2rem 2rem;
+            box-shadow: var(--shadow-sm);
+            border-bottom: 2px solid var(--amarillo);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .logo-container {
@@ -68,82 +90,75 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 15px;
+            text-decoration: none;
         }
 
         .logo-icon {
             background: var(--gradient-primary);
-            width: 70px;          /* Icono ligeramente más grande */
-            height: 70px;
-            border-radius: 20px;
+            width: 55px;
+            height: 55px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem;
+            font-size: 1.7rem;
             color: var(--azul-marino);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .logo:hover .logo-icon {
+            transform: rotate(4deg) scale(1.03);
         }
 
         .logo-text h1 {
-            font-size: 2.8rem;    /* TÍTULO MÁS GRANDE */
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: white;
-        }
-
-        .logo-text h1 span {
-            color: var(--amarillo);
+            font-family: 'Syne', sans-serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff, var(--amarillo));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .logo-text p {
-            font-size: 0.9rem;
+            font-size: 0.7rem;
+            font-weight: 400;
             color: #bdd4ff;
-            font-weight: 500;
-            margin-top: 4px;
+            letter-spacing: 0.3px;
         }
 
-        /* Botones acción */
         .action-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
         }
 
         .action-button {
-            padding: 10px 24px;
+            padding: 8px 20px;
             border-radius: 40px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
             transition: 0.2s;
-            border: none;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             text-decoration: none;
             background: var(--amarillo);
             color: var(--azul-marino);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .action-button i {
-            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
         }
 
         .action-button:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             background: #ffce4a;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-herramientas { background: var(--amarillo); color: #0b2b4b; }
-        .btn-cotizaciones { background: #f0b429; color: #0a2a44; }
-        .btn-talleres { background: #e6a017; color: #0b2b4b; }
-
-        /* HERO */
+        /* Hero con tipografía refinada */
         .hero {
-            flex: 1;
-            padding: 2.5rem 2rem;
+            padding: 2rem 2rem;
             max-width: 1400px;
             margin: 0 auto;
             width: 100%;
@@ -157,113 +172,133 @@
         }
 
         .hero-text h2 {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--azul-marino);
-            margin-bottom: 1rem;
+            font-family: 'Syne', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
             line-height: 1.2;
+            background: linear-gradient(135deg, #ffffff 0%, #f9b81b 60%, #ffffff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shine 8s linear infinite;
+            margin-bottom: 1rem;
+            letter-spacing: -0.01em;
         }
 
-        .hero-text h2 .highlight {
-            color: var(--amarillo);
-            background: linear-gradient(135deg, #f9b81b, #f39c12);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
+        @keyframes shine {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
         }
 
         .hero-text p {
-            font-size: 1.05rem;
-            color: #2c3e50;
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--texto-suave);
             margin-bottom: 2rem;
+            line-height: 1.6;
         }
 
-        /* Tarjetas */
+        .floating-badge {
+            display: inline-block;
+            background: rgba(249, 184, 27, 0.15);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(249, 184, 27, 0.3);
+            color: var(--amarillo);
+            border-radius: 40px;
+            padding: 4px 14px;
+            font-weight: 500;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.2rem;
+        }
+
+        /* Tarjetas de acción */
         .main-actions {
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
-            margin-top: 1.8rem;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
 
         .action-card {
-            background: var(--blanco);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 1.3rem 1.8rem;
-            box-shadow: var(--shadow-sm);
+            padding: 1.2rem 1.5rem;
             transition: all 0.25s;
             display: flex;
             align-items: center;
-            gap: 1.3rem;
+            gap: 1.2rem;
             text-decoration: none;
-            color: inherit;
-            border: 1px solid #e9ecf0;
+            border: 1px solid rgba(249, 184, 27, 0.2);
         }
 
         .action-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
-            border-left: 6px solid var(--amarillo);
+            transform: translateY(-4px);
+            border-color: var(--amarillo);
+            background: rgba(20, 30, 55, 0.8);
         }
 
         .card-icon {
-            width: 55px;
-            height: 55px;
-            border-radius: 16px;
-            background: var(--amarillo-suave);
+            width: 48px;
+            height: 48px;
+            background: rgba(249, 184, 27, 0.15);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.7rem;
-            color: var(--azul-marino);
+            font-size: 1.4rem;
+            color: var(--amarillo);
         }
 
         .card-content h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--azul-profundo);
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            color: white;
         }
 
         .card-content p {
-            font-size: 0.9rem;
-            color: #556b82;
+            font-size: 0.8rem;
+            color: var(--texto-suave);
+            line-height: 1.4;
         }
 
-        /* Preview productos - MÁS PEQUEÑO (catálogo compacto) */
+        /* Preview de productos */
         .products-preview {
-            background: white;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(12px);
             border-radius: 28px;
             padding: 1.5rem;
-            box-shadow: var(--shadow-md);
-            border-top: 7px solid var(--amarillo);
+            border: 1px solid rgba(249, 184, 27, 0.2);
+            border-top: 4px solid var(--amarillo);
         }
 
         .preview-title {
-            font-size: 1.4rem;   /* Ligeramente reducido */
-            font-weight: 700;
-            color: var(--azul-marino);
-            display: flex;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: white;
+            display: inline-flex;
             align-items: center;
             gap: 10px;
-            border-bottom: 3px solid var(--amarillo);
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.2rem;
-            display: inline-block;
-        }
-
-        .preview-title i {
-            background: #fef1d6;
-            padding: 8px;
-            border-radius: 12px;
-            color: var(--amarillo-oscuro);
-            font-size: 1.2rem;
+            border-bottom: 2px solid var(--amarillo);
+            padding-bottom: 0.4rem;
+            margin-bottom: 1rem;
         }
 
         .product-container {
-            height: 300px;       /* Altura reducida (antes 360px) */
+            height: 280px;
             overflow: hidden;
             border-radius: 20px;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.6rem;
         }
 
         .product-slider {
@@ -275,47 +310,47 @@
         .product-group {
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 0.7rem;
             width: 100%;
             flex-shrink: 0;
         }
 
         .product-item {
-            background: #fbfeff;
+            background: rgba(25, 35, 55, 0.7);
             border-radius: 14px;
-            padding: 0.7rem 1rem;
+            padding: 0.6rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 4px solid var(--amarillo);
-            box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+            border-left: 3px solid var(--amarillo);
             transition: 0.2s;
             height: calc(33.33% - 0.5rem);
         }
 
         .product-item:hover {
-            background: #fff9ef;
+            background: rgba(40, 55, 80, 0.9);
             transform: translateX(4px);
         }
 
         .product-info h4 {
-            font-weight: 800;
-            font-size: 0.9rem;   /* Texto un poco más pequeño */
-            color: #0b2b4b;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+            margin-bottom: 2px;
         }
 
         .product-info p {
             font-size: 0.7rem;
-            color: #5d6f83;
+            color: var(--texto-suave);
         }
 
         .product-category {
-            background: #ffecb3;
+            background: rgba(249, 184, 27, 0.2);
             padding: 2px 10px;
             border-radius: 30px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: #b46600;
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: var(--amarillo);
             display: inline-block;
             margin-top: 4px;
         }
@@ -324,10 +359,10 @@
             background: var(--gradient-primary);
             padding: 4px 12px;
             border-radius: 40px;
-            font-weight: 800;
-            font-size: 0.85rem;
+            font-weight: 700;
+            font-size: 0.8rem;
             color: #1e2a3a;
-            min-width: 68px;
+            min-width: 65px;
             text-align: center;
         }
 
@@ -335,115 +370,115 @@
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin: 0.6rem 0;
+            margin: 0.5rem 0;
         }
 
         .auto-indicator {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 20px;
-            background: #cbdae9;
+            background: #4a5568;
             cursor: pointer;
             transition: 0.2s;
         }
 
         .auto-indicator.active {
             background: var(--amarillo);
-            width: 20px;
-            border-radius: 12px;
+            width: 18px;
         }
 
-        /* Zona de talleres */
+        /* Talleres promo */
         .taller-promo {
-            background: linear-gradient(115deg, #eef5ff, #ffffff);
+            background: rgba(15, 23, 42, 0.6);
             border-radius: 20px;
-            padding: 1.2rem;
-            margin-top: 1.4rem;
-            border: 1px solid #ffe1a0;
+            padding: 1rem;
+            margin-top: 1.2rem;
+            border: 1px solid rgba(249, 184, 27, 0.25);
         }
 
         .taller-promo h4 {
-            font-size: 1.1rem;
-            color: var(--azul-profundo);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--amarillo);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            font-weight: 700;
+            gap: 8px;
         }
 
         .tips-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 0.7rem;
-            margin: 1rem 0;
+            gap: 0.6rem;
+            margin: 0.8rem 0;
         }
 
         .tip-item {
-            background: white;
-            padding: 0.5rem 0.7rem;
-            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.4rem 0.6rem;
+            border-radius: 14px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             font-weight: 500;
-            font-size: 0.8rem;
-            color: #1e2e44;
+            font-size: 0.75rem;
+            color: var(--texto-suave);
         }
 
         .tip-item i {
-            font-size: 1.1rem;
-            color: #f9b81b;
-            width: 28px;
+            font-size: 1rem;
+            color: var(--amarillo);
         }
 
         .btn-taller {
-            background: var(--azul-marino);
-            color: white;
-            display: inline-flex;
-            margin-top: 0.3rem;
+            background: var(--amarillo);
+            color: var(--azul-marino);
             border: none;
-            padding: 6px 18px;
-            font-size: 0.8rem;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
         .btn-taller:hover {
-            background: #1c4068;
-            color: #ffde9e;
+            background: #ffce4a;
+            transform: translateY(-2px);
         }
 
-        /* Footer azul marino + amarillo */
+        /* Footer */
         .footer {
-            background: var(--azul-marino);
-            color: #eef3fc;
-            padding: 2.5rem 2rem 1.5rem;
+            background: rgba(11, 43, 75, 0.9);
+            backdrop-filter: blur(8px);
+            padding: 2rem 2rem 1.2rem;
             margin-top: 3rem;
-            border-top: 4px solid var(--amarillo);
+            border-top: 2px solid var(--amarillo);
         }
 
         .contact-info {
             display: flex;
             justify-content: center;
-            gap: 2rem;
+            gap: 1.8rem;
             flex-wrap: wrap;
-            margin: 1.2rem 0;
+            margin: 1rem 0;
         }
 
         .contact-item {
-            background: rgba(255, 215, 120, 0.1);
+            background: rgba(255, 215, 120, 0.08);
             border-radius: 40px;
-            padding: 0.5rem 1.5rem;
+            padding: 0.4rem 1rem;
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 0.8rem;
         }
 
         .social-icons {
             display: flex;
             justify-content: center;
-            gap: 2rem;
+            gap: 1.5rem;
             margin-top: 1rem;
-            flex-wrap: wrap;
         }
 
         .social-icon {
@@ -452,61 +487,40 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             transition: 0.2s;
         }
 
         .social-icon i {
-            background: rgba(249,184,27,0.2);
-            width: 44px;
-            height: 44px;
+            background: rgba(249, 184, 27, 0.15);
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1rem;
         }
 
         .social-icon:hover {
             color: var(--amarillo);
-            transform: translateY(-4px);
+            transform: translateY(-3px);
         }
 
         .copyright {
             text-align: center;
-            font-size: 0.8rem;
-            opacity: 0.8;
-            margin-top: 2rem;
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 1.5rem;
         }
 
-        /* elementos gráficos */
-        .floating-badge {
-            display: inline-block;
-            background: var(--amarillo);
-            color: var(--azul-marino);
-            border-radius: 30px;
-            padding: 5px 16px;
-            font-weight: 700;
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes floatIcon {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0); }
-        }
-
-        /* Responsive */
         @media (max-width: 1000px) {
             .hero-content {
                 grid-template-columns: 1fr;
             }
+
             .hero-text h2 {
                 font-size: 2.4rem;
-            }
-            .product-container {
-                height: 320px;
             }
         }
 
@@ -515,189 +529,185 @@
                 flex-direction: column;
                 text-align: center;
             }
+
             .action-card {
                 flex-direction: column;
                 text-align: center;
             }
+
             .tips-grid {
                 grid-template-columns: 1fr;
             }
+
             .product-item {
                 flex-direction: column;
-                align-items: start;
-                gap: 6px;
+                align-items: flex-start;
                 height: auto;
             }
+
             .product-price {
                 align-self: flex-end;
-            }
-            .logo-text h1 {
-                font-size: 2.2rem;
-            }
-            .header {
-                padding: 1.5rem 1rem;
             }
         }
     </style>
 </head>
+
 <body>
-<div class="presentation-container">
-    <header class="header">
-        <div class="logo-container">
-            <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-hard-hat"></i>
-                </div>
-                <div class="logo-text">
-                    <h1>El Martillo <span>Azul</span></h1>
-                    <p>Herramientas premium · Asesoría en obra</p>
-                </div>
-            </div>
-            <div class="action-buttons">
-                <a href="#" class="action-button btn-herramientas" id="btnProductos">
-                    <i class="fas fa-gripfire"></i> Catálogo
-                </a>
-                <a href="#" class="action-button btn-cotizaciones" id="btnCotizaciones">
-                    <i class="fas fa-calculator"></i> Cotiza Rápido
-                </a>
-                <a href="#" class="action-button btn-talleres" id="btnTalleres">
-                    <i class="fas fa-chalkboard-user"></i> Talleres DIY
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-text">
-                <div class="floating-badge">
-                    <i class="fas fa-star-of-life"></i> Líder en ferretería desde 1998
-                </div>
-                <h2>Construye con <span class="highlight">precisión</span> y <span class="highlight">poder</span></h2>
-                <p>Todo para construcción, industria y bricolaje. Marcas certificadas, precio justo y envíos a toda la región.</p>
-                <div class="main-actions">
-                    <a href="#" class="action-card" id="cardProductos">
-                        <div class="card-icon"><i class="fas fa-wrench"></i></div>
-                        <div class="card-content">
-                            <h3>Más de 1500 herramientas</h3>
-                            <p>Taladros, sierras, martillos, llaves y equipos de medición profesional.</p>
-                        </div>
-                    </a>
-                    <a href="#" class="action-card" id="cardCotizaciones">
-                        <div class="card-icon"><i class="fas fa-file-invoice"></i></div>
-                        <div class="card-content">
-                            <h3>Cotizaciones mayoristas</h3>
-                            <p>Descuentos por volumen, asesoría en proyectos de construcción.</p>
-                        </div>
-                    </a>
-                    <a href="#" class="action-card" id="cardTalleres">
-                        <div class="card-icon"><i class="fas fa-chalkboard"></i></div>
-                        <div class="card-content">
-                            <h3>Clases y talleres</h3>
-                            <p>Aprende a usar tus herramientas, mantenimiento y seguridad.</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="products-preview">
-                <h3 class="preview-title">
-                    <i class="fas fa-tools"></i> Novedades en herramientas
-                </h3>
-                <div class="product-container">
-                    <div class="product-slider" id="productSlider"></div>
-                </div>
-                <div class="auto-indicators" id="autoIndicators"></div>
-                <div class="auto-info" style="text-align:center; font-size:0.7rem; color:#6c7a8e; margin-top: 0.2rem;">
-                    <i class="fas fa-rotate-right"></i> Rotación automática cada 5s
-                </div>
-
-                <div class="taller-promo">
-                    <h4><i class="fas fa-lightbulb"></i> Tips del constructor</h4>
-                    <div class="tips-grid">
-                        <div class="tip-item"><i class="fas fa-ruler-combined"></i> <span>Mide dos veces, corta una vez</span></div>
-                        <div class="tip-item"><i class="fas fa-shield-alt"></i> <span>Usa siempre gafas de seguridad</span></div>
-                        <div class="tip-item"><i class="fas fa-oil-can"></i> <span>Lubrica herramientas eléctricas</span></div>
-                        <div class="tip-item"><i class="fas fa-drafting-compass"></i> <span>Planifica antes de comprar</span></div>
+    <div class="presentation-container">
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo">
+                    <div class="logo-icon"><i class="fas fa-hard-hat"></i></div>
+                    <div class="logo-text">
+                        <h1>FERROMAX <span style="color: var(--amarillo);"></span></h1>
+                        <p>Herramientas premium · Asesoría técnica</p>
                     </div>
-                    <a href="#" class="action-button btn-taller" style="display:inline-flex; margin-top:8px;">
-                        <i class="fas fa-play-circle"></i> Ver tutoriales
+                </div>
+                <div class="action-buttons">
+                    <a href="detalles_ferreteria.html" class="action-button"> <i class="fas fa-gripfire"></i> Detalles
                     </a>
-                </div>
-                <div style="margin-top: 1rem; background: #eef1f9; border-radius: 16px; padding: 0.6rem; text-align:center; border-left: 4px solid #f9b81b; font-size: 0.75rem;">
-                    <i class="fas fa-truck-fast"></i> Envíos a domicilio | Garantía de 1 año en herramientas eléctricas
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="footer-content" style="max-width:1200px; margin:0 auto; text-align:center">
-            <p><strong>Ferretería El Martillo Azul</strong> — Calidad y tradición</p>
-            <div class="footer-note" style="background: rgba(255,210,90,0.08); border-radius: 28px; padding: 1rem; margin: 1rem auto; max-width: 650px;">
-                <i class="fas fa-map-marker-alt"></i> Av. Central 452, Zona Industrial <br>
-                Teléfono: +1 (800) 765-4321 · Correo: hola@martilloazul.com
-            </div>
-            <div class="contact-info">
-                <div class="contact-item"><i class="fab fa-whatsapp"></i> +1 809 555 6789</div>
-                <div class="contact-item"><i class="fas fa-clock"></i> Lun-Vie 7am - 7pm | Sáb 8am - 2pm</div>
-            </div>
-            <div class="social-media">
-                <h4 style="color:#f9b81b; margin-bottom:12px;">Redes profesionales</h4>
-                <div class="social-icons">
-                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i><span>Facebook</span></a>
-                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i><span>Instagram</span></a>
-                    <a href="#" class="social-icon"><i class="fab fa-youtube"></i><span>YouTube</span></a>
-                    <a href="#" class="social-icon"><i class="fab fa-tiktok"></i><span>TikTok</span></a>
+                    <a href="Herramientas.html" class="action-button"> <i class="fas fa-calculator"></i> Comprar </a>
+                    <a href="#" class="action-button"> <i class="fas fa-chalkboard-user"></i> Talleres </a>
                 </div>
             </div>
-            <div class="copyright">
-                <p>© 2025 Martillo Azul. Todos los derechos reservados | Herramientas que inspiran</p>
+        </header>
+
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="floating-badge"><i class="fas fa-star-of-life"></i> Líder en ferretería desde 1998</div>
+                    <h2>Construye con <span style="color: var(--amarillo);">precisión</span> y <span
+                            style="color: var(--amarillo);">poder</span></h2>
+                    <p>Todo para construcción, industria y bricolaje. Marcas certificadas, precio justo y envíos a toda
+                        la región.</p>
+                    <div class="main-actions">
+                        <a href="#" class="action-card">
+                            <div class="card-icon"><i class="fas fa-wrench"></i></div>
+                            <div class="card-content">
+                                <h3>Más de 1500 herramientas</h3>
+                                <p>Taladros, sierras, martillos, equipos de medición profesional.</p>
+                            </div>
+                        </a>
+                        <a href="#" class="action-card">
+                            <div class="card-icon"><i class="fas fa-file-invoice"></i></div>
+                            <div class="card-content">
+                                <h3>Cotizaciones mayoristas</h3>
+                                <p>Descuentos por volumen, asesoría en proyectos de construcción.</p>
+                            </div>
+                        </a>
+                        <a href="#" class="action-card">
+                            <div class="card-icon"><i class="fas fa-chalkboard"></i></div>
+                            <div class="card-content">
+                                <h3>Clases y talleres</h3>
+                                <p>Aprende el uso correcto de herramientas, mantenimiento y seguridad.</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="products-preview">
+                    <div class="preview-title"><i class="fas fa-tools"></i> Novedades en herramientas</div>
+                    <div class="product-container">
+                        <div class="product-slider" id="productSlider"></div>
+                    </div>
+                    <div class="auto-indicators" id="autoIndicators"></div>
+                    <div class="auto-info" style="text-align:center; font-size:0.65rem; color:#9ca3af;"> <i
+                            class="fas fa-rotate-right"></i> Rotación automática cada 5s </div>
+
+                    <div class="taller-promo">
+                        <h4><i class="fas fa-lightbulb"></i> Tips del constructor</h4>
+                        <div class="tips-grid">
+                            <div class="tip-item"><i class="fas fa-ruler-combined"></i> <span>Mide dos veces, corta una
+                                    vez</span></div>
+                            <div class="tip-item"><i class="fas fa-shield-alt"></i> <span>Usa siempre gafas de
+                                    seguridad</span></div>
+                            <div class="tip-item"><i class="fas fa-oil-can"></i> <span>Lubrica herramientas
+                                    eléctricas</span></div>
+                            <div class="tip-item"><i class="fas fa-drafting-compass"></i> <span>Planifica antes de
+                                    comprar</span></div>
+                        </div>
+                        <a href="#" class="btn-taller" style="display:inline-flex; margin-top: 6px;"> <i
+                                class="fas fa-play-circle"></i> Ver tutoriales </a>
+                    </div>
+                    <div
+                        style="margin-top: 1rem; background: rgba(0,0,0,0.3); border-radius: 16px; padding: 0.5rem; text-align:center; border-left: 3px solid var(--amarillo); font-size: 0.7rem;">
+                        <i class="fas fa-truck-fast"></i> Envíos a domicilio | Garantía de 1 año en herramientas
+                        eléctricas
+                    </div>
+                </div>
             </div>
-        </div>
-    </footer>
-</div>
+        </section>
 
-<script>
-    // Catálogo de productos (12 ejemplos)
-    const productos = [
-        { nombre: "Martillo Demoledor 2kg", descripcion: "Acero forjado, mango antideslizante", precio: "$12.90", categoria: "Golpe" },
-        { nombre: "Taladro Percutor 750W", descripcion: "Velocidad variable + maletín", precio: "$59.90", categoria: "Eléctricas" },
-        { nombre: "Llave Mixta 13mm", descripcion: "Cromo vanadio, alta durabilidad", precio: "$4.50", categoria: "Manuales" },
-        { nombre: "Cinta Láser 40m", descripcion: "Medición digital y memoria", precio: "$34.90", categoria: "Precisión" },
-        { nombre: "Set Destornilladores 12pz", descripcion: "Puntas magnéticas, estuche", precio: "$18.30", categoria: "Set" },
-        { nombre: "Sierra Circular 1200W", descripcion: "Corte profundo, seguridad", precio: "$79.00", categoria: "Eléctricas" },
-        { nombre: "Nivel Láser 3D", descripcion: "Autonivelante + batería", precio: "$99.00", categoria: "Topografía" },
-        { nombre: "Pintura Epoxi 1L", descripcion: "Resistente a químicos", precio: "$14.20", categoria: "Acabados" },
-        { nombre: "Escalera 6 escalones", descripcion: "Aluminio reforzado", precio: "$72.50", categoria: "Seguridad" },
-        { nombre: "Cizalla para metal", descripcion: "Corte limpio hasta 2mm", precio: "$22.90", categoria: "Herramientas" },
-        { nombre: "Cemento expansivo", descripcion: "25 kg, fraguado rápido", precio: "$9.70", categoria: "Construcción" },
-        { nombre: "Gafas Protectoras", descripcion: "Anti empañante + UV", precio: "$6.30", categoria: "EPP" }
-    ];
+        <footer class="footer">
+            <div class="footer-content" style="max-width:1200px; margin:0 auto; text-align:center">
+                <p><strong>FERROMAX Azul</strong> — Calidad y tradición</p>
+                <div
+                    style="background: rgba(255,210,90,0.06); border-radius: 28px; padding: 0.8rem; margin: 1rem auto; max-width: 600px; font-size: 0.8rem;">
+                    <i class="fas fa-map-marker-alt"></i> Av. Central 452, Zona Industrial <br>
+                    <i class="fas fa-phone-alt"></i> +1 (800) 765-4321 · <i class="fas fa-envelope"></i>
+                    hola@ferromax.com
+                </div>
+                <div class="contact-info">
+                    <div class="contact-item"><i class="fab fa-whatsapp"></i> +1 809 555 6789</div>
+                    <div class="contact-item"><i class="fas fa-clock"></i> Lun-Vie 7am - 7pm | Sáb 8am - 2pm</div>
+                </div>
+                <div class="social-media">
+                    <h4 style="color:#f9b81b; font-size:0.9rem; margin-bottom:10px;">Redes profesionales</h4>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i><span>Facebook</span></a>
+                        <a href="https://www.instagram.com/ferromax_com/" class="social-icon"><i
+                                class="fab fa-instagram"></i><span>Instagram</span></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i><span>YouTube</span></a>
+                        <a href="#" class="social-icon"><i class="fab fa-tiktok"></i><span>TikTok</span></a>
+                    </div>
+                </div>
+                <div class="copyright">
+                    <p>© 2025 FERROMAX Azul. Todos los derechos reservados | Herramientas que inspiran</p>
+                </div>
+            </div>
+        </footer>
+    </div>
 
-    const itemsPerView = 3;
-    let currentGroup = 0;
-    let autoInterval;
-    let totalGroups = 0;
-    let slider, indicators;
+    <script>
+        // Catálogo de productos (12 ejemplos)
+        const productos = [
+            { nombre: "Martillo Demoledor 2kg", descripcion: "Acero forjado, mango antideslizante", precio: "$12.90", categoria: "Golpe" },
+            { nombre: "Taladro Percutor 750W", descripcion: "Velocidad variable + maletín", precio: "$59.90", categoria: "Eléctricas" },
+            { nombre: "Llave Mixta 13mm", descripcion: "Cromo vanadio, alta durabilidad", precio: "$4.50", categoria: "Manuales" },
+            { nombre: "Cinta Láser 40m", descripcion: "Medición digital y memoria", precio: "$34.90", categoria: "Precisión" },
+            { nombre: "Set Destornilladores 12pz", descripcion: "Puntas magnéticas, estuche", precio: "$18.30", categoria: "Set" },
+            { nombre: "Sierra Circular 1200W", descripcion: "Corte profundo, seguridad", precio: "$79.00", categoria: "Eléctricas" },
+            { nombre: "Nivel Láser 3D", descripcion: "Autonivelante + batería", precio: "$99.00", categoria: "Topografía" },
+            { nombre: "Pintura Epoxi 1L", descripcion: "Resistente a químicos", precio: "$14.20", categoria: "Acabados" },
+            { nombre: "Escalera 6 escalones", descripcion: "Aluminio reforzado", precio: "$72.50", categoria: "Seguridad" },
+            { nombre: "Cizalla para metal", descripcion: "Corte limpio hasta 2mm", precio: "$22.90", categoria: "Herramientas" },
+            { nombre: "Cemento expansivo", descripcion: "25 kg, fraguado rápido", precio: "$9.70", categoria: "Construcción" },
+            { nombre: "Gafas Protectoras", descripcion: "Anti empañante + UV", precio: "$6.30", categoria: "EPP" }
+        ];
 
-    function initProductSlider() {
-        slider = document.getElementById('productSlider');
-        indicators = document.getElementById('autoIndicators');
-        if (!slider) return;
-        slider.innerHTML = '';
-        indicators.innerHTML = '';
-        totalGroups = Math.ceil(productos.length / itemsPerView);
+        const itemsPerView = 3;
+        let currentGroup = 0;
+        let autoInterval;
+        let totalGroups = 0;
+        let slider, indicators;
 
-        for (let g = 0; g < totalGroups; g++) {
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'product-group';
-            const startIdx = g * itemsPerView;
-            for (let i = startIdx; i < startIdx + itemsPerView && i < productos.length; i++) {
-                const prod = productos[i];
-                const item = document.createElement('div');
-                item.className = 'product-item';
-                item.innerHTML = `
+        function initProductSlider() {
+            slider = document.getElementById('productSlider');
+            indicators = document.getElementById('autoIndicators');
+            if (!slider) return;
+            slider.innerHTML = '';
+            indicators.innerHTML = '';
+            totalGroups = Math.ceil(productos.length / itemsPerView);
+
+            for (let g = 0; g < totalGroups; g++) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'product-group';
+                const startIdx = g * itemsPerView;
+                for (let i = startIdx; i < startIdx + itemsPerView && i < productos.length; i++) {
+                    const prod = productos[i];
+                    const item = document.createElement('div');
+                    item.className = 'product-item';
+                    item.innerHTML = `
                     <div class="product-info">
                         <h4>${prod.nombre}</h4>
                         <p>${prod.descripcion}</p>
@@ -705,88 +715,73 @@
                     </div>
                     <div class="product-price">${prod.precio}</div>
                 `;
-                groupDiv.appendChild(item);
-            }
-            slider.appendChild(groupDiv);
-            const dot = document.createElement('div');
-            dot.className = 'auto-indicator';
-            dot.dataset.group = g;
-            dot.addEventListener('click', () => {
-                showGroup(g);
-                resetAutoTimer();
-            });
-            indicators.appendChild(dot);
-        }
-        showGroup(0);
-        startAutoRotation();
-    }
-
-    function showGroup(index) {
-        if (!slider) return;
-        slider.style.transform = `translateX(-${index * 100}%)`;
-        const dots = document.querySelectorAll('.auto-indicator');
-        dots.forEach((dot, i) => {
-            if (i === index) dot.classList.add('active');
-            else dot.classList.remove('active');
-        });
-        currentGroup = index;
-    }
-
-    function startAutoRotation() {
-        if (autoInterval) clearInterval(autoInterval);
-        autoInterval = setInterval(() => {
-            const next = (currentGroup + 1) % totalGroups;
-            showGroup(next);
-        }, 5000);
-    }
-
-    function resetAutoTimer() {
-        if (autoInterval) clearInterval(autoInterval);
-        startAutoRotation();
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        initProductSlider();
-
-        const container = document.querySelector('.product-container');
-        if (container) {
-            container.addEventListener('mouseenter', () => clearInterval(autoInterval));
-            container.addEventListener('mouseleave', startAutoRotation);
-        }
-
-        // animaciones de entrada
-        const heroText = document.querySelector('.hero-text');
-        const preview = document.querySelector('.products-preview');
-        if (heroText) heroText.style.opacity = 0;
-        if (preview) preview.style.opacity = 0;
-        setTimeout(() => {
-            if (heroText) { heroText.style.transition = 'opacity 0.7s ease'; heroText.style.opacity = 1; }
-            if (preview) { preview.style.transition = 'opacity 0.7s ease 0.2s'; preview.style.opacity = 1; }
-        }, 100);
-        
-        const botones = document.querySelectorAll('.action-button, .action-card');
-        botones.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                if (btn.classList.contains('action-button')) {
-                    btn.style.transform = 'scale(0.97)';
-                    setTimeout(() => btn.style.transform = '', 150);
+                    groupDiv.appendChild(item);
                 }
-            });
-        });
-    });
-
-    // navegación con teclado
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-            const prev = (currentGroup - 1 + totalGroups) % totalGroups;
-            showGroup(prev);
-            resetAutoTimer();
-        } else if (e.key === 'ArrowRight') {
-            const next = (currentGroup + 1) % totalGroups;
-            showGroup(next);
-            resetAutoTimer();
+                slider.appendChild(groupDiv);
+                const dot = document.createElement('div');
+                dot.className = 'auto-indicator';
+                dot.dataset.group = g;
+                dot.addEventListener('click', () => { showGroup(g); resetAutoTimer(); });
+                indicators.appendChild(dot);
+            }
+            showGroup(0);
+            startAutoRotation();
         }
-    });
-</script>
+
+        function showGroup(index) {
+            if (!slider) return;
+            slider.style.transform = `translateX(-${index * 100}%)`;
+            const dots = document.querySelectorAll('.auto-indicator');
+            dots.forEach((dot, i) => {
+                if (i === index) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+            currentGroup = index;
+        }
+
+        function startAutoRotation() {
+            if (autoInterval) clearInterval(autoInterval);
+            autoInterval = setInterval(() => {
+                const next = (currentGroup + 1) % totalGroups;
+                showGroup(next);
+            }, 5000);
+        }
+
+        function resetAutoTimer() {
+            clearInterval(autoInterval);
+            startAutoRotation();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initProductSlider();
+            const container = document.querySelector('.product-container');
+            if (container) {
+                container.addEventListener('mouseenter', () => clearInterval(autoInterval));
+                container.addEventListener('mouseleave', startAutoRotation);
+            }
+            // animación de entrada suave
+            const heroText = document.querySelector('.hero-text');
+            const preview = document.querySelector('.products-preview');
+            if (heroText) heroText.style.opacity = 0;
+            if (preview) preview.style.opacity = 0;
+            setTimeout(() => {
+                if (heroText) { heroText.style.transition = 'opacity 0.6s ease'; heroText.style.opacity = 1; }
+                if (preview) { preview.style.transition = 'opacity 0.6s ease 0.15s'; preview.style.opacity = 1; }
+            }, 100);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                const prev = (currentGroup - 1 + totalGroups) % totalGroups;
+                showGroup(prev);
+                resetAutoTimer();
+            } else if (e.key === 'ArrowRight') {
+                const next = (currentGroup + 1) % totalGroups;
+                showGroup(next);
+                resetAutoTimer();
+            }
+        });
+    </script>
 </body>
+
 </html>
