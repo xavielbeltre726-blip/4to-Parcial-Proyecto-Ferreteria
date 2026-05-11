@@ -10,7 +10,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -31,7 +31,6 @@
             --azul-marino: #0b2b4b;
             --azul-profundo: #0a2a44;
             --azul-acento: #1e4a76;
-            --azul-claro: #eef3fc;
             --blanco: #ffffff;
             --success: #27ae60;
             --danger: #c0392b;
@@ -301,10 +300,16 @@
             font-size: 1.8rem;
             font-weight: 700;
             color: var(--azul-marino);
-            margin-bottom: 1rem;
+            margin-bottom: 0.3rem;
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+
+        .contact-form-section .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-grid {
@@ -361,9 +366,13 @@
             margin-top: 0.5rem;
             font-family: 'Inter', sans-serif;
             width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .btn-enviar:hover {
+        .btn-enviar:hover:not(:disabled) {
             background: #ffce4a;
             transform: translateY(-2px);
         }
@@ -371,7 +380,31 @@
         .btn-enviar:disabled {
             opacity: 0.7;
             cursor: not-allowed;
-            transform: none;
+        }
+
+        /* Spinner dentro del botón */
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(11, 43, 75, 0.3);
+            border-top-color: var(--azul-marino);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+
+        .btn-enviar.loading .spinner {
+            display: block;
+        }
+
+        .btn-enviar.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .footer {
@@ -383,6 +416,7 @@
             border-top: 4px solid var(--amarillo);
         }
 
+        /* Notificación */
         .notification {
             position: fixed;
             top: 20px;
@@ -390,25 +424,50 @@
             padding: 1rem 1.5rem;
             border-radius: 12px;
             background: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
             z-index: 9999;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 0.8rem;
             font-weight: 500;
             border-left: 5px solid var(--success);
-            max-width: 350px;
-            animation: slideInRight 0.3s ease;
+            max-width: 370px;
+            animation: slideInRight 0.35s ease;
         }
 
         .notification.error {
             border-left-color: var(--danger);
+        }
+
+        .notification-icon {
+            font-size: 1.3rem;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        .notification.error .notification-icon {
             color: var(--danger);
+        }
+
+        .notification:not(.error) .notification-icon {
+            color: var(--success);
+        }
+
+        .notification-body strong {
+            display: block;
+            margin-bottom: 2px;
+            font-size: 0.95rem;
+        }
+
+        .notification-body span {
+            font-size: 0.82rem;
+            color: #555;
+            font-weight: 400;
         }
 
         @keyframes slideInRight {
             from {
-                transform: translateX(100%);
+                transform: translateX(110%);
                 opacity: 0;
             }
 
@@ -579,23 +638,27 @@
 
         <div class="contact-form-section" id="form-section">
             <h2><i class="fas fa-envelope"></i> Solicita tu servicio</h2>
-            <p>Completa el formulario y recibirás una confirmación en tu correo en menos de unos segundos.</p>
-            <form id="serviceForm" class="form-grid" onsubmit="return false;">
+            <p class="subtitle">
+                <i class="fas fa-bell" style="color:var(--amarillo)"></i>
+                Al enviar recibirás un <strong>correo de confirmación automático</strong> con los detalles de tu
+                solicitud.
+            </p>
+            <div class="form-grid">
                 <div class="form-group">
                     <label>Nombre completo *</label>
-                    <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+                    <input type="text" id="nombre" placeholder="Ej: Juan Pérez">
                 </div>
                 <div class="form-group">
                     <label>Teléfono *</label>
-                    <input type="tel" id="telefono" placeholder="809-555-1234" required>
+                    <input type="tel" id="telefono" placeholder="809-555-1234">
                 </div>
                 <div class="form-group">
                     <label>Correo electrónico *</label>
-                    <input type="email" id="email" placeholder="juan@ejemplo.com" required>
+                    <input type="email" id="email" placeholder="juan@ejemplo.com">
                 </div>
                 <div class="form-group">
                     <label>Servicio que necesitas *</label>
-                    <select id="servicio" required>
+                    <select id="servicio">
                         <option value="">Selecciona...</option>
                         <option>Asesoría técnica</option>
                         <option>Taller / Capacitación</option>
@@ -612,11 +675,12 @@
                         placeholder="Cuéntanos qué necesitas, fechas, cantidades, etc."></textarea>
                 </div>
                 <div class="form-group full-width">
-                    <button type="button" class="btn-enviar" id="enviarBtn">
-                        <i class="fas fa-paper-plane"></i> Enviar solicitud
+                    <button class="btn-enviar" id="enviarBtn">
+                        <div class="spinner"></div>
+                        <span class="btn-text"><i class="fas fa-paper-plane"></i> &nbsp;Enviar solicitud</span>
                     </button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -628,65 +692,70 @@
     </footer>
 
     <script>
-        // ════════════════════════════════════════════════════════
-        // CONFIGURACIÓN EMAILJS
-        // ════════════════════════════════════════════════════════
-        const EMAILJS_PUBLIC_KEY = 'M92wKKtYMTj1mB944';
-        const EMAILJS_SERVICE_ID = 'service_8n52x1y';
-        const EMAILJS_TEMPLATE_ID = '';  // Este template debe enviar al cliente
+        // ── EmailJS init ──────────────────────────────────────────────
+        emailjs.init('M92wKKtYMTj1mB944');
 
-        // Inicializar EmailJS
-        emailjs.init(EMAILJS_PUBLIC_KEY);
+        const SERVICE_ID = 'service_5x705bo';
+        const TEMPLATE_ID = 'template_9gy5yl4';
 
-        // ────────────────────────────────────────────────────────
-        // Notificaciones
-        // ────────────────────────────────────────────────────────
-        function showNotification(message, isError = false) {
-            const existing = document.querySelector('.notification');
-            if (existing) existing.remove();
-
-            const notif = document.createElement('div');
-            notif.className = `notification ${isError ? 'error' : ''}`;
-            notif.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${message}`;
-            document.body.appendChild(notif);
-
-            setTimeout(() => notif.remove(), 6000);
+        // ── Notificación visual ───────────────────────────────────────
+        function showNotification(title, subtitle = '', isError = false) {
+            document.querySelector('.notification')?.remove();
+            const n = document.createElement('div');
+            n.className = `notification${isError ? ' error' : ''}`;
+            n.innerHTML = `
+                <div class="notification-icon">
+                    <i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i>
+                </div>
+                <div class="notification-body">
+                    <strong>${title}</strong>
+                    ${subtitle ? `<span>${subtitle}</span>` : ''}
+                </div>`;
+            document.body.appendChild(n);
+            setTimeout(() => n.remove(), 6000);
         }
 
-        // ────────────────────────────────────────────────────────
-        // Scroll al formulario y pre-seleccionar servicio
-        // ────────────────────────────────────────────────────────
-        function scrollToForm(servicio) {
+        // ── Scroll al formulario y pre-seleccionar servicio ──────────
+        function scrollToForm(servicio = '') {
             document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
             if (servicio) {
-                setTimeout(() => {
-                    const select = document.getElementById('servicio');
-                    for (let opt of select.options) {
-                        if (opt.text === servicio) {
-                            opt.selected = true;
-                            break;
-                        }
-                    }
-                }, 400);
+                const sel = document.getElementById('servicio');
+                for (const opt of sel.options) {
+                    if (opt.text === servicio) { sel.value = opt.value; break; }
+                }
             }
         }
 
-        // ────────────────────────────────────────────────────────
-        // Guardar en localStorage (respaldo)
-        // ────────────────────────────────────────────────────────
+        // ── Guardar en localStorage ───────────────────────────────────
         function guardarLocalmente(datos) {
-            try {
-                const solicitudes = JSON.parse(localStorage.getItem('solicitudes_servicio') || '[]');
-                solicitudes.push({ id: Date.now(), fecha: new Date().toLocaleString(), ...datos });
-                localStorage.setItem('solicitudes_servicio', JSON.stringify(solicitudes));
-            } catch (e) {
-                console.warn('No se pudo guardar localmente:', e);
-            }
+            const lista = JSON.parse(localStorage.getItem('solicitudes_servicio') || '[]');
+            lista.push({ id: Date.now(), fecha: new Date().toLocaleString(), ...datos });
+            localStorage.setItem('solicitudes_servicio', JSON.stringify(lista));
         }
 
-        // ────────────────────────────────────────────────────────
-        // Envío del formulario
-        // ────────────────────────────────────────────────────────
+        // ── Envío con EmailJS ─────────────────────────────────────────
+        async function enviarEmail(datos) {
+            // Variables que deben existir en tu plantilla de EmailJS:
+            // {{to_name}}   → nombre del cliente
+            // {{to_email}}  → correo del cliente  (EmailJS lo usa como "To Email")
+            // {{telefono}}  → teléfono
+            // {{servicio}}  → servicio solicitado
+            // {{mensaje}}   → detalles adicionales
+            // {{fecha}}     → fecha/hora de la solicitud
+            const templateParams = {
+                to_name: datos.nombre,
+                to_email: datos.email,
+                telefono: datos.telefono,
+                servicio: datos.servicio,
+                mensaje: datos.mensaje || 'Sin detalles adicionales.',
+                fecha: new Date().toLocaleString('es-DO', {
+                    dateStyle: 'full', timeStyle: 'short'
+                })
+            };
+            return emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams);
+        }
+
+        // ── Evento principal ──────────────────────────────────────────
         document.getElementById('enviarBtn').addEventListener('click', async function () {
             const nombre = document.getElementById('nombre').value.trim();
             const telefono = document.getElementById('telefono').value.trim();
@@ -696,64 +765,45 @@
 
             // Validaciones
             if (!nombre || !telefono || !email || !servicio) {
-                showNotification('Por favor, completa todos los campos obligatorios.', true);
+                showNotification('Campos incompletos', 'Por favor, completa todos los campos obligatorios.', true);
                 return;
             }
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showNotification('Ingresa un correo electrónico válido.', true);
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showNotification('Correo inválido', 'Ingresa una dirección de correo válida.', true);
                 return;
             }
 
-            // Bloquear botón mientras se envía
+            // Estado: cargando
             const btn = this;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
             btn.disabled = true;
+            btn.classList.add('loading');
 
-            // Guardar localmente como respaldo
-            guardarLocalmente({ nombre, telefono, email, servicio, mensaje });
-
-            // ── Parámetros del template ──────────────────────────
-            // IMPORTANTE: en tu template de EmailJS el campo "To Email"
-            // debe estar configurado como {{to_email}} para que le llegue
-            // el correo de confirmación directamente al cliente.
-            const templateParams = {
-                to_email: email,           // ← Correo del CLIENTE (destinatario)
-                to_name: nombre,          // ← Nombre del cliente para personalizar
-                from_name: nombre,
-                phone: telefono,
-                from_email: email,
-                service_type: servicio,
-                message: mensaje || 'Sin detalles adicionales',
-                reply_to: 'servicio@martilloazul.com',
-                // Fecha y hora para incluir en el email
-                fecha_solicitud: new Date().toLocaleString('es-DO', {
-                    dateStyle: 'long',
-                    timeStyle: 'short'
-                })
-            };
+            const datos = { nombre, telefono, email, servicio, mensaje };
 
             try {
-                const response = await emailjs.send(
-                    EMAILJS_SERVICE_ID,
-                    EMAILJS_TEMPLATE_ID,
-                    templateParams
+                await enviarEmail(datos);
+                guardarLocalmente(datos);
+
+                // Éxito
+                showNotification(
+                    '¡Solicitud enviada! 🎉',
+                    `Te enviamos un correo de confirmación a ${email}.`
                 );
 
-                console.log('✅ Email enviado correctamente:', response.status, response.text);
+                // Limpiar formulario
+                ['nombre', 'telefono', 'email', 'mensaje'].forEach(id => document.getElementById(id).value = '');
+                document.getElementById('servicio').value = '';
 
-                showNotification('¡Solicitud enviada! Revisa tu correo, te hemos enviado una confirmación.', false);
-                document.getElementById('serviceForm').reset();
-
-            } catch (error) {
-                console.error('❌ Error EmailJS:', error);
-
-                // Mostrar error específico para facilitar debugging
-                const detalle = error.text || error.message || JSON.stringify(error);
-                showNotification(`Error al enviar: ${detalle}`, true);
+            } catch (err) {
+                console.error('EmailJS error:', err);
+                showNotification(
+                    'Error al enviar',
+                    'Hubo un problema. Inténtalo de nuevo o escríbenos directamente.',
+                    true
+                );
             } finally {
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar solicitud';
                 btn.disabled = false;
+                btn.classList.remove('loading');
             }
         });
     </script>
