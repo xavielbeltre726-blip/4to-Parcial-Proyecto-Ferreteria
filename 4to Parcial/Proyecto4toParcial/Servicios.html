@@ -9,6 +9,8 @@
         href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -366,6 +368,12 @@
             transform: translateY(-2px);
         }
 
+        .btn-enviar:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .footer {
             background: var(--azul-marino);
             color: #eef3fc;
@@ -461,42 +469,44 @@
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-chalkboard-user"></i></div>
                 <h3>Asesoría Técnica</h3>
-                <p>¿No sabes qué herramienta necesitas? Nuestros especialistas te orientan sin costo.</p><button
-                    class="btn-solicitar" onclick="scrollToForm()"><i class="fas fa-comment"></i> Consultar
-                    ahora</button>
+                <p>¿No sabes qué herramienta necesitas? Nuestros especialistas te orientan sin costo.</p>
+                <button class="btn-solicitar" onclick="scrollToForm('Asesoría técnica')"><i class="fas fa-comment"></i>
+                    Consultar ahora</button>
             </div>
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-tools"></i></div>
                 <h3>Talleres y Capacitación</h3>
-                <p>Cursos mensuales de bricolaje, uso seguro de herramientas eléctricas y mantenimiento.</p><button
-                    class="btn-solicitar" onclick="scrollToForm()"><i class="fas fa-calendar-alt"></i>
-                    Inscribirme</button>
+                <p>Cursos mensuales de bricolaje, uso seguro de herramientas eléctricas y mantenimiento.</p>
+                <button class="btn-solicitar" onclick="scrollToForm('Taller / Capacitación')"><i
+                        class="fas fa-calendar-alt"></i> Inscribirme</button>
             </div>
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-file-invoice-dollar"></i></div>
                 <h3>Cotizaciones Mayoristas</h3>
-                <p>Presupuestos personalizados con descuentos por volumen y asesoría en obra.</p><button
-                    class="btn-solicitar" onclick="scrollToForm()"><i class="fas fa-calculator"></i> Solicitar
-                    cotización</button>
+                <p>Presupuestos personalizados con descuentos por volumen y asesoría en obra.</p>
+                <button class="btn-solicitar" onclick="scrollToForm('Cotización mayorista')"><i
+                        class="fas fa-calculator"></i> Solicitar cotización</button>
             </div>
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-truck-fast"></i></div>
                 <h3>Envío a Domicilio</h3>
-                <p>Entregas en 24-48 horas hábiles. Envíos gratis desde RD$5,000.</p><button class="btn-solicitar"
-                    onclick="scrollToForm()"><i class="fas fa-map-marker-alt"></i> Consultar cobertura</button>
+                <p>Entregas en 24-48 horas hábiles. Envíos gratis desde RD$5,000.</p>
+                <button class="btn-solicitar" onclick="scrollToForm('Envío a domicilio')"><i
+                        class="fas fa-map-marker-alt"></i> Consultar cobertura</button>
             </div>
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-hand-holding-usd"></i></div>
                 <h3>Alquiler de Herramientas</h3>
-                <p>Alquila por día o semana. Equipo revisado y garantizado.</p><button class="btn-solicitar"
-                    onclick="scrollToForm()"><i class="fas fa-calendar-week"></i> Ver precios</button>
+                <p>Alquila por día o semana. Equipo revisado y garantizado.</p>
+                <button class="btn-solicitar" onclick="scrollToForm('Alquiler de herramienta')"><i
+                        class="fas fa-calendar-week"></i> Ver precios</button>
             </div>
             <div class="service-card">
                 <div class="service-icon"><i class="fas fa-hard-hat"></i></div>
                 <h3>Seguridad y EPP</h3>
-                <p>Asesoría en equipos de protección personal (cascos, guantes, gafas, arneses).</p><button
-                    class="btn-solicitar" onclick="scrollToForm()"><i class="fas fa-shield-alt"></i> Pedir
-                    asesoría</button>
+                <p>Asesoría en equipos de protección personal (cascos, guantes, gafas, arneses).</p>
+                <button class="btn-solicitar" onclick="scrollToForm('Equipo de protección (EPP)')"><i
+                        class="fas fa-shield-alt"></i> Pedir asesoría</button>
             </div>
         </div>
 
@@ -569,15 +579,23 @@
 
         <div class="contact-form-section" id="form-section">
             <h2><i class="fas fa-envelope"></i> Solicita tu servicio</h2>
-            <p>Completa el formulario y nos pondremos en contacto contigo en menos de 24 horas.</p>
-            <form id="serviceForm" class="form-grid">
-                <div class="form-group"><label>Nombre completo *</label><input type="text" id="nombre"
-                        placeholder="Ej: Juan Pérez" required></div>
-                <div class="form-group"><label>Teléfono *</label><input type="tel" id="telefono"
-                        placeholder="809-555-1234" required></div>
-                <div class="form-group"><label>Correo electrónico *</label><input type="email" id="email"
-                        placeholder="juan@ejemplo.com" required></div>
-                <div class="form-group"><label>Servicio que necesitas *</label><select id="servicio" required>
+            <p>Completa el formulario y recibirás una confirmación en tu correo en menos de unos segundos.</p>
+            <form id="serviceForm" class="form-grid" onsubmit="return false;">
+                <div class="form-group">
+                    <label>Nombre completo *</label>
+                    <input type="text" id="nombre" placeholder="Ej: Juan Pérez" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono *</label>
+                    <input type="tel" id="telefono" placeholder="809-555-1234" required>
+                </div>
+                <div class="form-group">
+                    <label>Correo electrónico *</label>
+                    <input type="email" id="email" placeholder="juan@ejemplo.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Servicio que necesitas *</label>
+                    <select id="servicio" required>
                         <option value="">Selecciona...</option>
                         <option>Asesoría técnica</option>
                         <option>Taller / Capacitación</option>
@@ -586,11 +604,18 @@
                         <option>Alquiler de herramienta</option>
                         <option>Equipo de protección (EPP)</option>
                         <option>Otro</option>
-                    </select></div>
-                <div class="form-group full-width"><label>Mensaje o detalles adicionales</label><textarea id="mensaje"
-                        rows="3" placeholder="Cuéntanos qué necesitas, fechas, cantidades, etc."></textarea></div>
-                <div class="form-group full-width"><button type="button" class="btn-enviar" id="enviarBtn"><i
-                            class="fas fa-paper-plane"></i> Enviar solicitud</button></div>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label>Mensaje o detalles adicionales</label>
+                    <textarea id="mensaje" rows="3"
+                        placeholder="Cuéntanos qué necesitas, fechas, cantidades, etc."></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <button type="button" class="btn-enviar" id="enviarBtn">
+                        <i class="fas fa-paper-plane"></i> Enviar solicitud
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -603,23 +628,66 @@
     </footer>
 
     <script>
-        // Función para mostrar notificaciones
+        // ════════════════════════════════════════════════════════
+        // CONFIGURACIÓN EMAILJS
+        // ════════════════════════════════════════════════════════
+        const EMAILJS_PUBLIC_KEY = 'M92wKKtYMTj1mB944';
+        const EMAILJS_SERVICE_ID = 'service_8n52x1y';
+        const EMAILJS_TEMPLATE_ID = '';  // Este template debe enviar al cliente
+
+        // Inicializar EmailJS
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+
+        // ────────────────────────────────────────────────────────
+        // Notificaciones
+        // ────────────────────────────────────────────────────────
         function showNotification(message, isError = false) {
             const existing = document.querySelector('.notification');
             if (existing) existing.remove();
+
             const notif = document.createElement('div');
             notif.className = `notification ${isError ? 'error' : ''}`;
             notif.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${message}`;
             document.body.appendChild(notif);
-            setTimeout(() => notif.remove(), 5000);
+
+            setTimeout(() => notif.remove(), 6000);
         }
 
-        function scrollToForm() {
+        // ────────────────────────────────────────────────────────
+        // Scroll al formulario y pre-seleccionar servicio
+        // ────────────────────────────────────────────────────────
+        function scrollToForm(servicio) {
             document.getElementById('form-section').scrollIntoView({ behavior: 'smooth' });
+            if (servicio) {
+                setTimeout(() => {
+                    const select = document.getElementById('servicio');
+                    for (let opt of select.options) {
+                        if (opt.text === servicio) {
+                            opt.selected = true;
+                            break;
+                        }
+                    }
+                }, 400);
+            }
         }
 
-        // Envío del formulario (simulado, exitoso SIEMPRE, pero con validación)
-        document.getElementById('enviarBtn').addEventListener('click', function () {
+        // ────────────────────────────────────────────────────────
+        // Guardar en localStorage (respaldo)
+        // ────────────────────────────────────────────────────────
+        function guardarLocalmente(datos) {
+            try {
+                const solicitudes = JSON.parse(localStorage.getItem('solicitudes_servicio') || '[]');
+                solicitudes.push({ id: Date.now(), fecha: new Date().toLocaleString(), ...datos });
+                localStorage.setItem('solicitudes_servicio', JSON.stringify(solicitudes));
+            } catch (e) {
+                console.warn('No se pudo guardar localmente:', e);
+            }
+        }
+
+        // ────────────────────────────────────────────────────────
+        // Envío del formulario
+        // ────────────────────────────────────────────────────────
+        document.getElementById('enviarBtn').addEventListener('click', async function () {
             const nombre = document.getElementById('nombre').value.trim();
             const telefono = document.getElementById('telefono').value.trim();
             const email = document.getElementById('email').value.trim();
@@ -631,26 +699,62 @@
                 showNotification('Por favor, completa todos los campos obligatorios.', true);
                 return;
             }
-            if (!email.includes('@') || !email.includes('.')) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
                 showNotification('Ingresa un correo electrónico válido.', true);
                 return;
             }
 
-            // Simular envío exitoso
-            const btn = document.getElementById('enviarBtn');
-            const originalText = btn.innerHTML;
+            // Bloquear botón mientras se envía
+            const btn = this;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
             btn.disabled = true;
 
-            // Aquí podrías agregar un envío real a un servidor o EmailJS
-            // Por ahora, simulamos éxito después de 1 segundo
-            setTimeout(() => {
-                console.log('Solicitud de servicio:', { nombre, telefono, email, servicio, mensaje });
-                showNotification('✅ ¡Solicitud enviada! Nos pondremos en contacto contigo en las próximas 24 horas.', false);
+            // Guardar localmente como respaldo
+            guardarLocalmente({ nombre, telefono, email, servicio, mensaje });
+
+            // ── Parámetros del template ──────────────────────────
+            // IMPORTANTE: en tu template de EmailJS el campo "To Email"
+            // debe estar configurado como {{to_email}} para que le llegue
+            // el correo de confirmación directamente al cliente.
+            const templateParams = {
+                to_email: email,           // ← Correo del CLIENTE (destinatario)
+                to_name: nombre,          // ← Nombre del cliente para personalizar
+                from_name: nombre,
+                phone: telefono,
+                from_email: email,
+                service_type: servicio,
+                message: mensaje || 'Sin detalles adicionales',
+                reply_to: 'servicio@martilloazul.com',
+                // Fecha y hora para incluir en el email
+                fecha_solicitud: new Date().toLocaleString('es-DO', {
+                    dateStyle: 'long',
+                    timeStyle: 'short'
+                })
+            };
+
+            try {
+                const response = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    templateParams
+                );
+
+                console.log('✅ Email enviado correctamente:', response.status, response.text);
+
+                showNotification('¡Solicitud enviada! Revisa tu correo, te hemos enviado una confirmación.', false);
                 document.getElementById('serviceForm').reset();
-                btn.innerHTML = originalText;
+
+            } catch (error) {
+                console.error('❌ Error EmailJS:', error);
+
+                // Mostrar error específico para facilitar debugging
+                const detalle = error.text || error.message || JSON.stringify(error);
+                showNotification(`Error al enviar: ${detalle}`, true);
+            } finally {
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar solicitud';
                 btn.disabled = false;
-            }, 1000);
+            }
         });
     </script>
 </body>
